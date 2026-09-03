@@ -1,0 +1,49 @@
+NORTHFIELD DIGITAL — SCREENING RUBRIC
+Role: Backend Engineer (Mid-Level)
+Rubric ID: rubric-backend-engineer-v1
+Derived from: Competency Framework v1.2
+Scale: 1-5 for each competency (see Competency Framework for behavioral anchors)
+Composite score: weighted average of the competency scores below
+
+COMPETENCY WEIGHTS
+
+| Competency (ID)                         | Weight |
+|------------------------------------------|--------|
+| Technical Proficiency (TECH-PROF)         | 0.25   |
+| Problem Solving & Analytical Thinking (PROB-SOLVE) | 0.20   |
+| Ownership & Accountability (OWNERSHIP)    | 0.15   |
+| Collaboration & Teamwork (COLLAB)         | 0.15   |
+| Communication (COMMS)                     | 0.10   |
+| Adaptability & Learning Agility (ADAPT-AGILE) | 0.10   |
+| Attention to Detail & Quality (DETAIL-QUALITY) | 0.05   |
+
+Weights sum to 1.00. Leadership & Initiative is not scored for this role at this level — it is reintroduced at the Senior Backend Engineer level.
+
+WHAT EVIDENCE TO LOOK FOR, PER COMPETENCY, FOR THIS ROLE
+
+Technical Proficiency (0.25): Evidence of having independently built and operated backend services in production — specifically, look for mentions of database work (schema design, query performance, transactions), API design decisions, and handling of failure modes (retries, timeouts, partial failures). A candidate who has only worked on frontend or purely academic backend projects should not score above Level 2 here regardless of general technical strength.
+
+Problem Solving & Analytical Thinking (0.20): Evidence of debugging a real production issue to root cause, or of making a non-obvious architectural tradeoff with reasoning. Prefer specific incident or design examples over general statements of "strong problem solver."
+
+Ownership & Accountability (0.15): Evidence the candidate has been on-call, has handled an incident under their own responsibility, or has followed a feature through past initial shipping into its operational life (monitoring, iteration, eventual deprecation).
+
+Collaboration & Teamwork (0.15): Evidence of cross-team API consumers being considered in the candidate's design work, or of giving/receiving code review feedback constructively. A backend engineer whose APIs are consumed by other teams should show awareness of that audience.
+
+Communication (0.10): Evidence of writing a design document, an incident postmortem, or an API migration guide that another engineer could act on without further clarification.
+
+Adaptability & Learning Agility (0.10): Evidence of picking up an unfamiliar part of the stack (a new language, a new subsystem) and becoming productive in it within a reasonable time.
+
+Attention to Detail & Quality (0.05): Evidence of catching an edge case, race condition, or data integrity issue before it caused a production problem.
+
+SHORTLIST THRESHOLD
+
+A composite score of 3.4 or above, with no individual competency score below 2, is the guideline threshold for advancing a candidate to the interview stage. This is guidance for the automated screening step, not a hard cutoff — a hiring manager may override it with documented reasoning, and any override must be recorded in the audit trail.
+
+WORKED SCORING EXAMPLE
+
+Consider a hypothetical candidate handle CAND-EXAMPLE with the following scores derived from cited resume evidence: Technical Proficiency 4, Problem Solving & Analytical Thinking 3, Ownership & Accountability 4, Collaboration & Teamwork 3, Communication 3, Adaptability & Learning Agility 3, Attention to Detail & Quality 4.
+
+Composite = (4 x 0.25) + (3 x 0.20) + (4 x 0.15) + (3 x 0.15) + (3 x 0.10) + (3 x 0.10) + (4 x 0.05)
+= 1.00 + 0.60 + 0.60 + 0.45 + 0.30 + 0.30 + 0.20 = 3.45
+
+This composite (3.45) clears the 3.4 shortlist threshold, and no individual competency is below 2, so this hypothetical candidate would advance per the guideline. Note that a candidate with a stronger Technical Proficiency score but a Problem Solving & Analytical Thinking score of 1 would not automatically advance even with a high composite, if the automated screen additionally applies the "no individual competency below 2" floor correctly — this floor exists specifically so that a single very strong competency cannot compensate for a genuinely concerning gap in another, since a backend engineer who is technically excellent but cannot reason through an ambiguous production problem independently is a real risk this rubric is designed to catch.

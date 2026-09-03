@@ -1,0 +1,49 @@
+NORTHFIELD DIGITAL — SCREENING RUBRIC
+Role: Frontend Engineer (Mid-Level)
+Rubric ID: rubric-frontend-engineer-v1
+Derived from: Competency Framework v1.2
+Scale: 1-5 for each competency (see Competency Framework for behavioral anchors)
+Composite score: weighted average of the competency scores below
+
+COMPETENCY WEIGHTS
+
+| Competency (ID)                         | Weight |
+|------------------------------------------|--------|
+| Technical Proficiency (TECH-PROF)         | 0.25   |
+| Attention to Detail & Quality (DETAIL-QUALITY) | 0.20   |
+| Communication (COMMS)                     | 0.15   |
+| Collaboration & Teamwork (COLLAB)         | 0.15   |
+| Problem Solving & Analytical Thinking (PROB-SOLVE) | 0.15   |
+| Adaptability & Learning Agility (ADAPT-AGILE) | 0.05   |
+| Leadership & Initiative (LEAD-INIT)       | 0.05   |
+
+Weights sum to 1.00. Ownership & Accountability is not separately scored for this role at this level — production ownership evidence, where present, is folded into the Technical Proficiency and Attention to Detail & Quality scores instead.
+
+WHAT EVIDENCE TO LOOK FOR, PER COMPETENCY, FOR THIS ROLE
+
+Technical Proficiency (0.25): Evidence of production React/TypeScript work specifically, including performance work (bundle size, render performance) and testing practice. General frontend experience in a different framework is a partial but not full substitute.
+
+Attention to Detail & Quality (0.20): Evidence of cross-browser/cross-device debugging, or of catching an accessibility or edge-case UI issue before or shortly after it reached users. Weighted heavily because the job description explicitly frames this as core to the role's user base (many users on lower-end devices).
+
+Communication (0.15): Evidence of working directly with product designers — specifically, of flagging a feasibility or accessibility concern during design review rather than after implementation had already started.
+
+Collaboration & Teamwork (0.15): Evidence of contributing to a shared component library or codebase used by multiple engineers, and of giving/receiving review feedback on a shared frontend surface.
+
+Problem Solving & Analytical Thinking (0.15): Evidence of diagnosing a non-obvious frontend bug (a race condition in state management, a performance regression only visible under real-user conditions) using devtools or monitoring data rather than guesswork.
+
+Adaptability & Learning Agility (0.05): Evidence of adopting a new frontend tool, pattern, or framework version without extensive support.
+
+Leadership & Initiative (0.05): Evidence of proposing or driving a frontend-wide improvement (a shared pattern, a performance initiative) without being asked.
+
+SHORTLIST THRESHOLD
+
+A composite score of 3.4 or above, with no individual competency score below 2, is the guideline threshold for advancing a candidate to the interview stage. Overrides by a hiring manager must be documented in the audit trail.
+
+WORKED SCORING EXAMPLE
+
+Consider a hypothetical candidate handle CAND-EXAMPLE with: Technical Proficiency 3, Attention to Detail & Quality 3, Communication 4, Collaboration & Teamwork 4, Problem Solving & Analytical Thinking 3, Adaptability & Learning Agility 4, Leadership & Initiative 2.
+
+Composite = (3 x 0.25) + (3 x 0.20) + (4 x 0.15) + (4 x 0.15) + (3 x 0.15) + (4 x 0.05) + (2 x 0.05)
+= 0.75 + 0.60 + 0.60 + 0.60 + 0.45 + 0.20 + 0.10 = 3.30 — falls just short of the 3.4 threshold, despite no individual score below 2.
+
+This example illustrates a common real pattern for a mid-level candidate: solid, well-rounded evidence without yet reaching Level 4 on either of the two most heavily weighted competencies (Technical Proficiency and Attention to Detail & Quality). Per the Interview Process Playbook's evidence standard, this candidate is not a clear pass or a clear fail — the guideline result (a composite just under threshold) should prompt the recruiter to look specifically for additional Technical Proficiency or Attention to Detail & Quality evidence that automated pre-screening may have missed, rather than an automatic decline, since the automated pass is explicitly for triage, not final rejection, per Interview Process Playbook section 2.2.

@@ -1,0 +1,63 @@
+NORTHFIELD DIGITAL — STANDARD INTERVIEW QUESTION BANK BY COMPETENCY
+People Operations & Talent Acquisition
+Version 2.0 (referenced from the Interview Process Playbook, section 9)
+
+PURPOSE
+
+This question bank gives interviewers a starting set of structured, evidence-eliciting questions for each competency in the Competency Framework, so that panels are not inventing questions ad hoc for every interview. Interviewers are expected to follow up on vague answers with a request for specifics ("what exactly did you do," "what was the actual outcome," "what would you have done differently") rather than accepting a general claim at face value, regardless of which question below prompted it.
+
+TECHNICAL PROFICIENCY (TECH-PROF)
+
+"Walk me through the most complex system you've built or significantly modified. What made it complex, and where did that complexity actually live?"
+"Tell me about a time a technology or approach you chose turned out to be the wrong call. How did you find out, and what did you do?"
+"Describe a production incident you were personally involved in resolving. What was the root cause, and how did you find it?"
+
+PROBLEM SOLVING & ANALYTICAL THINKING (PROB-SOLVE)
+
+"Tell me about a problem you were given that was vague or underspecified. How did you turn it into something you could actually act on?"
+"Describe a time your initial hypothesis about a problem turned out to be wrong. What changed your mind, and what did you do next?"
+"What's an example of a decision you made under real time pressure with incomplete information? What would have changed your decision if you'd had more time?"
+
+COMMUNICATION (COMMS)
+
+"Tell me about a time you had to explain a technical decision to someone non-technical. How did you adjust your explanation for that audience?"
+"Describe a piece of writing (a doc, a postmortem, a proposal) you're proud of. What made it effective, in your view?"
+"Tell me about a time your communication (or lack of it) caused a misunderstanding. What did you learn from it?"
+
+COLLABORATION & TEAMWORK (COLLAB)
+
+"Tell me about a disagreement you had with a teammate about a technical approach. How was it resolved?"
+"Describe a time you made a process or practice better for your team, not just for yourself."
+"Tell me about working with a team or partner whose incentives weren't fully aligned with yours. How did you find common ground?"
+
+LEADERSHIP & INITIATIVE (LEAD-INIT)
+
+"Tell me about a time you noticed a problem or opportunity that wasn't officially your responsibility, and did something about it anyway."
+"Describe a time you had to get buy-in from people who didn't report to you. How did you approach it?"
+"What's something you started that outlasted your direct involvement in it?"
+
+ADAPTABILITY & LEARNING AGILITY (ADAPT-AGILE)
+
+"Tell me about a time you had to become productive in an unfamiliar technology, domain, or team quickly. What was your approach?"
+"Describe a significant change of plan or direction you had to adapt to. How did you handle it?"
+"What's something you learned recently that you didn't expect to need? How did you go about learning it?"
+
+OWNERSHIP & ACCOUNTABILITY (OWNERSHIP)
+
+"Tell me about something that went wrong under your direct responsibility. What did you do about it?"
+"Describe a piece of work you followed through on well past the point most people would have considered it 'done.'"
+"Tell me about a commitment you couldn't fully deliver on. How did you handle that?"
+
+ATTENTION TO DETAIL & QUALITY (DETAIL-QUALITY)
+
+"Tell me about a bug, edge case, or data quality issue you caught before it caused a real problem. How did you catch it?"
+"Describe a quality practice or check you introduced that wasn't there before. What prompted you to add it?"
+"Tell me about a time your attention to a small detail mattered more than expected."
+
+GUIDANCE FOR FOLLOW-UP
+
+For every question above, an answer that stays at the level of a general claim ("I'm good at solving ambiguous problems") without a specific example is insufficient evidence and should be followed up with a direct request for a concrete instance. Where a candidate provides a specific instance, interviewers are expected to probe the actual mechanism of what the candidate did — not just the outcome — since the mechanism is what generalizes to how the candidate would perform in a new, unfamiliar situation at Northfield.
+
+REVISION NOTE
+
+Version 2.0 reorganized this bank by competency (previously organized by role) after feedback that the by-role structure led to duplicate questions across role-specific guides and made it harder to spot when a competency had no good question mapped to it at all — a gap the Interview Process Playbook's section 9.1 now explicitly requires panels to avoid.

@@ -1,0 +1,37 @@
+NORTHFIELD DIGITAL — REMOTE COMPENSATION ADDENDUM
+People Operations & Finance
+Version 1.3 (referenced from the Compensation Bands & Leveling Guide, section 6)
+
+1. PURPOSE
+
+This addendum sets location-adjusted compensation bands for employees hired into, or relocating to, a fully remote arrangement outside the Cairo metropolitan area, while preserving the same leveling structure and evidence-based leveling process described in the main Compensation Bands & Leveling Guide. Levels are identical across locations — only the applicable band changes.
+
+2. LOCATION TIERS
+
+Northfield uses three location tiers for remote compensation purposes, reviewed annually alongside the main compensation bands:
+
+Tier A (Cairo metropolitan area, hybrid or on-site): the bands stated in the main Compensation Bands & Leveling Guide apply directly, with no adjustment.
+
+Tier B (other major Egyptian cities with an established local tech labor market: Alexandria, Giza-adjacent areas outside the defined Cairo metro boundary, Mansoura): bands are set at 92% of the corresponding Tier A band, reflecting a modestly lower local cost-of-labor benchmark while remaining close to Tier A given the fully remote arrangement's minimal cost differential to Northfield.
+
+Tier C (all other locations within Egypt, and any approved international remote location): bands are set at 85% of the corresponding Tier A band. International remote arrangements additionally require Legal review of local employment law implications before an offer is extended, handled case by case.
+
+3. HOW TIER IS DETERMINED
+
+Tier is determined by an employee's primary registered residence at the time of hire or relocation, not by where they occasionally work from while traveling. An employee who relocates permanently between tiers should notify People Operations, who will reassess the applicable band effective from the date of the confirmed relocation, adjusting compensation upward or downward as appropriate — this addendum does not grandfather an employee into a higher tier's band after a permanent relocation to a lower tier, consistent with the principle that bands reflect current, not historical, location.
+
+4. LEVELING CONSISTENCY ACROSS LOCATIONS
+
+The competency framework, role rubrics, and interview process described in the Interview Process Playbook apply identically regardless of location tier — a remote candidate is evaluated against the same evidence standard as a Cairo-based candidate for the same role and level. Only the compensation band differs; the bar for a given level does not.
+
+5. EQUITY AND BONUS ELIGIBILITY
+
+Equity grant eligibility and bonus targets by level are identical across all location tiers; only the base salary band is tier-adjusted. This is a deliberate policy choice to avoid compounding a base-salary location adjustment with a further equity or bonus adjustment.
+
+6. REVIEW CADENCE
+
+This addendum is reviewed alongside the main Compensation Bands & Leveling Guide's annual market review, and tier assignments for specific cities or regions may be revised if the underlying local labor market benchmark shifts meaningfully.
+
+7. POLICY OWNERSHIP
+
+Owned jointly by People Operations and Finance, referenced from and reviewed alongside the Compensation Bands & Leveling Guide.

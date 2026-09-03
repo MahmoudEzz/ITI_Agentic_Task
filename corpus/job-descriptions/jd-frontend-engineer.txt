@@ -1,0 +1,46 @@
+NORTHFIELD DIGITAL — JOB DESCRIPTION
+Role: Frontend Engineer (Mid-Level)
+Team: Consumer Product
+Location: Cairo, Egypt (hybrid — 3 days on-site)
+Reports to: Engineering Manager, Consumer Product
+
+ABOUT THE ROLE
+
+The Consumer Product team builds and maintains the customer-facing web application used by several hundred thousand active users. As a Frontend Engineer, you will own significant parts of that application's UI layer, working closely with product designers and backend engineers to ship features that are fast, accessible, and reliable across a wide range of devices and network conditions — a meaningful share of our users are on lower-end devices and slower connections, and performance is treated as a feature, not an afterthought.
+
+This is a mid-level individual-contributor role with room to grow into broader ownership of frontend architecture.
+
+WHAT YOU WILL DO
+
+- Build user-facing features in React and TypeScript, from design handoff through implementation, testing, and production rollout.
+- Own frontend performance for the areas you work in: bundle size, render performance, and real-user monitoring metrics, not just Lighthouse scores in isolation.
+- Collaborate closely with product designers, translating designs into implementation while flagging accessibility or feasibility concerns early rather than after implementation has started.
+- Write and maintain component-level and end-to-end tests, and treat a flaky test as a bug to fix, not a nuisance to ignore.
+- Participate in code review with a focus on maintainability and consistency across the codebase, since many engineers touch this shared frontend surface.
+- Debug and resolve production frontend issues, including issues that only reproduce on specific devices, browsers, or network conditions.
+
+WHAT WE ARE LOOKING FOR
+
+Required:
+- 3+ years of professional experience building production web applications with React (or a comparable component-based framework) and TypeScript.
+- Solid understanding of web performance fundamentals: bundle splitting, render-blocking resources, and how to diagnose a slow page using browser devtools and real-user monitoring data.
+- Experience writing automated tests for frontend code (unit, component, or end-to-end) and a clear point of view on when each type is worth the cost.
+- Demonstrated attention to detail on cross-browser and cross-device behavior, not just "works on my machine."
+- Comfortable working directly with product designers and giving/receiving feedback on design feasibility.
+
+Strongly preferred:
+- Experience with accessibility (WCAG) beyond a surface-level checklist — real examples of catching or fixing an accessibility issue that automated tools missed.
+- Familiarity with server-side rendering or static-generation frameworks (Next.js or similar).
+- Experience contributing to or maintaining a shared component library used by multiple teams.
+
+We do not require a specific academic background, degree classification, or number of years since graduation — what you have shipped and how you think about tradeoffs matter far more than credentials.
+
+HOW WE EVALUATE
+
+Candidates for this role are assessed against Northfield's technical competency framework, weighted for this role toward Technical Proficiency and Attention to Detail & Quality, with Communication, Collaboration & Teamwork, Problem Solving & Analytical Thinking, Adaptability & Learning Agility, and Leadership & Initiative also scored. See the Frontend Engineer Rubric for exact weightings.
+
+The process includes: an initial screen of your application materials and portfolio/work samples, a practical coding exercise involving a realistic UI implementation task, a discussion of a past performance or accessibility issue you diagnosed and fixed, and a conversation with the hiring manager focused on collaboration with design and cross-functional partners.
+
+COMPENSATION AND LEVEL
+
+This role is leveled as Engineer II under Northfield's Compensation Bands & Leveling Guide. Final level and compensation are determined based on demonstrated experience during the interview process.

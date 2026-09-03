@@ -1,0 +1,51 @@
+NORTHFIELD DIGITAL — TECHNICAL INTERVIEW GUIDE: FRONTEND ENGINEER
+Consumer Product (referenced from the Interview Process Playbook, section 9)
+Version 1.6
+
+PURPOSE
+
+This guide standardizes the practical coding exercise referenced in the Frontend Engineer job description, ensuring every candidate is evaluated against the same implementation task and evidence standard.
+
+INTERVIEW STRUCTURE (90 MINUTES)
+
+Minutes 0-10: context-setting and environment setup (a small provided React/TypeScript starter project).
+
+Minutes 10-55: the core implementation exercise (detailed below).
+
+Minutes 55-75: a targeted discussion of a past performance or accessibility issue the candidate diagnosed and fixed, per the job description's stated process.
+
+Minutes 75-90: candidate questions and a design-collaboration discussion.
+
+THE CORE SCENARIO
+
+The candidate is given a small, intentionally imperfect component: a paginated list of items with a search filter, provided as working but flawed code. The flaws are seeded deliberately: the search input is not debounced (causing excessive re-renders and, in a simulated slow-network mode the interviewer can toggle, a poor user experience), the list is not virtualized (causing a real performance problem once the interviewer switches the mock dataset to a larger size), and a keyboard-navigation issue exists (focus is lost after each search keystroke, a real accessibility problem).
+
+Step 1 (identify): the candidate is asked to use the browser's devtools (Performance and Accessibility panels are available) to identify why the component "feels slow and glitchy," rather than being told the flaws directly. This maps to Attention to Detail & Quality and Problem Solving & Analytical Thinking.
+
+Step 2 (fix performance): the candidate implements debouncing and, time permitting, list virtualization or windowing, explaining the tradeoff of each (e.g., debounce delay length versus perceived responsiveness). This maps to Technical Proficiency.
+
+Step 3 (fix accessibility): the candidate is asked specifically to test the component with keyboard-only navigation (no mouse) and identify the focus-loss issue if they have not already found it via the Accessibility panel. This maps directly to the job description's emphasis on accessibility going beyond an automated-checklist level.
+
+Step 4 (test): the candidate is asked to add or update a test that would have caught at least one of the fixed issues. This maps to Attention to Detail & Quality.
+
+Minutes 55-75 discussion: the candidate is asked to describe a real accessibility or cross-device performance issue they diagnosed and fixed in past work, with the interviewer probing for the actual diagnostic mechanism (what tool or approach revealed the issue) rather than accepting a general description.
+
+EVALUATION GUIDANCE PER COMPETENCY
+
+Technical Proficiency: a Level 3 candidate implements a working debounce and can explain why it helps. A Level 4 candidate additionally reasons about the virtualization tradeoff correctly (e.g., recognizing that virtualization adds complexity that may not be worth it below a certain list size) rather than applying it reflexively.
+
+Attention to Detail & Quality: this is the most heavily weighted competency for this role (0.20) after Technical Proficiency. Watch specifically for whether the candidate discovers the keyboard-focus issue through actual keyboard testing or the Accessibility panel, versus only through being told about it — and for their reaction when they realize automated tooling alone did not surface it, which connects directly to the job description's framing of accessibility.
+
+Communication: assessed primarily through the minutes 55-75 discussion — does the candidate's explanation of their past diagnostic process make sense to a listener without needing extensive follow-up questions to reconstruct what actually happened.
+
+Problem Solving & Analytical Thinking: watch for whether the candidate forms a hypothesis about the performance issue before diving into code changes (e.g., "let me check if this is a re-render problem before assuming it's a network issue") versus applying fixes speculatively without first confirming the cause via devtools.
+
+COMMON FALSE SIGNALS TO AVOID
+
+A candidate who quickly recognizes "this needs debouncing" from pattern-matching alone, without using devtools to confirm the actual re-render behavior, has weaker evidence for Problem Solving & Analytical Thinking than a candidate who is slower but demonstrably verifies the cause first — even though both may reach the same fix.
+
+A candidate unfamiliar with a specific virtualization library should not be penalized on Technical Proficiency if they correctly reason about when virtualization is needed and roughly how it works, even without production experience with a specific implementation.
+
+CALIBRATION NOTE
+
+The specific seeded flaws in the starter project are reviewed periodically to keep pace with the actual patterns Consumer Product engineers encounter in production, consistent with the recalibration approach described in the Onboarding & Offer Process document's feedback loop.
