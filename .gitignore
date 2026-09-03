@@ -1,0 +1,36 @@
+# Dependencies
+node_modules/
+
+# Environment
+.env
+.env.local
+*.local
+
+# Assessment brief (not part of the submission deliverable)
+ITI-Instructor-Task.pdf
+
+# Build output
+dist/
+build/
+coverage/
+
+# Logs
+*.log
+npm-debug.log*
+
+# OS
+.DS_Store
+
+# Editor
+.vscode/*
+!.vscode/extensions.json
+.idea/
+
+# Generated artifacts (regeneratable via ingest/eval/report commands)
+/reports/generated/
+*.tsbuildinfo
+
+# Local data volumes (docker-compose bind mounts, if any)
+/data/
+/pgdata/
+/ollama-data/
