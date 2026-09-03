@@ -35,7 +35,23 @@ teaching/          the teaching pack (slides, lab, assessment map)
 
 ## Quick start
 
-_TODO (Phase 0-2): `docker compose up`, `.env` setup, `npm run migrate && npm run seed && npm run ingest`, then a working `npm run dev`. This section will not claim a working quick-start until `docker compose up` has actually been verified from a clean clone._
+Full application quick-start (migrations, seed data, `npm run dev`) lands with Phase 2. What's real and verified today:
+
+```bash
+cp .env.example .env        # required once the api service is included (Phase 2+); fill in GEMINI_API_KEY when you have one
+docker compose up -d ollama
+docker compose run --rm ollama-pull   # first run: ~2.6GB image + ~2.3GB of models, several minutes
+docker compose exec ollama ollama list   # should show llama3.2:3b and nomic-embed-text
+```
+
+The `api` service has nothing to serve yet (`src/adapters/http/server.js` doesn't exist until Phase 2/7) and its `env_file` requires a real `.env` — copy the example now so it's not a surprise later, but for today's verified commands above (`ollama` only), it isn't actually needed.
+
+```bash
+npm install
+npm test            # unit tests
+npm run test:contract
+npm run lint
+```
 
 ## Environment variables
 
