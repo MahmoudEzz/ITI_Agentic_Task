@@ -30,7 +30,8 @@ services:
   # like an application bug. This one-shot container pulls the two models the
   # provider adapters expect, then exits; `api` waits for it to succeed.
   # First run downloads ~2-4GB and can take several minutes depending on
-  # bandwidth — documented in the README quick-start, not hidden.
+  # bandwidth. README quick-start (Phase 2/9) must call this out explicitly
+  # rather than let a first-time `docker compose up` look stuck.
   ollama-pull:
     image: ollama/ollama:latest
     restart: "no"
