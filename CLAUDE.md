@@ -1,6 +1,6 @@
 # Domain Copilot — project instructions
 
-Agentic RAG platform for HR talent screening. Variant **D6 (HR Talent Screening) + T6 (Document In/Out)**. Node.js/JavaScript (plain JS, not TypeScript), Fastify, PostgreSQL+pgvector, Ollama (primary) + Gemini (secondary) behind one provider interface. Full design: see `/Users/mahmoudezz/.claude/plans/i-have-passed-the-splendid-sutherland.md` and `docs/ARCHITECTURE.md`.
+Agentic RAG platform for HR talent screening. Variant **D6 (HR Talent Screening) + T6 (Document In/Out)**. Node.js/JavaScript (plain JS, not TypeScript), Fastify, PostgreSQL+pgvector, Ollama (primary) + Gemini (secondary) behind one provider interface. Full design: see `docs/ARCHITECTURE.md` (diagrams, ADRs), `docs/SYSTEM-DESIGN.md` (phased build plan, gap table), and `docs/BRD.md` (requirements, assumptions).
 
 ## Non-negotiable architecture rule
 

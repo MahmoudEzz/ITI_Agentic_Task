@@ -21,6 +21,25 @@ A production deployment serving multiple HR teams at real load would add, layer 
 
 _TODO: written and expanded phase by phase as each component is actually built — not before. The gap table below is the authoritative record of what was deferred and why._
 
+### Phased build plan
+
+Realistic estimate is ~50-55h against the brief's 40h target, stated candidly rather than force-fit — the brief's own guidance is to scope intelligently and document cuts, not to under-report effort. Docs are living documents updated in the same PR as each decision they describe. Teaching topic: **"OWASP LLM in Practice"** (the injected-CV corpus and bias-audit trail are distinctive evidence for this topic). Each phase lands as 2-3 small, atomic PRs with a linked Issue.
+
+| Phase | Scope | Status |
+|---|---|---|
+| 0 | Repo & process scaffolding — folder structure, doc skeletons, ADRs, CI skeleton, tooling, Docker skeleton | Done |
+| 1 | Domain & contracts foundation — entities, domain errors, Zod contracts, unit tests for pure domain logic | Domain errors done; entities/contracts pending |
+| 2 | Ingestion (FR-1), corpus authoring in parallel — extract→clean→chunk→embed→index against real Postgres+pgvector, idempotent re-ingestion | Pending |
+| 3 | Retrieval + Q&A + citations + refusal (FR-2) — **first demoable slice** | Pending |
+| 4 | Multi-agent workflow + approval gate + orchestration controls (FR-4/FR-5) — **second demoable slice** | Pending |
+| 5 | T6 document in/out — OCR with confidence flagging, DOCX + PDF generation | Pending |
+| 6 | Security hardening + bias audit trail | Pending |
+| 7 | Web UI + streaming + observability polish (FR-6/FR-7/FR-9) | Pending |
+| 8 | Evaluation harness with real numbers (FR-3) | Pending |
+| 9 | Docs finalization, teaching pack, videos, submission checklist | Pending |
+
+**Cut order if behind schedule** (per the brief's own priority): web UI → CLI/curl fallback (Phase 7). Agent count is a floor — cannot cut below 3+orchestrator. Optional retrieval enhancement → drop metadata filtering, hybrid-only (Phase 3). Corpus size → shrink toward the 30-doc/150-page floor (Phase 2). Twist breadth → keep OCR + DOCX core, drop the PDF twin if time-constrained (Phase 5). **Never cut:** Phase 8 (eval), Phase 6 (security), Phase 9 (docs/teaching/videos).
+
 ### Gap table
 
 | Target component (Part A) | Implemented? | Why deferred | Interim mitigation | Effort & cost to close |

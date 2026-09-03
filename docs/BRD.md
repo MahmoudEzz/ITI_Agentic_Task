@@ -39,7 +39,7 @@ _TODO: populated incrementally as each FR/phase lands. Each entry: ID, statement
 
 ## 7. Assumptions
 
-Recorded as agreed during planning (see `/Users/mahmoudezz/.claude/plans/i-have-passed-the-splendid-sutherland.md` for full rationale):
+Recorded as agreed during planning (see `docs/SYSTEM-DESIGN.md` and the ADRs in `docs/adr/` for full rationale):
 
 - Rubric: 6-8 competencies, 1-5 Likert scale with behavioral anchors, equal-weighted composite score by default.
 - Interview probes: 2-3 targeted, evidence-referencing questions per candidate per weak/ambiguous competency.
