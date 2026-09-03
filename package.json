@@ -29,5 +29,8 @@
     "eslint": "^10.9.1",
     "husky": "^9.1.7",
     "prettier": "^3.9.6"
+  },
+  "dependencies": {
+    "zod": "^4.5.4"
   }
 }
