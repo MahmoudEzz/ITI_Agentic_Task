@@ -24,6 +24,27 @@ services:
     volumes:
       - ollama-data:/root/.ollama
 
+  # The ollama image starts an empty server — no models are baked in or pulled
+  # automatically. Without this, `docker compose up` looks healthy but every
+  # completion/embedding call fails with a "model not found" error that looks
+  # like an application bug. This one-shot container pulls the two models the
+  # provider adapters expect, then exits; `api` waits for it to succeed.
+  # First run downloads ~2-4GB and can take several minutes depending on
+  # bandwidth — documented in the README quick-start, not hidden.
+  ollama-pull:
+    image: ollama/ollama:latest
+    restart: "no"
+    depends_on:
+      ollama:
+        condition: service_started
+    environment:
+      OLLAMA_HOST: http://ollama:11434
+    entrypoint: ["/bin/sh", "-c"]
+    command: >
+      "until ollama list >/dev/null 2>&1; do sleep 2; done &&
+       ollama pull llama3.2:3b &&
+       ollama pull nomic-embed-text"
+
   api:
     build:
       context: .
@@ -39,8 +60,8 @@ services:
     depends_on:
       postgres:
         condition: service_healthy
-      ollama:
-        condition: service_started
+      ollama-pull:
+        condition: service_completed_successfully
 
 volumes:
   pgdata:
