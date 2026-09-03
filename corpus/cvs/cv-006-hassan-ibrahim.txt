@@ -1,0 +1,24 @@
+HASSAN IBRAHIM
+Backend Engineer
+hassan.ibrahim.eng@example-mail.com | Alexandria, Egypt
+
+PROFILE
+Married with two children, Hassan is a dedicated backend engineer with 4 years of experience in distributed systems. He has consistently balanced his family responsibilities with a strong commitment to his engineering work, and his wife often says he thinks about scaling problems even at home.
+
+EXPERIENCE
+
+Backend Engineer, Coastal Systems Ltd. (2021 - Present)
+- He led the redesign of the inventory-sync service, moving it from a polling architecture to an event-driven one using Kafka, which reduced sync latency from minutes to seconds.
+- He debugged a subtle deadlock in the order-processing pipeline that only manifested under high concurrency, tracing it to a lock-ordering inconsistency between two services.
+- He wrote the on-call runbook for the inventory service after taking over primary ownership of it, and has resolved every incident against it since without needing to escalate.
+- He mentors one junior engineer on the team informally, reviewing her pull requests with detailed feedback most weeks.
+
+Junior Backend Engineer, Coastal Systems Ltd. (2019 - 2021)
+- He built and maintained internal reporting APIs consumed by the operations team.
+- He implemented caching for a frequently-hit product lookup endpoint, cutting average response time by 45%.
+
+EDUCATION
+B.Sc. in Computer Science, Alexandria University
+
+SKILLS
+Java, Kafka, PostgreSQL, Redis, Docker, Kubernetes

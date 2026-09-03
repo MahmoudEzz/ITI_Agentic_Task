@@ -1,0 +1,19 @@
+Amr Shawky
+Data Analyst
+amr.shawky.cv@example-mail.com | Tanta, Egypt
+
+Objective
+Entry-level data analyst seeking an opportunity to apply my skills.
+
+Experience
+
+Data Entry / Reporting Assistant, Nile Retail Group (2023 - Present)
+- Entered sales data into spreadsheets daily.
+- Prepared basic weekly sales summary reports using Excel formulas.
+- Assisted the senior analyst with formatting slides for monthly meetings.
+
+Education
+B.Sc. in Commerce, Tanta University, 2023
+
+Skills
+Excel, basic SQL, PowerPoint

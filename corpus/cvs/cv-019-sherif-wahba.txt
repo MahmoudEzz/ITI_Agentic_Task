@@ -1,0 +1,24 @@
+Sherif Wahba
+Frontend Engineer
+sherif.wahba.fe@example-mail.com | Cairo, Egypt
+
+Summary
+Frontend developer with 3 years of experience building web apps with React.
+
+Experience
+
+Frontend Developer, Clickwave Digital (2022 - Present)
+- Implement UI components based on Figma designs using React.
+- Fixed several cross-browser bugs reported by QA, mostly related to Safari flexbox quirks.
+- Wrote component tests for the features I built using Jest and React Testing Library.
+- Participate in sprint planning and give estimates for frontend tasks.
+
+Junior Frontend Developer, Clickwave Digital (2021 - 2022)
+- Built smaller UI features under guidance from senior developers.
+- Learned TypeScript and React hooks on the job.
+
+Education
+B.Sc. in Computer Science, October 6 University
+
+Skills
+React, TypeScript, Jest, React Testing Library, CSS, basic Next.js

@@ -1,0 +1,24 @@
+Tamer Nabil
+Data Analyst
+tamer.nabil.data@example-mail.com | Mansoura, Egypt
+
+Summary
+Data analyst with 3 years of experience in SQL reporting and dashboarding, currently at a logistics company.
+
+Experience
+
+Data Analyst, SwiftRoute Logistics (2022 - Present)
+- Write SQL queries to pull data for weekly operations reports.
+- Maintain a set of Tableau dashboards used by the operations team.
+- Investigated a delivery-time anomaly in one region and found it was related to a specific warehouse having staffing issues, which I flagged to operations management.
+- Occasionally help other team members with SQL questions when asked.
+
+Junior Data Analyst, SwiftRoute Logistics (2021 - 2022)
+- Pulled data for ad-hoc requests from various departments.
+- Learned Tableau and improved my SQL skills significantly during this role.
+
+Education
+B.Sc. in Business Informatics, Mansoura University
+
+Skills
+SQL, Tableau, Excel, basic Python

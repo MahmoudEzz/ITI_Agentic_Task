@@ -1,0 +1,25 @@
+Karim ElSayed
+Backend Developer
+karim.elsayed1998@example-mail.com | Giza, Egypt
+
+Objective
+Looking for a backend developer role where I can grow my skills and contribute to a team.
+
+Experience
+
+Backend Developer, Bright Apps Studio (2023 - Present)
+- Worked on the company's main product API using Node.js and Express.
+- Fixed bugs reported by QA and implemented new endpoints as assigned by the team lead.
+- Wrote some unit tests for the code I wrote.
+- Attended daily standups and sprint planning.
+
+Junior Developer, Bright Apps Studio (2022 - 2023)
+- Helped with maintaining an internal admin tool.
+- Learned Node.js and MongoDB on the job.
+- Did some documentation updates for the API.
+
+Education
+B.Sc. in Computer Science, Helwan University, 2022
+
+Skills
+Node.js, Express, MongoDB, basic Docker, Git

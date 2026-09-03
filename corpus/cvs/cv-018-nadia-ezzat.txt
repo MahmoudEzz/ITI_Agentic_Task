@@ -1,0 +1,24 @@
+NADIA EZZAT
+Frontend Engineer
+nadia.ezzat.dev@example-mail.com | Cairo, Egypt | github.com/nezzat-fe
+
+SUMMARY
+Frontend engineer with 5 years of experience building consumer-facing React applications, with a particular focus on performance for users on lower-end devices and slow networks — a constraint I've come to see as a design discipline rather than a limitation.
+
+EXPERIENCE
+
+Senior Frontend Engineer, Sahel Media (2022 - Present)
+- Led a performance initiative after real-user monitoring showed our largest-contentful-paint metric was failing for roughly 30% of users on 3G connections; restructured the critical rendering path and introduced route-based code splitting, cutting median LCP on slow connections by 55%.
+- Caught and fixed a keyboard-navigation trap in the checkout flow that automated accessibility tooling had not flagged, discovered while manually testing with a screen reader after a support ticket hinted at the issue; this is now a required manual test step in our release checklist.
+- Built and maintain the shared component library used by three product teams; the library's adoption grew from one team to three after other teams saw the consistency and speed benefits and asked to migrate.
+- Proposed and drove adoption of visual regression testing after a styling regression shipped to production twice in one quarter; the tooling has caught 14 unintended visual regressions before release since.
+
+Frontend Engineer, Sahel Media (2020 - 2022)
+- Rebuilt the checkout flow in React/TypeScript from a legacy jQuery implementation, including a full test suite (component and end-to-end) where none had previously existed.
+- Worked directly with product design on a redesign of the product listing page, flagging two feasibility concerns during design review that were addressed before implementation began rather than discovered afterward.
+
+EDUCATION
+B.Sc. in Computer Science, German University in Cairo
+
+SKILLS
+React, TypeScript, performance optimization, accessibility (WCAG), Playwright, visual regression testing, design systems

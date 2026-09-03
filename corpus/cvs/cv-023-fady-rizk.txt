@@ -1,0 +1,24 @@
+Fady Rizk
+Frontend Engineer
+fady.rizk.dev@example-mail.com | Alexandria, Egypt | github.com/fadyrizk
+
+Summary
+Frontend engineer with 4 years of experience, mostly in React, working across a few different product teams.
+
+Experience
+
+Frontend Engineer, Coral Systems (2021 - Present)
+- Built and maintained several features across the customer dashboard product using React and TypeScript.
+- Set up an end-to-end test suite for the checkout flow using Cypress after noticing the team had no automated coverage there; caught two regressions with it before they reached production.
+- Worked with the design team on a component library refresh, implementing about a third of the new components myself.
+- Debugged an intermittent rendering bug affecting a subset of Android users, eventually tracing it to a specific WebView version's handling of a CSS grid feature.
+
+Frontend Developer, Coral Systems (2019 - 2021)
+- Implemented UI features from design specs, primarily using vanilla JavaScript before the team's migration to React.
+- Contributed to the initial React migration effort under a senior engineer's guidance.
+
+Education
+B.Sc. in Computer Science, Alexandria University
+
+Skills
+React, TypeScript, Cypress, CSS, Git, basic performance profiling
