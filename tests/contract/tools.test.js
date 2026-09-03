@@ -1,7 +1,15 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 
-import { TOOL_REGISTRY, getToolDefinition, FinalizeShortlistInputSchema, GenerateReportInputSchema } from "../../src/contracts/tools.js";
+import {
+  TOOL_REGISTRY,
+  getToolDefinition,
+  FinalizeShortlistInputSchema,
+  FinalizeShortlistOutputSchema,
+  GenerateReportInputSchema,
+  GenerateReportOutputSchema,
+  SearchCorpusOutputSchema,
+} from "../../src/contracts/tools.js";
 import { NotFoundError } from "../../src/domain/errors/index.js";
 
 test("exactly the two write/side-effecting tools are marked isWrite — the approval gate depends on this flag", () => {
@@ -37,4 +45,25 @@ test("FinalizeShortlistInputSchema requires an approvalId — a write tool canno
 test("GenerateReportInputSchema only accepts docx or pdf as the format", () => {
   assert.throws(() => GenerateReportInputSchema.parse({ runId: "run1", approvalId: "appr1", format: "html" }));
   assert.doesNotThrow(() => GenerateReportInputSchema.parse({ runId: "run1", approvalId: "appr1", format: "docx" }));
+});
+
+test("FinalizeShortlistOutputSchema accepts a real ISO timestamp and rejects a malformed one", () => {
+  assert.doesNotThrow(() =>
+    FinalizeShortlistOutputSchema.parse({ shortlistId: "sl1", finalizedAt: "2026-09-03T18:00:00Z" }),
+  );
+  assert.throws(() => FinalizeShortlistOutputSchema.parse({ shortlistId: "sl1", finalizedAt: "not-a-date" }));
+});
+
+test("GenerateReportOutputSchema accepts a real ISO timestamp and rejects a malformed one", () => {
+  assert.doesNotThrow(() =>
+    GenerateReportOutputSchema.parse({ assetId: "asset1", format: "pdf", generatedAt: "2026-09-03T18:00:00Z" }),
+  );
+  assert.throws(() =>
+    GenerateReportOutputSchema.parse({ assetId: "asset1", format: "pdf", generatedAt: "2026-09-03" }),
+  );
+});
+
+test("SearchCorpusOutputSchema accepts a chunk result that omits section/page/ocrConfidence entirely", () => {
+  const minimalResult = { chunkId: "ch1", documentId: "d1", content: "text", score: 0.9 };
+  assert.doesNotThrow(() => SearchCorpusOutputSchema.parse({ results: [minimalResult] }));
 });

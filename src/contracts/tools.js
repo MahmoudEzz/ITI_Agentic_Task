@@ -5,15 +5,20 @@ import { NotFoundError } from "../domain/errors/index.js";
 // execute without a passed approval gate (FR-4/FR-5) — the orchestrator
 // checks this flag, not the tool's name, before invoking it.
 
+// section/page/ocrConfidence are optional AND nullable: a retrieval adapter
+// may omit them entirely (e.g. a keyword-only match with no page metadata)
+// or explicitly report null (e.g. a chunk with no OCR pass). Requiring the
+// key to be present would make every adapter implementation carry
+// boilerplate `?? null` fields it has no real value for.
 const ChunkResultSchema = z
   .object({
     chunkId: z.string().min(1),
     documentId: z.string().min(1),
     content: z.string().min(1),
     score: z.number(),
-    section: z.string().nullable(),
-    page: z.number().int().nullable(),
-    ocrConfidence: z.number().min(0).max(100).nullable(),
+    section: z.string().nullable().optional(),
+    page: z.number().int().nullable().optional(),
+    ocrConfidence: z.number().min(0).max(100).nullable().optional(),
   })
   .strict();
 
@@ -55,7 +60,7 @@ export const FinalizeShortlistInputSchema = z
 export const FinalizeShortlistOutputSchema = z
   .object({
     shortlistId: z.string().min(1),
-    finalizedAt: z.string().datetime(),
+    finalizedAt: z.iso.datetime(),
   })
   .strict();
 
@@ -71,7 +76,7 @@ export const GenerateReportOutputSchema = z
   .object({
     assetId: z.string().min(1),
     format: z.enum(["docx", "pdf"]),
-    generatedAt: z.string().datetime(),
+    generatedAt: z.iso.datetime(),
   })
   .strict();
 
