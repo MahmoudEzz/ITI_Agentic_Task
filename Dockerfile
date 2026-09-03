@@ -1,4 +1,4 @@
-FROM node:20-slim
+FROM node:22-slim
 
 # Native deps for OCR (tesseract.js still needs a rasterizer for scanned PDFs) and Puppeteer (PDF generation).
 RUN apt-get update && apt-get install -y --no-install-recommends \
