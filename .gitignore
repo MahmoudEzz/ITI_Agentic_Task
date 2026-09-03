@@ -26,6 +26,9 @@ npm-debug.log*
 !.vscode/extensions.json
 .idea/
 
+# Claude Code agent worktrees (isolated fork workspaces, not repo content)
+/.claude/
+
 # Generated artifacts (regeneratable via ingest/eval/report commands)
 /reports/generated/
 *.tsbuildinfo
