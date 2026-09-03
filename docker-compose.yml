@@ -7,7 +7,13 @@ services:
       POSTGRES_PASSWORD: domain_copilot
       POSTGRES_DB: domain_copilot
     ports:
-      - "5432:5432"
+      # Host port 5433, not the 5432 default: a machine running any other
+      # local Postgres (or another project's compose stack) commonly already
+      # holds 5432, and colliding with it is a bad first-run experience.
+      # Internal container port stays 5432 — `api`'s DATABASE_URL below is
+      # unaffected since it talks to the `postgres` service over the compose
+      # network, not this host mapping.
+      - "5433:5432"
     volumes:
       - pgdata:/var/lib/postgresql/data
     healthcheck:
