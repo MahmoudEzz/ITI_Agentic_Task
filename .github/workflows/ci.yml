@@ -26,10 +26,13 @@ jobs:
       - name: Unit tests
         run: npm test
 
-      # Contract tests (tests/contract) and integration tests (tests/integration, against
-      # dockerized Postgres) are added to this job as their respective phases land real
-      # tests — see docs/SYSTEM-DESIGN.md phase plan. An empty `node --test` target fails,
-      # so wiring these in ahead of real tests would produce a false-red CI, not a stricter one.
+      - name: Contract tests
+        run: npm run test:contract
+
+      # Integration tests (tests/integration, against dockerized Postgres) are added to
+      # this job once Phase 2 lands real ingestion/retrieval code to test — an empty
+      # `node --test` target fails, so wiring it in ahead of real tests would produce a
+      # false-red CI, not a stricter one.
 
       - name: Dependency audit
         run: npm audit --audit-level=high
