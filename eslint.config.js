@@ -12,6 +12,7 @@ export default [
         fetch: "readonly",
         URL: "readonly",
         AbortController: "readonly",
+        AbortSignal: "readonly",
         crypto: "readonly",
       },
     },
