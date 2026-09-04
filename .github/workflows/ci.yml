@@ -55,6 +55,7 @@ jobs:
       - name: Dependency audit
         run: npm audit --audit-level=high
         continue-on-error: true
+        timeout-minutes: 2
 
   secret-scan:
     runs-on: ubuntu-latest
