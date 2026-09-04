@@ -1,0 +1,24 @@
+LAILA FAHMY
+Data Analyst
+laila.fahmy.analytics@example-mail.com | Cairo, Egypt | linkedin.com/in/lailafahmy
+
+SUMMARY
+Data analyst with 4 years of experience translating ambiguous business questions into rigorous analysis, primarily in e-commerce and subscription businesses. Comfortable owning an analysis from the first stakeholder conversation through to a dashboard stakeholders can self-serve from afterward.
+
+EXPERIENCE
+
+Senior Data Analyst, Bazaar Commerce (2022 - Present)
+- Led the investigation into a 12% drop in checkout conversion that stakeholders initially attributed to a UI redesign; by segmenting the funnel by device and payment method, traced the actual cause to a payment-gateway timeout affecting a specific card type disproportionately used in one region — the UI redesign was not at fault.
+- Designed and analyzed an A/B test on a new recommendation algorithm, including the pre-launch sample size calculation that caught the original test plan would have been underpowered to detect the effect size the product team actually cared about.
+- Built the self-service retention dashboard now used by four different teams, replacing what had been 15-20 recurring ad-hoc analysis requests per month with a tool stakeholders use directly.
+- Audited the events pipeline after noticing a metric that looked implausibly good; found a double-counting bug in a recent tracking change before it was cited in an executive report, and worked with engineering to fix it and backfill the affected week.
+
+Data Analyst, Bazaar Commerce (2020 - 2022)
+- Owned weekly and monthly business reporting for the marketing team, including query optimization work that cut a key dashboard's load time from 40 seconds to under 3.
+- Presented quarterly cohort-retention analysis directly to the VP of Marketing, adapting the framing from a technical cohort-curve explanation to a plain "what this means for budget allocation" narrative.
+
+EDUCATION
+B.Sc. in Statistics, Cairo University
+
+SKILLS
+SQL (window functions, CTEs, query optimization), Looker, Python (pandas), A/B testing and experiment design, dbt

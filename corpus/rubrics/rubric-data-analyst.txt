@@ -1,0 +1,52 @@
+NORTHFIELD DIGITAL — SCREENING RUBRIC
+Role: Data Analyst
+Rubric ID: rubric-data-analyst-v1
+Derived from: Competency Framework v1.2
+Scale: 1-5 for each competency (see Competency Framework for behavioral anchors)
+Composite score: weighted average of the competency scores below
+
+COMPETENCY WEIGHTS
+
+| Competency (ID)                         | Weight |
+|------------------------------------------|--------|
+| Problem Solving & Analytical Thinking (PROB-SOLVE) | 0.30   |
+| Attention to Detail & Quality (DETAIL-QUALITY) | 0.20   |
+| Technical Proficiency (TECH-PROF)         | 0.15   |
+| Communication (COMMS)                     | 0.15   |
+| Ownership & Accountability (OWNERSHIP)    | 0.10   |
+| Collaboration & Teamwork (COLLAB)         | 0.05   |
+| Adaptability & Learning Agility (ADAPT-AGILE) | 0.05   |
+
+Weights sum to 1.00. Leadership & Initiative is not scored for this role.
+
+WHAT EVIDENCE TO LOOK FOR, PER COMPETENCY, FOR THIS ROLE
+
+Problem Solving & Analytical Thinking (0.30): The single most heavily weighted competency for this role. Look for evidence of translating an ambiguous business question into a concrete, testable analysis — not just executing a pre-defined query someone else specified. A/B test design examples are strong evidence here.
+
+Attention to Detail & Quality (0.20): Evidence of catching a data quality issue (a broken pipeline, a double-counted event, a misleading aggregate) before it reached a decision-maker. This is explicitly called out in the job description as core to the role, so its absence in a candidate's material is meaningful, not just neutral.
+
+Technical Proficiency (0.15): SQL depth specifically — window functions, CTEs, query performance awareness on large tables. Python/R experience is a positive signal but should not substitute entirely for demonstrated SQL depth.
+
+Communication (0.15): Evidence of presenting analysis to a non-technical audience, and specifically of adapting the framing (not just simplifying vocabulary) for that audience.
+
+Ownership & Accountability (0.10): Evidence of following an analysis through to an actual decision or action, not just a delivered report that was never used.
+
+Collaboration & Teamwork (0.05): Evidence of working with stakeholders to refine an analysis request rather than only executing it as first stated.
+
+Adaptability & Learning Agility (0.05): Evidence of picking up a new tool, dataset domain, or analytical technique without extensive ramp-up support.
+
+SHORTLIST THRESHOLD
+
+A composite score of 3.4 or above, with no individual competency score below 2, is the guideline threshold for advancing a candidate to the interview stage. Given the weighting, a candidate cannot reach this threshold with a weak Problem Solving & Analytical Thinking score even if all other competencies score well — this is intentional given the role's core demand. Overrides by a hiring manager must be documented in the audit trail.
+
+WORKED SCORING EXAMPLE
+
+Consider two hypothetical candidates. CAND-A: Problem Solving & Analytical Thinking 4, Attention to Detail & Quality 4, Technical Proficiency 3, Communication 3, Ownership & Accountability 3, Collaboration & Teamwork 3, Adaptability & Learning Agility 3.
+
+Composite = (4 x 0.30) + (4 x 0.20) + (3 x 0.15) + (3 x 0.15) + (3 x 0.10) + (3 x 0.05) + (3 x 0.05)
+= 1.20 + 0.80 + 0.45 + 0.45 + 0.30 + 0.15 + 0.15 = 3.50 — clears the threshold.
+
+CAND-B: Problem Solving & Analytical Thinking 2, but everything else scored 5: Attention to Detail & Quality 5, Technical Proficiency 5, Communication 5, Ownership & Accountability 5, Collaboration & Teamwork 5, Adaptability & Learning Agility 5.
+
+Composite = (2 x 0.30) + (5 x 0.20) + (5 x 0.15) + (5 x 0.15) + (5 x 0.10) + (5 x 0.05) + (5 x 0.05)
+= 0.60 + 1.00 + 0.75 + 0.75 + 0.50 + 0.25 + 0.25 = 4.10 — numerically clears the composite threshold, but fails the "no individual competency below 2" floor only if the score were below 2; at exactly 2 it does not trigger the floor rule as written. This example is included specifically to illustrate why the floor is set at "below 2" rather than "below 3": a rubric this heavily weighted toward one competency could otherwise let a near-failing score there be fully offset by strength elsewhere, which the hiring manager should scrutinize even when the automated guideline does not block it — this is exactly the kind of case sections 2.2 and 4 of the Interview Process Playbook expect a human reviewer to examine rather than accept the automated composite at face value.

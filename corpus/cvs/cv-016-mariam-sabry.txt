@@ -1,0 +1,24 @@
+MARIAM SABRY
+Senior Data Analyst
+mariam.sabry.analytics@example-mail.com | Cairo, Egypt | linkedin.com/in/mariamsabry
+
+SUMMARY
+Data analyst with 5 years of experience spanning product analytics and experimentation, with a strong record of catching data quality problems before they reached a decision. I treat "the number looks right" as the beginning of a check, not the end of one.
+
+EXPERIENCE
+
+Senior Data Analyst, Horizon Media Group (2021 - Present)
+- Discovered that a key engagement metric reported to the executive team for two quarters was inflated by roughly 18% due to bot traffic that had bypassed the existing filter after a CDN configuration change; built a more robust filtering approach and personally walked leadership through the corrected historical numbers.
+- Designed a multi-arm experiment testing three onboarding flow variants simultaneously, including the statistical correction needed for multiple comparisons, which the previous single-test-at-a-time approach had been missing.
+- Partnered with the Product team to define a churn-prediction feature set and validated it against six months of holdout data before it was used in a live intervention, catching a subtle leakage issue (a feature that used post-churn data) that would have made the model look far better than it actually was.
+- Built and maintains a "metric definitions" reference doc now used org-wide after repeated instances of two teams reporting different numbers for what was nominally the same metric due to inconsistent definitions.
+
+Data Analyst, Horizon Media Group (2019 - 2021)
+- Owned experimentation analysis for the growth team, running and interpreting roughly 30 A/B tests over two years.
+- Presented findings in a monthly all-hands format understandable to non-technical staff, and was specifically asked to take over this presentation from a more senior analyst after feedback that the previous format was too technical for the audience.
+
+EDUCATION
+B.Sc. in Statistics, American University in Cairo
+
+SKILLS
+SQL, Python (pandas, scipy), experiment design and analysis, Looker, dbt, causal inference fundamentals

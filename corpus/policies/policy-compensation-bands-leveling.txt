@@ -1,0 +1,75 @@
+NORTHFIELD DIGITAL — COMPENSATION BANDS & LEVELING GUIDE
+People Operations & Finance
+Version 4.1 (Cairo market)
+
+1. PURPOSE
+
+This guide defines Northfield Digital's leveling structure for technical roles and the compensation band associated with each level in the Cairo market. It exists so that leveling and compensation decisions are consistent across teams and are made against demonstrated competency evidence rather than negotiation leverage or a candidate's prior salary.
+
+2. LEVELING STRUCTURE (ENGINEERING AND ANALYTICS TRACKS)
+
+Engineer I / Analyst I — Entry level. Typically 0-2 years of professional experience. Works on well-scoped tasks with regular guidance. Corresponds to Level 2 on most competencies in the Competency Framework, with Level 1-2 acceptable on Leadership & Initiative.
+
+Engineer II / Analyst II — The level referenced by the Backend Engineer, Data Analyst, and Frontend Engineer job descriptions in their current form. Typically 2-5 years of experience, though years alone do not determine level — a candidate with fewer years but stronger demonstrated evidence may be leveled here, and a candidate with more years but weaker evidence may not. Corresponds to Level 3 on the majority of weighted competencies per the relevant role rubric.
+
+Senior Engineer / Senior Analyst — Typically 5+ years, with demonstrated Level 4 evidence on at least the two most heavily weighted competencies for the role, and no competency below Level 3. Senior roles introduce Leadership & Initiative as a formally weighted competency where it was not weighted at the II level.
+
+Staff Engineer / Staff Analyst — Reserved for candidates with organization-wide technical influence (Level 5 evidence on Technical Proficiency or Problem Solving & Analytical Thinking, per the relevant framework anchors) and Level 4 or above on Leadership & Initiative. This level is rarely filled through external hiring; most Staff-level hires are promoted internally.
+
+3. COMPENSATION BANDS (CAIRO MARKET, ANNUAL, EGP)
+
+Engineer I / Analyst I: base salary band 480,000 - 650,000, plus standard benefits and an annual bonus target of 8%.
+
+Engineer II / Analyst II: base salary band 650,000 - 920,000, plus standard benefits and an annual bonus target of 10%.
+
+Senior Engineer / Senior Analyst: base salary band 920,000 - 1,350,000, plus standard benefits, an annual bonus target of 12%, and eligibility for an equity grant.
+
+Staff Engineer / Staff Analyst: base salary band 1,350,000 - 1,900,000, plus standard benefits, an annual bonus target of 15%, and a larger equity grant reviewed individually by the compensation committee.
+
+These bands are reviewed annually against the Cairo technical labor market and adjusted as needed; the bands stated here are current as of this version's effective date and supersede all prior versions.
+
+4. HOW LEVEL AND OFFER ARE DETERMINED
+
+The hiring panel's evidence-based competency scores (see the Interview Process Playbook) are the primary input to leveling. A candidate is leveled based on the level at which their demonstrated evidence clears the competency framework's anchors, not based on the level of the requisition they applied against — a candidate who applies for an Engineer II role but demonstrates Senior-level evidence throughout the process should be leveled and offered as Senior, and the reverse is equally true. The final offer within a level's band reflects internal equity with existing employees at that level and team, and is proposed by the hiring manager with People Operations approval before being extended.
+
+A candidate's stated current or prior compensation is not used as an anchor for the offer; it is collected only where legally required or where the candidate volunteers it, and is reviewed by People Operations solely to check for external competitiveness, not to set the offer below what the demonstrated level would otherwise support.
+
+5. INTERNAL EQUITY REVIEW
+
+Before any offer is extended, People Operations reviews the proposed level and compensation against existing employees in the same team and level, to catch and correct any unexplained disparity before it is created rather than after. Any disparity that appears to correlate with a protected characteristic (see the Diversity & Anti-Bias Hiring Policy) is escalated to Legal before the offer proceeds.
+
+6. RELOCATION AND REMOTE CONSIDERATIONS
+
+This guide reflects the Cairo market band. Candidates hired into a fully remote arrangement outside the Cairo metropolitan area may be leveled identically but placed on a location-adjusted band per the separate Remote Compensation Addendum, maintained by People Operations and available on request.
+
+7. REVISION HISTORY
+
+Version 4.1 adjusted all bands upward to reflect the most recent annual market review. Version 4.0 introduced the current four-level structure, replacing an earlier five-level structure that had proven difficult to apply consistently across the Engineering and Analytics tracks.
+
+8. MARKET BENCHMARKING METHODOLOGY
+
+Bands are set annually using a combination of a paid third-party compensation survey covering the Cairo technology labor market, anonymized data shared through a regional HR-industry consortium Northfield participates in, and Northfield's own historical offer-acceptance and attrition data segmented by level. A band is set to target the 60th percentile of the relevant market data at the midpoint, with the stated range extending roughly 15% below and above that midpoint. Compensation & Finance jointly own this methodology and publish a summary (without disclosing the underlying survey data, which is licensed and confidential) to People Operations leadership annually.
+
+9. WORKED LEVELING EXAMPLES
+
+9.1 A candidate applies for the Backend Engineer (Engineer II) role with 6 years of professional experience but demonstrates only Level 2 evidence on Technical Proficiency and Problem Solving & Analytical Thinking throughout the interview process — largely supervised, narrowly scoped work with no independent production ownership. Despite the years of experience, this candidate would be leveled at Engineer I based on demonstrated evidence, not Engineer II based on tenure. Years of experience alone never overrides demonstrated evidence under this guide.
+
+9.2 A candidate applies for the Data Analyst role with 2 years of experience but demonstrates Level 4 evidence on Problem Solving & Analytical Thinking and Attention to Detail & Quality, including catching a significant data-quality issue and independently designing a multi-arm experiment. This candidate may be leveled at Senior Analyst despite having fewer years of experience than the role's stated "2+ years" floor, since the stated floor in a job description is a minimum expectation for the II level, not a ceiling on what level a stronger candidate can be leveled into.
+
+9.3 A current Engineer II employee is being considered for promotion to Senior Engineer. The same competency framework and evidence standard used in external hiring applies internally: the promotion case must cite specific evidence at Level 4 on the two most heavily weighted competencies for their role, drawn from their actual work over the review period, following the same "specific and verifiable" evidence standard described in the Interview Process Playbook, not a general manager endorsement alone.
+
+10. INTERNAL PROMOTION PROCESS
+
+Promotion cases follow the same evidence-and-citation discipline as external hiring, adapted for an internal audience: a manager compiles specific evidence against the target level's competency anchors, drawn from project work, peer feedback, and (where relevant) incident or postmortem records, and submits it to a calibration committee that includes at least one member from outside the candidate's immediate team, specifically to reduce the risk of a single manager's idiosyncratic standard driving the outcome. Promotion decisions are communicated with the same standard of specific, evidence-based reasoning required for external hiring decisions under the Interview Process Playbook.
+
+11. FREQUENTLY ASKED QUESTIONS
+
+"Can a candidate negotiate above the stated band maximum?" Only with an documented exception approved by both the hiring manager and a Compensation & Finance director, typically reserved for a candidate whose demonstrated evidence clearly exceeds the target level but for whom the next level up is not otherwise justified (for example, strong technical evidence without yet having the scope of a higher level).
+
+"Does relocating to Cairo from another Northfield office change an employee's band?" Yes — compensation bands are tied to work location, reviewed at the time of a confirmed relocation, per the separate Remote Compensation Addendum referenced in section 6.
+
+"How does a hiring manager handle a candidate whose current compensation is well above the relevant band?" The hiring manager should have a transparent conversation about Northfield's band for the role as early as reasonably possible in the process, rather than proceeding through the full interview process and only raising the gap at the offer stage.
+
+12. POLICY OWNERSHIP
+
+This guide is owned jointly by People Operations and Finance and reviewed at least annually alongside the market benchmarking cycle described in section 8.

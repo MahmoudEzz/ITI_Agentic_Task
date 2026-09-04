@@ -1,0 +1,188 @@
+NORTHFIELD DIGITAL — COMPETENCY FRAMEWORK FOR TECHNICAL HIRING
+Version 1.2 — Talent Acquisition & People Operations
+
+PURPOSE AND SCOPE
+
+This framework defines the eight core competencies used across all technical hiring at Northfield Digital, from individual-contributor engineering and analytics roles through to senior technical staff. Every role-specific rubric used in the screening and interview process draws its competencies and weightings from this framework, so that scoring is consistent and defensible across roles, interview panels, and hiring cycles.
+
+Each competency below is defined once, then broken into five behavioral-anchor levels (1 through 5). A behavioral anchor describes observable evidence — what a candidate has actually done, not a trait they claim to possess. Evaluators and any automated screening tool must score against the anchor descriptions and must cite the specific evidence (a resume bullet, a project description, an interview response) that supports the level assigned. A score with no cited evidence is not a valid score under this framework.
+
+Competency identifiers used in downstream rubrics and systems: TECH-PROF, PROB-SOLVE, COMMS, COLLAB, LEAD-INIT, ADAPT-AGILE, OWNERSHIP, DETAIL-QUALITY.
+
+================================================================================
+1. TECHNICAL PROFICIENCY (TECH-PROF)
+================================================================================
+
+Definition: The depth and currency of a candidate's hands-on technical skill in the languages, frameworks, and systems relevant to the role, and their demonstrated ability to apply that skill to build, operate, or analyze production-grade systems rather than only academic or tutorial-level work.
+
+Level 1 — Limited or purely theoretical exposure. The candidate can name relevant technologies but shows no evidence of having built anything substantial with them: coursework only, a single bootcamp project, or technologies listed with no supporting project description. Any code samples referenced are trivial (single-file scripts, copied tutorials) or absent entirely.
+
+Level 2 — Foundational, supervised experience. The candidate has contributed to real codebases but primarily on narrowly scoped tasks under close supervision — fixing small bugs, writing unit tests for existing code, or implementing well-specified features from detailed tickets. They can explain what the code they wrote does but struggle to explain broader system design tradeoffs.
+
+Level 3 — Independent, production-level competence. The candidate has independently designed and shipped features end-to-end in a production system, understands the relevant technology's common failure modes, and can discuss tradeoffs (e.g., consistency vs. availability, synchronous vs. asynchronous processing) with specific examples from their own work rather than generic textbook answers.
+
+Level 4 — Deep expertise with system-level judgment. The candidate has made architecture-level decisions that shaped a system's evolution, has debugged subtle production incidents (race conditions, memory leaks, data corruption) down to root cause, and can articulate the cost of technical decisions in terms other engineers and non-engineers both understand.
+
+Level 5 — Recognized technical authority. The candidate has technical judgment sought out beyond their immediate team — through internal tech talks, open-source maintainership, published technical writing, or being the named escalation point for the most difficult problems in their domain. Their technical decisions have measurably shaped how other engineers work.
+
+================================================================================
+2. PROBLEM SOLVING & ANALYTICAL THINKING (PROB-SOLVE)
+================================================================================
+
+Definition: The candidate's demonstrated approach to decomposing ambiguous or underspecified problems, forming and testing hypotheses, and reaching a well-reasoned conclusion or recommendation — evidenced through real examples, not hypothetical reasoning-test performance alone.
+
+Level 1 — Struggles with ambiguity. The candidate needs a fully specified problem before they can begin, and their examples describe following a prescribed process rather than developing their own approach. When asked to reason through a novel scenario, they default to guessing rather than structuring the problem.
+
+Level 2 — Solves well-bounded problems methodically. Given a problem with clear boundaries, the candidate applies a reasonable, repeatable method (e.g., checking logs, forming a testable hypothesis, narrowing the search space) but has not shown evidence of framing an ambiguous, open-ended problem themselves.
+
+Level 3 — Frames and solves ambiguous problems independently. The candidate has examples of taking a vaguely stated business or technical problem, breaking it into testable pieces, and reaching a conclusion supported by evidence (data, experiments, prototypes) rather than intuition alone.
+
+Level 4 — Balances rigor with pragmatism under real constraints. The candidate has repeatedly made good calls under incomplete information and time pressure, and can explain not just what they concluded but what evidence would have changed their mind — showing genuine calibration rather than post-hoc justification.
+
+Level 5 — Reframes problems others have accepted as fixed. The candidate has examples of questioning a problem's premise itself — showing that what looked like the right problem to solve was actually the wrong one — and redirecting effort in a way that measurably improved the outcome.
+
+================================================================================
+3. COMMUNICATION (COMMS)
+================================================================================
+
+Definition: The clarity, structure, and audience-awareness of a candidate's written and verbal communication, including their ability to explain technical concepts to non-technical stakeholders and to document decisions so that others can act on them without re-deriving the reasoning.
+
+Level 1 — Communication requires significant translation by others. Written materials (resume, cover letter, work samples) are disorganized, or the candidate cannot explain their own past work clearly when asked directly. Technical explanations, when given, are either too jargon-dense for the audience or too vague to be actionable.
+
+Level 2 — Communicates clearly to a like-minded technical audience. The candidate explains their work well to people with similar background, but examples of adapting an explanation for a non-technical stakeholder (a customer, an executive, a cross-functional partner) are absent or weak.
+
+Level 3 — Adapts explanation to audience reliably. The candidate has clear examples of explaining the same technical decision differently to an engineer versus a non-technical stakeholder, and their written work (design docs, postmortems, status updates) is organized well enough that a reader unfamiliar with the work can follow it.
+
+Level 4 — Communication actively drives alignment. The candidate's written or verbal communication has been credited with resolving a disagreement, securing buy-in for a difficult decision, or preventing a costly misunderstanding — with a specific example of the mechanism (a document, a presentation, a difficult conversation) and its outcome.
+
+Level 5 — Sets the communication standard others follow. Other engineers or teams adopt the candidate's documentation formats, communication templates, or explanatory approach as their own default, evidenced by explicit reuse or by the candidate being asked to communicate on behalf of a wider group.
+
+================================================================================
+4. COLLABORATION & TEAMWORK (COLLAB)
+================================================================================
+
+Definition: The candidate's demonstrated pattern of working effectively with others — including giving and receiving feedback, sharing credit and context, and adjusting their own approach to unblock a team outcome rather than only their individual output.
+
+Level 1 — Works in isolation by preference or necessity. Examples describe individual contribution only, with no mention of code review, pairing, cross-functional coordination, or resolving disagreement with a peer. When teamwork is mentioned, the candidate cannot describe their specific contribution to the collective outcome.
+
+Level 2 — Participates constructively within an assigned team structure. The candidate does code review, attends and contributes to team ceremonies, and can describe helping a specific teammate, but has not shown initiative in improving how the team works together.
+
+Level 3 — Actively strengthens team function. The candidate has concrete examples of improving a team process (a review checklist, an onboarding guide, a more effective meeting structure) or of resolving a disagreement with a peer constructively, with a described before-and-after.
+
+Level 4 — Elevates collaboration across team boundaries. The candidate has examples of building effective working relationships across team or organizational boundaries where incentives were not naturally aligned, and of doing so in a way that produced a concrete shared outcome, not just goodwill.
+
+Level 5 — Shapes how the organization collaborates. The candidate's approach to collaboration has been adopted beyond their own team — a cross-team working agreement they proposed, a collaboration practice they introduced that spread organically — with evidence that this outlasted their direct involvement.
+
+================================================================================
+5. LEADERSHIP & INITIATIVE (LEAD-INIT)
+================================================================================
+
+Definition: Evidence of a candidate taking ownership of outcomes beyond what was formally assigned to them, and of influencing the direction or quality of work for people they did not formally manage.
+
+Level 1 — Executes only what is explicitly assigned. No examples of identifying and acting on a gap, risk, or opportunity that was not already someone else's assigned task.
+
+Level 2 — Takes initiative within their own scope. The candidate has proactively improved something within their own individual responsibilities (refactoring a piece of code no one asked them to touch, catching a bug before it shipped) but has not influenced work beyond their own tasks.
+
+Level 3 — Initiates work that benefits others. The candidate identified a gap or risk affecting more than their own work and acted on it without being asked — starting a shared tool, flagging a systemic risk to the right people, or volunteering to lead a cross-functional effort.
+
+Level 4 — Leads through influence, not authority. The candidate has led an effort (a project, an incident response, a technical direction) involving people who did not report to them, and can describe how they built the buy-in needed to succeed, with a concrete outcome.
+
+Level 5 — Shapes strategic direction. The candidate's initiative has changed a team's or organization's priorities or direction at a level normally reserved for formal leadership — a technical strategy they proposed and got adopted, a new function they stood up from nothing.
+
+================================================================================
+6. ADAPTABILITY & LEARNING AGILITY (ADAPT-AGILE)
+================================================================================
+
+Definition: How quickly and effectively a candidate has picked up unfamiliar technology, domains, or working contexts, and how they respond when a plan or assumption turns out to be wrong.
+
+Level 1 — Struggles outside familiar territory. Examples show the candidate working within a single technology stack or domain for their entire career with no evidence of successfully picking up something substantially new, or describing a change in plan as purely disruptive rather than something they adapted to.
+
+Level 2 — Adapts with support and time. The candidate has switched technologies or domains successfully but describes needing significant ramp-up time and close guidance to become effective.
+
+Level 3 — Adapts efficiently and independently. The candidate has concrete examples of becoming productive in an unfamiliar technology, domain, or team context within a reasonable timeframe, largely self-directed, and can describe what learning approach worked for them.
+
+Level 4 — Treats change as a source of advantage. The candidate has examples of using a forced change (a pivot, a reorg, a failed initial approach) to reach a better outcome than the original plan would have, not merely surviving the change.
+
+Level 5 — Builds organizational capacity to adapt. The candidate has helped others adapt faster — mentoring people through a technology transition, designing an onboarding path for a new domain — with evidence the approach was reused for people beyond the candidate themselves.
+
+================================================================================
+7. OWNERSHIP & ACCOUNTABILITY (OWNERSHIP)
+================================================================================
+
+Definition: Whether a candidate follows through on commitments end-to-end, including through the less visible or less enjoyable parts of a task, and how they respond when something under their responsibility goes wrong.
+
+Level 1 — Ownership stops at the assigned task boundary. No evidence of following work through to a real outcome (deployment, adoption, resolution) — descriptions stop at "built" or "designed" with no mention of what happened after.
+
+Level 2 — Follows through on assigned scope reliably. The candidate reliably completes what they commit to, including unglamorous work like documentation or bug fixes, but has not shown ownership of something ambiguous or not explicitly assigned to them.
+
+Level 3 — Owns outcomes, not just tasks. The candidate has an example of taking responsibility for an outcome even when parts of it depended on others, and of proactively surfacing risk to that outcome rather than waiting to be asked.
+
+Level 4 — Owns failure as directly as success. The candidate has a specific example of something under their responsibility going wrong, and describes what they did about it — root-causing it, communicating it proactively, and preventing recurrence — without deflecting responsibility onto circumstances or other people.
+
+Level 5 — Accountability at organizational scale. The candidate has taken ownership of an outcome whose failure would have had organization-wide consequences (a major incident, a critical launch, a compliance obligation), and their handling of it is cited by others as a reason the outcome was as good as it was.
+
+================================================================================
+8. ATTENTION TO DETAIL & QUALITY (DETAIL-QUALITY)
+================================================================================
+
+Definition: The consistency and rigor a candidate applies to catching errors, edge cases, and quality issues before they cause harm — evidenced by their own described process, not just an absence of stated mistakes.
+
+Level 1 — Quality is reactive. Examples describe issues being caught by others (QA, code review, users in production) with no evidence of a personal process for catching problems earlier.
+
+Level 2 — Follows an existing quality process. The candidate reliably follows established practices (writing tests, following a checklist, requesting review) but has not shown that they improved or adapted that process, or caught something a standard process would have missed.
+
+Level 3 — Actively hunts for edge cases and failure modes. The candidate has a specific example of finding a non-obvious bug, edge case, or data quality issue before it caused harm, through their own initiative rather than a mandated process step.
+
+Level 4 — Builds quality into systems, not just individual output. The candidate has introduced a mechanism (a type of test, a validation check, a review practice) that systematically catches a class of error for everyone who uses it afterward, not just for their own work.
+
+Level 5 — Quality judgment shapes standards beyond their own work. The candidate's quality practices or judgment have been adopted as a standard others are held to — a testing pattern that became team policy, a review bar the candidate is specifically sought out to apply to others' highest-stakes work.
+
+================================================================================
+APPENDIX A: ASSESSMENT METHODS AND TYPICAL EVIDENCE SOURCES BY COMPETENCY
+================================================================================
+
+This appendix guides evaluators on where evidence for each competency typically comes from, so that a competency is not scored purely from whichever document happens to be easiest to search.
+
+Technical Proficiency: resume/CV experience bullets, portfolio or code samples, the technical interview scenario (see the relevant role's Technical Interview Guide), and any system-design discussion. Weakest source: a bare skills list with no supporting project description — a list of technologies with no evidence of applied use should not, on its own, move this score above Level 1-2.
+
+Problem Solving & Analytical Thinking: resume bullets describing a specific investigation or debugging process, the technical interview scenario, and behavioral-interview responses to problem-solving-oriented questions (see the Standard Interview Question Bank). Weakest source: a claimed personality trait ("strong problem solver") with no example attached.
+
+Communication: writing samples (design docs, a blog post, documentation the candidate points to), the clarity of the resume and application materials themselves, and direct observation during any interview stage of how the candidate explains their own work. Weakest source: a claimed trait with no writing sample or observed instance to support it.
+
+Collaboration & Teamwork: resume bullets describing cross-functional or cross-team work, references (where checked), and behavioral-interview responses. This competency is often the hardest to assess from written materials alone and frequently relies more heavily on the hiring-manager conversation stage described in the Interview Process Playbook.
+
+Leadership & Initiative: resume bullets describing self-directed work beyond assigned scope, and behavioral-interview responses. Weakest source: a job title alone ("Team Lead") without a description of what the candidate actually did to earn or exercise that role.
+
+Adaptability & Learning Agility: resume bullets describing a technology, domain, or team transition, and behavioral-interview responses about handling change. Weakest source: simply having worked across many companies or technologies, without any description of how the transition itself was handled.
+
+Ownership & Accountability: resume bullets describing on-call, incident response, or long-term feature ownership, and behavioral-interview responses specifically about failure, not only success. Weakest source: a resume bullet describing only the initial build phase of a project ("designed and built X") with no mention of what happened to X afterward.
+
+Attention to Detail & Quality: resume bullets describing a caught bug, edge case, or data-quality issue, the technical interview scenario (several of which are specifically designed to surface this competency), and behavioral-interview responses. Weakest source: a generic claim of being "detail-oriented" with no specific example.
+
+================================================================================
+APPENDIX B: FREQUENTLY CONFUSED COMPETENCY PAIRS
+================================================================================
+
+Evaluators sometimes score the same piece of evidence against the wrong competency because two competencies can look similar on the surface. This appendix clarifies the more common confusions.
+
+Problem Solving & Analytical Thinking vs. Adaptability & Learning Agility: Problem Solving is about how a candidate reasons through a specific ambiguous problem to a conclusion. Adaptability is about how quickly and effectively a candidate becomes productive in an unfamiliar context in general. A candidate who quickly picked up a new programming language demonstrates Adaptability; a candidate who used that language to correctly diagnose a subtle bug demonstrates Problem Solving. The same story can provide evidence for both, scored separately.
+
+Ownership & Accountability vs. Leadership & Initiative: Ownership is about following through on responsibility, including for things that go wrong, whether or not the scope was self-chosen. Leadership & Initiative is specifically about identifying and acting on something beyond one's assigned scope, without being asked. A candidate who reliably handles their assigned on-call rotation well demonstrates Ownership; a candidate who proactively started a cross-team on-call improvement effort demonstrates Leadership & Initiative. A candidate can score well on one without the other.
+
+Communication vs. Collaboration & Teamwork: Communication is about the clarity and audience-fit of what a candidate says or writes. Collaboration is about the pattern of how a candidate works with others over time, including handling disagreement and sharing credit. A candidate can be an excellent communicator individually while still scoring lower on Collaboration if their examples show working in isolation rather than genuinely with others.
+
+Technical Proficiency vs. Attention to Detail & Quality: Technical Proficiency is about depth and correctness of technical skill and judgment. Attention to Detail & Quality is specifically about the discipline of catching errors and edge cases before they cause harm. A technically strong candidate can still have weak Attention to Detail & Quality evidence if their examples show building things correctly but never catching a problem before someone else did.
+
+================================================================================
+APPENDIX C: WHY ROLE RUBRICS WEIGHT COMPETENCIES DIFFERENTLY
+================================================================================
+
+The weighting differences across the Backend Engineer, Data Analyst, and Frontend Engineer rubrics are not arbitrary; they reflect where failure in that specific role actually causes the most harm, or where success most depends on a specific competency, as determined by Platform Engineering, Business Intelligence & Analytics, and Consumer Product leadership respectively during each rubric's design.
+
+For Backend Engineer, Technical Proficiency and Problem Solving & Analytical Thinking are weighted highest because backend failures (a data-corrupting bug, an unhandled distributed-systems failure mode) are often invisible until they compound, making deep technical judgment and rigorous diagnosis disproportionately valuable relative to, for example, Leadership & Initiative, which is not separately weighted at this level.
+
+For Data Analyst, Problem Solving & Analytical Thinking is weighted highest of any competency across all three rubrics (0.30) because the role's entire value proposition is turning an ambiguous question into a correct, actionable answer — a technically proficient analyst who answers the wrong question, or answers a well-posed question incorrectly, has produced negative value by giving false confidence to a decision.
+
+For Frontend Engineer, Attention to Detail & Quality is weighted more heavily than for the other two roles because the job description explicitly frames the user base (many users on lower-end devices and slower connections) as a population where a missed edge case or performance regression has an outsized, directly visible impact compared to, for example, a backend service's internal implementation details.
+
+These rationales are reviewed whenever a rubric's weights are revised, so that a weighting change is always traceable to a specific, stated reason rather than an unexplained adjustment.

@@ -1,0 +1,46 @@
+NORTHFIELD DIGITAL — JOB DESCRIPTION
+Role: Backend Engineer (Mid-Level)
+Team: Platform Engineering
+Location: Cairo, Egypt (hybrid — 3 days on-site)
+Reports to: Engineering Manager, Platform
+
+ABOUT THE ROLE
+
+Northfield Digital's Platform Engineering team owns the core services that every product team at the company depends on: authentication, billing, notification delivery, and the internal service mesh. As a Backend Engineer on this team, you will design, build, and operate services that handle several million requests per day, with a strong emphasis on correctness, observability, and graceful failure — a bug in this layer affects every product surface at once.
+
+This is a mid-level individual-contributor role. We expect you to work independently on well-scoped features and to contribute meaningfully to design discussions, but we do not expect you to already have staff-level architectural ownership. Growth into more senior scope is an explicit and common path from this role.
+
+WHAT YOU WILL DO
+
+- Design and implement backend services in Node.js and Go, with a strong emphasis on API contracts that are easy for other teams to depend on safely.
+- Own features end-to-end: from initial design doc, through implementation and testing, to production rollout and the first weeks of monitoring afterward.
+- Participate in an on-call rotation for the services you own, including writing runbooks and postmortems when something goes wrong.
+- Collaborate closely with the Data Platform and Frontend teams, whose services depend on the APIs you build — you will need to communicate breaking changes and migration paths clearly.
+- Contribute to the team's technical direction: our stack, our testing standards, and our incident-response practices are all still evolving, and we expect engineers at this level to have opinions and back them with evidence.
+- Review other engineers' code with attention to correctness, security, and long-term maintainability, not just style.
+
+WHAT WE ARE LOOKING FOR
+
+Required:
+- 3+ years of professional experience building and operating backend services in production, in any modern language (we use Node.js and Go, but strong fundamentals transfer).
+- Solid understanding of relational databases (we use PostgreSQL extensively) including query performance, indexing, and transaction semantics.
+- Experience with at least one message queue or event-streaming system (Kafka, SQS, RabbitMQ, or similar).
+- Demonstrated ability to debug production issues independently — we will ask you to walk through a real incident you handled.
+- Clear written communication — design docs and incident postmortems are core artifacts of how this team works.
+
+Strongly preferred:
+- Experience with distributed systems failure modes: partial failures, retries and idempotency, eventual consistency.
+- Familiarity with container orchestration (we run on Kubernetes).
+- Prior experience in a regulated or high-reliability domain (fintech, healthcare, critical infrastructure) where correctness failures have real consequences.
+
+We do not require a specific university degree, degree classification, or number of years since graduation — we care about what you have built and can demonstrate, not where or when you studied.
+
+HOW WE EVALUATE
+
+Candidates for this role are assessed against Northfield's technical competency framework (see the Competency Framework document), weighted specifically for this role: Technical Proficiency, Problem Solving & Analytical Thinking, Ownership & Accountability, Collaboration & Teamwork, Communication, Adaptability & Learning Agility, and Attention to Detail & Quality. See the Backend Engineer Rubric for exact weightings and the specific evidence we look for in each area.
+
+The process includes: an initial screen of your application materials and work history, a technical interview involving a real (anonymized, simplified) production scenario from our systems, a system design discussion, and a conversation with the hiring manager focused on ownership and collaboration examples. We do not use algorithmic puzzle-style interviews unrelated to the actual work.
+
+COMPENSATION AND LEVEL
+
+This role is leveled as Engineer II under Northfield's Compensation Bands & Leveling Guide. Final level and compensation are determined based on demonstrated experience during the interview process, not solely on years of experience stated in an application.

@@ -1,0 +1,49 @@
+NORTHFIELD DIGITAL — TECHNICAL INTERVIEW GUIDE: DATA ANALYST
+Business Intelligence & Analytics (referenced from the Interview Process Playbook, section 9)
+Version 1.4
+
+PURPOSE
+
+This guide standardizes the SQL and analytical case-study exercise referenced in the Data Analyst job description, so that every candidate is evaluated against the same scenario and the same evidence standard.
+
+INTERVIEW STRUCTURE (90 MINUTES)
+
+Minutes 0-10: context-setting, explaining that this is a realistic (anonymized) Northfield analysis scenario, not an abstract SQL puzzle.
+
+Minutes 10-45: SQL exercise against a provided schema (detailed below).
+
+Minutes 45-75: case-study discussion extending the SQL findings into a business recommendation.
+
+Minutes 75-90: candidate questions and a discussion of a past analysis of the candidate's choosing, per the job description's stated process.
+
+THE CORE SCENARIO
+
+The candidate is given a simplified schema representing an e-commerce checkout funnel: sessions, cart_events, orders, and a payments table with a status field. The stated business question: "conversion from cart to completed order dropped 8% last month — what's going on?"
+
+Step 1 (exploration): the candidate is expected to write queries segmenting conversion by relevant dimensions (device, payment method, region, time) before jumping to a conclusion. Candidates who propose an explanation before running any segmenting query are probed: "what would you check before you believed that?" This maps to Problem Solving & Analytical Thinking, the most heavily weighted competency for this role.
+
+Step 2 (finding the signal): the schema is constructed so that a specific payment method shows a disproportionate failure rate in the payments table, concentrated in one region, coinciding with a schema or data change described in a "context" note the candidate is given partway through (simulating how real investigations often unfold with incomplete initial information). Strong candidates connect the segmented finding to the timing of the change.
+
+Step 3 (data quality check): before presenting the finding as fact, the candidate should sanity-check it against a plausible alternative explanation (e.g., "could this be a tracking artifact rather than a real conversion drop?"). This maps to Attention to Detail & Quality, the second most heavily weighted competency for this role.
+
+Step 4 (recommendation): the candidate is asked to translate the technical finding into a recommendation and to describe how they would present it to a non-technical stakeholder, and specifically what they would want to verify before recommending an action with real cost implications (e.g., disabling the affected payment method entirely versus a more targeted fix). This maps to Communication and, secondarily, Ownership & Accountability.
+
+EVALUATION GUIDANCE PER COMPETENCY
+
+Problem Solving & Analytical Thinking: the single most important signal from this exercise. A Level 2 candidate needs to be prompted through each segmentation step. A Level 3 candidate proposes and runs a reasonable segmentation plan largely independently. A Level 4 candidate's segmentation plan anticipates the actual signal in the data before being given the "context" note, and adjusts their investigation efficiently once new information arrives, rather than starting over.
+
+Attention to Detail & Quality: watch specifically for whether the candidate questions their own finding before presenting it, versus presenting the first plausible-looking number as the answer.
+
+Technical Proficiency: SQL correctness and efficiency matter, but a candidate who writes slightly less elegant SQL while demonstrating strong analytical reasoning should still score well overall, given this competency's lower relative weight (0.15) for this role compared to Problem Solving & Analytical Thinking (0.30).
+
+Communication: assess specifically whether the candidate's explanation of the finding to a "non-technical stakeholder" (role-played by the interviewer) actually changes register — simpler framing, less jargon, more focus on the decision — versus simply repeating the same technical explanation more slowly.
+
+COMMON FALSE SIGNALS TO AVOID
+
+A candidate who writes very fast, syntactically correct SQL but never steps back to sanity-check a surprising result should not automatically outscore a slower candidate who catches a real problem in the data along the way — this exercise is specifically designed to reward the latter given this role's DETAIL-QUALITY weighting.
+
+A candidate's unfamiliarity with the specific SQL dialect used in the exercise (if it differs from what they use day to day) should not be penalized as a Technical Proficiency issue if they demonstrate correct logical reasoning and simply need a syntax reminder — reserve penalization for actual logical/analytical errors.
+
+CALIBRATION NOTE
+
+The specific payment-method and region details in this scenario are refreshed periodically so that the exercise does not become discoverable/rehearsable via candidate word-of-mouth, while the underlying skill being assessed (segmentation-driven investigation, skepticism of first findings) stays constant.

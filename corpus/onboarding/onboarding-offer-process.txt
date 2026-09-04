@@ -1,0 +1,47 @@
+NORTHFIELD DIGITAL — ONBOARDING & OFFER PROCESS
+People Operations
+Version 1.5
+
+1. PURPOSE
+
+This document describes what happens between a hiring panel's decision to extend an offer and a new hire's first 30 days at Northfield Digital. It is intended for hiring managers, recruiters, and People Operations staff coordinating a new hire's start.
+
+2. FROM DECISION TO OFFER
+
+2.1 Once the hiring panel reaches a decision (see the Interview Process Playbook, section 2.6), the hiring manager submits a leveling and compensation recommendation to People Operations, referencing the specific competency evidence that supports the recommended level per the Compensation Bands & Leveling Guide.
+
+2.2 People Operations reviews the recommendation for internal equity (section 5 of the Compensation Bands & Leveling Guide) and either approves it or returns it with questions within two business days.
+
+2.3 The recruiter extends a verbal offer to the candidate, followed within 24 hours by a written offer letter covering level, base compensation, bonus target, equity (where applicable), start date, and any conditions (e.g., background check, reference check).
+
+2.4 Candidates have up to seven calendar days to accept an offer, extendable by agreement between the recruiter and hiring manager. A declined offer triggers a brief internal debrief on why, logged for hiring process improvement purposes.
+
+3. PRE-START LOGISTICS
+
+3.1 Once an offer is accepted, People Operations initiates a background check (where applicable to the role and jurisdiction) and a reference check covering at least two professional references.
+
+3.2 IT provisions equipment (laptop, access credentials, required software licenses) to arrive or be ready no later than the new hire's first day.
+
+3.3 The hiring manager assigns an onboarding buddy — a peer on the team, not the manager themselves — whose role is to answer day-to-day questions a new hire might be hesitant to bring to their manager directly.
+
+3.4 A 30-60-90 day plan is drafted by the hiring manager before the new hire's start date, outlining expected ramp-up milestones tied to the same competency framework used during hiring, so that early performance expectations are a continuation of the evidence gathered during the interview process, not a fresh, disconnected standard.
+
+4. FIRST DAY
+
+New hires complete standard People Operations onboarding (benefits enrollment, policy acknowledgments including the Diversity & Anti-Bias Hiring Policy and the Candidate Data Handling & Privacy Policy as an employee, IT security training) and meet with their onboarding buddy and hiring manager. Engineering and Analytics new hires additionally receive access to the relevant team's technical documentation and a guided walkthrough of the codebase or data warehouse structure relevant to their team.
+
+5. FIRST 30 DAYS
+
+5.1 Week 1-2: environment setup, codebase/warehouse orientation, and a small, well-scoped first task designed to produce a shipped or delivered outcome within the first two weeks — intentionally small enough to build early momentum and surface any blocking gaps in access or tooling quickly.
+
+5.2 Week 3-4: a slightly larger task with less hand-holding, and the first 1:1 check-in explicitly covering how the new hire's actual working experience compares to what was described during the interview process — this feedback loop is used to improve both the job description and the interview process itself when a meaningful gap is found.
+
+5.3 Day 30: a structured check-in between the new hire and their manager, referencing the 30-60-90 day plan, with any adjustments to the plan documented and shared with People Operations for pattern-tracking across the cohort of recent hires.
+
+6. FEEDBACK LOOP INTO HIRING
+
+Northfield Digital treats a new hire's actual on-the-job performance during the first 90 days as a data point on hiring process quality, not only on the individual. Where a new hire's performance diverges significantly from what the interview process's competency scores predicted — in either direction — People Operations logs this for the annual hiring process review, to identify whether a specific interview stage, rubric weighting, or evidence type is under- or over-predictive for a given role. This is the primary mechanism by which the rubrics and competency framework are recalibrated over time, rather than adjusting them based on anecdote alone.
+
+7. QUESTIONS
+
+Questions about this process should be directed to People Operations. Hiring managers should not create informal variations to the onboarding process without People Operations involvement, since consistency across new hires is what makes the feedback loop in section 6 meaningful.

@@ -1,0 +1,84 @@
+NORTHFIELD DIGITAL — DIVERSITY & ANTI-BIAS HIRING POLICY
+People Operations & Legal
+Version 2.4
+
+1. PURPOSE AND SCOPE
+
+This policy governs how protected characteristics and closely related proxy information are handled throughout Northfield Digital's hiring process, for every role and every hiring tool used, including any automated or AI-assisted screening system. It applies to human interviewers and to any software system that processes candidate information, without exception.
+
+2. PROTECTED CHARACTERISTICS
+
+Northfield Digital does not consider, and requires that no hiring tool consider, the following characteristics in any hiring decision, at any stage: gender and gender identity, marital or family status, religion or religious practice, national origin or ethnicity, age, disability status, pregnancy or parental status, and any photograph or physical appearance information. This list is closed for the purposes of automated screening systems, meaning a screening system must have a specific, documented mechanism for excluding each of these categories from any input that reaches a scoring step — a general instruction to an AI system to "ignore protected characteristics" is not sufficient on its own and must be backed by a structural mechanism that does not depend on the AI system's own compliance.
+
+3. PROXY INFORMATION
+
+Several categories of information are not themselves protected characteristics but function as strong proxies for one, and must be handled with the same care:
+
+- Graduation year or any calendar year strongly implying age. Duration of experience (e.g., "8 years of experience") is legitimate and job-relevant; the specific calendar year a candidate graduated is not, and must be excluded from any evidence a scoring step relies on. When both appear in the same sentence, only the year should be removed.
+- University or country of study, where used as a proxy for national origin rather than for the substance of what was studied.
+- "Native speaker" language claims, which frequently function as an ethnicity or national-origin proxy rather than a genuine assessment of a job-relevant skill; where language proficiency is genuinely job-relevant, it should be assessed directly (e.g., through a work sample or interview in the relevant language) rather than through a self-reported "native speaker" claim.
+- Career-gap framing (parental leave, a documented medical leave, an extended personal leave) which frequently functions as a parental-status or disability proxy. The fact of a gap in employment history is not evidence of anything about a candidate's competence and must not be scored either positively or negatively.
+
+4. STRUCTURAL REQUIREMENTS FOR AUTOMATED SCREENING SYSTEMS
+
+Any automated screening system used in Northfield's hiring process must satisfy the following, verified by an internal audit before the system is used on live candidates and re-verified at least annually:
+
+4.1 A candidate identity used within the scoring step of the system must be an opaque reference (an internal ID or code), not a name — because a name itself is frequently a strong signal for gender, national origin, or ethnicity, independent of any other information in the document.
+
+4.2 The specific text passed into any scoring step must have protected-characteristic and proxy language removed or redacted before it reaches that step, through a deterministic mechanism that does not rely on a language model's own judgment or compliance — a prompt instruction telling a model to disregard such information is not an acceptable substitute for removing the information itself, because it is not verifiable or reliably enforceable.
+
+4.3 Every redaction or exclusion decision must be logged with enough detail (what category was found, in what document, and whether it was redacted or the surrounding content was excluded entirely) that the decision can be audited after the fact, without the log itself storing the excluded content in a way that recreates the very information it removed.
+
+4.4 The system must be tested for outcome parity: substantially identical evidence about two candidates, differing only in a detail that signals a protected characteristic (most directly, differing only in name), must produce the same or a materially equivalent score. Any material discrepancy found during this testing is treated as a defect requiring a fix before the system continues to be used, not as an acceptable margin of error.
+
+5. HUMAN INTERVIEWER RESPONSIBILITIES
+
+Interviewers must not ask about a candidate's marital or family status, religion, age, national origin, or disability status during any stage of the interview process, including informally during rapport-building conversation. Where a candidate voluntarily discloses such information, interviewers must not record it in their notes or factor it into any score, and are expected to redirect the conversation back to job-relevant evidence.
+
+6. ESCALATION AND REPORTING
+
+Any employee who observes a hiring decision, automated or human, that appears to have been influenced by a protected characteristic should report it to People Operations or through the confidential ethics reporting channel described in the Employee Handbook. Reports are investigated regardless of whether the outcome ultimately favored or disfavored the candidate in question — the concern is the presence of the influence, not only its direction.
+
+7. ANNUAL AUDIT
+
+People Operations, in partnership with Legal and Engineering, conducts an annual audit of hiring outcomes by role and level, reviewing aggregate patterns for any statistically meaningful disparity correlated with a protected characteristic where that data is lawfully available (candidates may voluntarily self-identify demographic information for this purpose only, held separately from the hiring decision itself). Audit findings are reported to executive leadership and, in summary form, made available to all employees.
+
+8. POLICY OWNERSHIP
+
+This policy is owned jointly by People Operations and Legal and is reviewed at least annually or whenever a new automated hiring tool is introduced, whichever comes first.
+
+9. WORKED EXAMPLES: PROXY VS. LEGITIMATE EVIDENCE
+
+The distinction between a proxy for a protected characteristic and legitimate, job-relevant evidence is not always obvious from a single sentence in isolation, so this section works through several examples side by side.
+
+9.1 "8 years of backend engineering experience, including 3 years leading a team of 4 engineers." Legitimate. Duration of experience and scope of responsibility are directly job-relevant and must be retained.
+
+9.2 "Graduated in 2015 from Cairo University." The graduation year is a proxy for age and must be excluded; the fact of having a Computer Science or related degree from a recognized institution, where relevant to the role, may be retained without the year attached.
+
+9.3 "Native Arabic and English speaker." Where the role does not have a specific, documented language-proficiency requirement, this is a proxy for national origin and must be excluded. Where a role genuinely requires client-facing communication in a specific language, that requirement should be assessed through a language-specific work sample or interview segment, not inferred from a self-reported "native speaker" claim, which conflates language proficiency with ethnicity in a way a work sample does not.
+
+9.4 "Returned from an 8-month parental leave to lead the team's largest reporting overhaul." The 8-month gap and its cause (parental leave) is a proxy for parental and possibly gender status and must be excluded from the evidence a scoring step relies on; the achievement itself ("led the team's largest reporting overhaul") is legitimate evidence and must be retained on its own terms, without the surrounding context about the leave.
+
+9.5 "Married father of two, based in Cairo." The marital and family status is excluded outright; "based in Cairo" is retained where it is genuinely relevant to a hybrid or on-site role's location requirement.
+
+10. DEFINITIONS
+
+Protected characteristic: a category of personal information that must never influence a hiring decision under this policy, listed exhaustively in section 2.
+
+Proxy: information that is not itself a protected characteristic but that correlates strongly enough with one that it functions as an indirect signal for it, listed with examples in section 3 and section 9.
+
+Structural exclusion: a mechanism that physically prevents protected or proxy information from reaching a decision-making step (for example, a data field that is never populated in the payload sent to a scoring function), as distinct from an instructional exclusion (asking a person or an AI system to disregard information that is nonetheless present and visible to them). This policy requires structural exclusion wherever an automated system is involved, per section 4.2, because instructional exclusion alone has repeatedly been shown, both in academic research and in Northfield's own internal testing, to be unreliable.
+
+Outcome parity testing: the practice described in section 4.4 of testing a scoring system against near-identical inputs that differ only in a protected-characteristic signal, to verify the system does not produce systematically different outcomes.
+
+11. TRAINING REQUIREMENTS
+
+All employees who participate in any interview panel must complete Northfield's hiring bias training before their first panel and on a refresher basis at least every 18 months. The training covers this policy's content in detail, including a facilitated walkthrough of section 9's worked examples using additional real (anonymized) cases from Northfield's own hiring history. Completion is tracked by People Operations, and an employee who has not completed the current training cycle is not scheduled onto interview panels until they do.
+
+12. VENDOR AND THIRD-PARTY TOOL REQUIREMENTS
+
+Where Northfield evaluates a third-party assessment tool, background-check provider, or AI-based screening vendor for potential use, Legal and People Operations jointly require the vendor to disclose, in writing, what data their tool uses as input, whether and how it excludes protected characteristics and known proxies, and whether they have conducted or would permit an outcome-parity audit equivalent to section 4.4. A vendor unable or unwilling to provide this is not approved for use in Northfield's hiring process regardless of other capabilities offered.
+
+13. REMEDIATION WHEN A DEFECT IS FOUND
+
+Where the annual audit (section 7) or an ad hoc report (section 6) identifies a hiring tool or practice that has been operating with a defect affecting protected-characteristic parity, Northfield's response includes: immediately pausing use of the affected tool or practice for new candidates, reviewing recent decisions made using it for possible reconsideration, correcting the underlying defect and re-running outcome-parity testing before resuming use, and documenting the incident and remediation in the annual audit report regardless of how many candidates were actually affected.

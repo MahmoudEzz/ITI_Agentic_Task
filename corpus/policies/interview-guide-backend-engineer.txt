@@ -1,0 +1,49 @@
+NORTHFIELD DIGITAL — TECHNICAL INTERVIEW GUIDE: BACKEND ENGINEER
+Platform Engineering (referenced from the Interview Process Playbook, section 9)
+Version 2.1
+
+PURPOSE
+
+This guide gives Backend Engineer interview panels a consistent technical scenario and shared evaluation criteria, so that a candidate's outcome does not depend on which two engineers happen to interview them. It is maintained by Platform Engineering leadership and updated more frequently than the Interview Process Playbook itself.
+
+INTERVIEW STRUCTURE (90 MINUTES)
+
+Minutes 0-10: introductions and context-setting. The interviewer explains the format explicitly: this is not a algorithm-trivia exercise, it is a walk-through of a realistic, simplified production scenario drawn from (an anonymized version of) Northfield's own systems.
+
+Minutes 10-55: the core scenario (detailed below), worked through collaboratively with the candidate driving.
+
+Minutes 55-75: system design discussion extending the scenario — "given what we just built, how would you evolve this if traffic grew 50x, or if a new team needed to consume this data differently?"
+
+Minutes 75-90: candidate questions, and space for the interviewer to probe any Ownership & Accountability or Collaboration & Teamwork evidence that didn't come up naturally during the technical portion.
+
+THE CORE SCENARIO
+
+The candidate is given a simplified version of an order-processing service: an HTTP endpoint receives an order, writes it to a database, and publishes an event for downstream consumers (inventory, notifications). The service currently has a bug: under concurrent requests for the same order ID (simulating a client retry after a timeout), duplicate orders are sometimes created.
+
+Step 1 (diagnosis): the candidate is asked to find the bug. Strong candidates identify that the write is not idempotent and ask clarifying questions about what "the same order" means at the API contract level before proposing a fix — this maps to Problem Solving & Analytical Thinking.
+
+Step 2 (fix): the candidate proposes and sketches a fix, typically an idempotency key stored with a uniqueness constraint, or a check-then-write pattern with appropriate locking. The interviewer probes tradeoffs: what happens if the uniqueness constraint check itself races? What does the client see if their retried request hits the duplicate case — success, or an error? This maps to Technical Proficiency.
+
+Step 3 (testing): the candidate is asked how they would test this fix, specifically for the concurrency case, not just the happy path. Candidates who only propose a single-threaded unit test without addressing how to actually exercise the race condition are probed further. This maps to Attention to Detail & Quality.
+
+Step 4 (rollout): the candidate is asked how they would deploy this fix safely, given the service currently has traffic. This maps to Ownership & Accountability — a strong answer discusses monitoring the fix's effect post-deploy, not just shipping it and moving on.
+
+EVALUATION GUIDANCE PER COMPETENCY
+
+Technical Proficiency: Level 2 candidates typically need significant hints to identify the race condition at all. Level 3 candidates identify it independently and propose a reasonable fix, possibly missing one edge case the interviewer then surfaces. Level 4 candidates identify the bug quickly, propose a fix, and proactively raise an edge case (e.g., "what if the event publish succeeds but the database write fails, or vice versa — do we need a two-phase approach here?") before being asked.
+
+Problem Solving & Analytical Thinking: watch specifically for whether the candidate asks clarifying questions before proposing a solution, versus jumping to an implementation and discovering gaps as the interviewer probes.
+
+Attention to Detail & Quality: watch for whether the candidate's proposed test actually would have caught the original bug, versus a test that would pass regardless of whether the fix works.
+
+Ownership & Accountability: this is the hardest competency to assess from a live coding scenario alone; use the minutes 75-90 window to ask directly about a real deployment or rollout the candidate owned.
+
+COMMON FALSE SIGNALS TO AVOID
+
+A candidate who has memorized "the idempotency key pattern" as a term and states it immediately without being able to explain why it solves this specific problem should not automatically score well on Technical Proficiency — ask them to explain the mechanism in their own words as a check.
+
+A candidate who is quiet during the diagnosis step but ultimately correct should not be scored lower on Communication than a candidate who talks continuously but less precisely — evaluate the content of what is said, consistent with the Interview Process Playbook's general evidence standard, not the volume of speech.
+
+CALIBRATION NOTE
+
+This scenario is recalibrated roughly annually against real (anonymized) production incidents to keep it representative of the kind of problem the role actually involves, per the feedback loop described in the Onboarding & Offer Process document.

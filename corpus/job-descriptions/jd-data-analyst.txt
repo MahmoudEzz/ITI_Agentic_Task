@@ -1,0 +1,46 @@
+NORTHFIELD DIGITAL — JOB DESCRIPTION
+Role: Data Analyst
+Team: Business Intelligence & Analytics
+Location: Cairo, Egypt (hybrid — 3 days on-site)
+Reports to: Analytics Manager
+
+ABOUT THE ROLE
+
+The Business Intelligence & Analytics team turns Northfield's product and operational data into decisions — pricing changes, product prioritization, and operational efficiency work all start with analysis this team produces. As a Data Analyst, you will work directly with product, marketing, and operations stakeholders to answer concrete business questions, build the dashboards and reports that let stakeholders self-serve afterward, and flag when the data itself looks wrong before it misleads a decision.
+
+This is an individual-contributor role with high stakeholder visibility from day one — your analysis will regularly be presented directly to directors and above, sometimes by you.
+
+WHAT YOU WILL DO
+
+- Partner with product and operations stakeholders to translate a business question ("why did checkout conversion drop in region X last month") into a concrete, testable analysis plan.
+- Write and optimize SQL queries against our data warehouse (Snowflake) to extract, validate, and shape the data needed for analysis.
+- Build and maintain dashboards (we use Looker) that let non-technical stakeholders answer their own follow-up questions without needing a new analysis request every time.
+- Design and analyze A/B tests, including sample size and duration planning before a test launches, not just result interpretation afterward.
+- Proactively audit data pipelines for quality issues — a wrong number presented confidently is worse than no number, and catching that before it reaches a stakeholder is a core part of this role.
+- Present findings clearly to audiences ranging from fellow analysts to non-technical executives, adapting the level of technical detail appropriately.
+
+WHAT WE ARE LOOKING FOR
+
+Required:
+- 2+ years of experience in an analyst, data science, or closely related role, with a track record of analysis that directly informed a business decision.
+- Strong SQL skills: comfortable with window functions, CTEs, and query performance considerations on large tables, not just basic joins and aggregations.
+- Experience with at least one BI/visualization tool (Looker, Tableau, Power BI, or similar).
+- Working knowledge of statistics sufficient to design and correctly interpret an A/B test, including common pitfalls (peeking, multiple comparisons, Simpson's paradox).
+- Demonstrated attention to data quality — we will ask you to describe a time you caught a data issue others had missed.
+
+Strongly preferred:
+- Experience with Python or R for analysis beyond what SQL alone comfortably supports.
+- Familiarity with dbt or similar tools for building and testing data transformation pipelines.
+- Prior experience presenting analysis directly to senior stakeholders and handling pushback on a finding they didn't want to hear.
+
+We do not require a specific academic background, degree classification, or number of years since graduation — analytical rigor and communication matter far more to us than academic pedigree.
+
+HOW WE EVALUATE
+
+Candidates for this role are assessed against Northfield's technical competency framework, weighted for this role toward Problem Solving & Analytical Thinking and Attention to Detail & Quality, with Technical Proficiency, Communication, Ownership & Accountability, Collaboration & Teamwork, and Adaptability & Learning Agility also scored. See the Data Analyst Rubric for exact weightings.
+
+The process includes: an initial screen of your application materials, a SQL and analytical case-study exercise based on a realistic (anonymized) Northfield dataset, a conversation focused on how you have handled ambiguous or incorrect data in the past, and a presentation of a past analysis of your choosing to the hiring panel.
+
+COMPENSATION AND LEVEL
+
+This role is leveled as Analyst II under Northfield's Compensation Bands & Leveling Guide. Final level and compensation are determined based on demonstrated experience during the interview process.

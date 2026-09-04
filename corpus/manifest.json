@@ -1,0 +1,502 @@
+{
+  "summary": {
+    "documentCount": 42,
+    "totalPages": 69,
+    "byType": {
+      "job_description": 3,
+      "competency_framework": 1,
+      "rubric": 3,
+      "policy": 5,
+      "process_guide": 5,
+      "cv": 25
+    },
+    "byFormat": {
+      "txt": 30,
+      "pdf": 7,
+      "docx": 5
+    }
+  },
+  "documents": [
+    {
+      "path": "corpus/job-descriptions/jd-backend-engineer.txt",
+      "format": "txt",
+      "pages": 2,
+      "pageCountMethod": "estimated_500_words_per_page",
+      "words": 643,
+      "id": "jd-backend-engineer",
+      "type": "job_description",
+      "roleTarget": "backend-engineer"
+    },
+    {
+      "path": "corpus/job-descriptions/jd-data-analyst.txt",
+      "format": "txt",
+      "pages": 2,
+      "pageCountMethod": "estimated_500_words_per_page",
+      "words": 610,
+      "id": "jd-data-analyst",
+      "type": "job_description",
+      "roleTarget": "data-analyst"
+    },
+    {
+      "path": "corpus/job-descriptions/jd-frontend-engineer.txt",
+      "format": "txt",
+      "pages": 2,
+      "pageCountMethod": "estimated_500_words_per_page",
+      "words": 584,
+      "id": "jd-frontend-engineer",
+      "type": "job_description",
+      "roleTarget": "frontend-engineer"
+    },
+    {
+      "path": "corpus/competency-framework/competency-framework.txt",
+      "format": "txt",
+      "pages": 7,
+      "pageCountMethod": "estimated_500_words_per_page",
+      "words": 3291,
+      "id": "competency-framework",
+      "type": "competency_framework"
+    },
+    {
+      "path": "corpus/rubrics/rubric-backend-engineer.txt",
+      "format": "txt",
+      "pages": 2,
+      "pageCountMethod": "estimated_500_words_per_page",
+      "words": 663,
+      "id": "rubric-backend-engineer",
+      "type": "rubric",
+      "roleTarget": "backend-engineer"
+    },
+    {
+      "path": "corpus/rubrics/rubric-data-analyst.txt",
+      "format": "txt",
+      "pages": 2,
+      "pageCountMethod": "estimated_500_words_per_page",
+      "words": 711,
+      "id": "rubric-data-analyst",
+      "type": "rubric",
+      "roleTarget": "data-analyst"
+    },
+    {
+      "path": "corpus/rubrics/rubric-frontend-engineer.txt",
+      "format": "txt",
+      "pages": 2,
+      "pageCountMethod": "estimated_500_words_per_page",
+      "words": 610,
+      "id": "rubric-frontend-engineer",
+      "type": "rubric",
+      "roleTarget": "frontend-engineer"
+    },
+    {
+      "path": "corpus/policies/policy-interview-process-playbook.txt",
+      "format": "txt",
+      "pages": 4,
+      "pageCountMethod": "estimated_500_words_per_page",
+      "words": 1980,
+      "id": "policy-interview-process-playbook",
+      "type": "policy",
+      "fixtures": [
+        "prompt_injection"
+      ]
+    },
+    {
+      "path": "corpus/policies/policy-diversity-anti-bias-hiring.txt",
+      "format": "txt",
+      "pages": 4,
+      "pageCountMethod": "estimated_500_words_per_page",
+      "words": 1664,
+      "id": "policy-diversity-anti-bias-hiring",
+      "type": "policy"
+    },
+    {
+      "path": "corpus/policies/policy-compensation-bands-leveling.txt",
+      "format": "txt",
+      "pages": 3,
+      "pageCountMethod": "estimated_500_words_per_page",
+      "words": 1401,
+      "id": "policy-compensation-bands-leveling",
+      "type": "policy"
+    },
+    {
+      "path": "corpus/policies/policy-candidate-data-handling-privacy.txt",
+      "format": "txt",
+      "pages": 3,
+      "pageCountMethod": "estimated_500_words_per_page",
+      "words": 1299,
+      "id": "policy-candidate-data-handling-privacy",
+      "type": "policy"
+    },
+    {
+      "path": "corpus/policies/policy-remote-compensation-addendum.txt",
+      "format": "txt",
+      "pages": 1,
+      "pageCountMethod": "estimated_500_words_per_page",
+      "words": 479,
+      "id": "policy-remote-compensation-addendum",
+      "type": "policy"
+    },
+    {
+      "path": "corpus/policies/policy-interview-question-bank.txt",
+      "format": "txt",
+      "pages": 2,
+      "pageCountMethod": "estimated_500_words_per_page",
+      "words": 773,
+      "id": "policy-interview-question-bank",
+      "type": "process_guide"
+    },
+    {
+      "path": "corpus/policies/interview-guide-backend-engineer.txt",
+      "format": "txt",
+      "pages": 2,
+      "pageCountMethod": "estimated_500_words_per_page",
+      "words": 768,
+      "id": "interview-guide-backend-engineer",
+      "type": "process_guide",
+      "roleTarget": "backend-engineer"
+    },
+    {
+      "path": "corpus/policies/interview-guide-data-analyst.txt",
+      "format": "txt",
+      "pages": 2,
+      "pageCountMethod": "estimated_500_words_per_page",
+      "words": 738,
+      "id": "interview-guide-data-analyst",
+      "type": "process_guide",
+      "roleTarget": "data-analyst"
+    },
+    {
+      "path": "corpus/policies/interview-guide-frontend-engineer.txt",
+      "format": "txt",
+      "pages": 2,
+      "pageCountMethod": "estimated_500_words_per_page",
+      "words": 738,
+      "id": "interview-guide-frontend-engineer",
+      "type": "process_guide",
+      "roleTarget": "frontend-engineer"
+    },
+    {
+      "path": "corpus/onboarding/onboarding-offer-process.txt",
+      "format": "txt",
+      "pages": 2,
+      "pageCountMethod": "estimated_500_words_per_page",
+      "words": 715,
+      "id": "onboarding-offer-process",
+      "type": "process_guide"
+    },
+    {
+      "path": "corpus/cvs/cv-001-ahmed-youssef.txt",
+      "format": "txt",
+      "pages": 1,
+      "pageCountMethod": "estimated_500_words_per_page",
+      "words": 338,
+      "id": "cv-001-ahmed-youssef",
+      "type": "cv",
+      "roleTarget": "backend-engineer",
+      "candidateName": "Ahmed Youssef",
+      "fixtures": []
+    },
+    {
+      "path": "corpus/cvs/cv-002-sara-mansour.pdf",
+      "format": "pdf",
+      "pages": 1,
+      "pageCountMethod": "actual",
+      "ocrRequired": true,
+      "id": "cv-002-sara-mansour",
+      "type": "cv",
+      "roleTarget": "backend-engineer",
+      "candidateName": "Sara Mansour",
+      "fixtures": []
+    },
+    {
+      "path": "corpus/cvs/cv-003-omar-farouk.docx",
+      "format": "docx",
+      "pages": 1,
+      "pageCountMethod": "estimated_500_words_per_page",
+      "words": 139,
+      "id": "cv-003-omar-farouk",
+      "type": "cv",
+      "roleTarget": "backend-engineer",
+      "candidateName": "Omar Farouk",
+      "fixtures": [
+        "prompt_injection"
+      ]
+    },
+    {
+      "path": "corpus/cvs/cv-004-karim-elsayed.txt",
+      "format": "txt",
+      "pages": 1,
+      "pageCountMethod": "estimated_500_words_per_page",
+      "words": 127,
+      "id": "cv-004-karim-elsayed",
+      "type": "cv",
+      "roleTarget": "backend-engineer",
+      "candidateName": "Karim ElSayed",
+      "fixtures": []
+    },
+    {
+      "path": "corpus/cvs/cv-005-yasmine-adel.pdf",
+      "format": "pdf",
+      "pages": 1,
+      "pageCountMethod": "actual",
+      "id": "cv-005-yasmine-adel",
+      "type": "cv",
+      "roleTarget": "backend-engineer",
+      "candidateName": "Yasmine Adel",
+      "fixtures": []
+    },
+    {
+      "path": "corpus/cvs/cv-006-hassan-ibrahim.txt",
+      "format": "txt",
+      "pages": 1,
+      "pageCountMethod": "estimated_500_words_per_page",
+      "words": 218,
+      "id": "cv-006-hassan-ibrahim",
+      "type": "cv",
+      "roleTarget": "backend-engineer",
+      "candidateName": "Hassan Ibrahim",
+      "fixtures": [
+        "bias"
+      ]
+    },
+    {
+      "path": "corpus/cvs/cv-007-nourhan-tarek.pdf",
+      "format": "pdf",
+      "pages": 1,
+      "pageCountMethod": "actual",
+      "ocrRequired": true,
+      "id": "cv-007-nourhan-tarek",
+      "type": "cv",
+      "roleTarget": "backend-engineer",
+      "candidateName": "Nourhan Tarek",
+      "fixtures": []
+    },
+    {
+      "path": "corpus/cvs/cv-008-mostafa-hany.txt",
+      "format": "txt",
+      "pages": 1,
+      "pageCountMethod": "estimated_500_words_per_page",
+      "words": 323,
+      "id": "cv-008-mostafa-hany",
+      "type": "cv",
+      "roleTarget": "backend-engineer",
+      "candidateName": "Mostafa Hany",
+      "fixtures": []
+    },
+    {
+      "path": "corpus/cvs/cv-009-rana-zaki.docx",
+      "format": "docx",
+      "pages": 1,
+      "pageCountMethod": "estimated_500_words_per_page",
+      "words": 155,
+      "id": "cv-009-rana-zaki",
+      "type": "cv",
+      "roleTarget": "backend-engineer",
+      "candidateName": "Rana Zaki",
+      "fixtures": []
+    },
+    {
+      "path": "corpus/cvs/cv-010-laila-fahmy.txt",
+      "format": "txt",
+      "pages": 1,
+      "pageCountMethod": "estimated_500_words_per_page",
+      "words": 308,
+      "id": "cv-010-laila-fahmy",
+      "type": "cv",
+      "roleTarget": "data-analyst",
+      "candidateName": "Laila Fahmy",
+      "fixtures": []
+    },
+    {
+      "path": "corpus/cvs/cv-011-tamer-nabil.txt",
+      "format": "txt",
+      "pages": 1,
+      "pageCountMethod": "estimated_500_words_per_page",
+      "words": 136,
+      "id": "cv-011-tamer-nabil",
+      "type": "cv",
+      "roleTarget": "data-analyst",
+      "candidateName": "Tamer Nabil",
+      "fixtures": []
+    },
+    {
+      "path": "corpus/cvs/cv-012-dina-kamal.docx",
+      "format": "docx",
+      "pages": 1,
+      "pageCountMethod": "estimated_500_words_per_page",
+      "words": 183,
+      "id": "cv-012-dina-kamal",
+      "type": "cv",
+      "roleTarget": "data-analyst",
+      "candidateName": "Dina Kamal",
+      "fixtures": [
+        "bias"
+      ]
+    },
+    {
+      "path": "corpus/cvs/cv-013-amr-shawky.txt",
+      "format": "txt",
+      "pages": 1,
+      "pageCountMethod": "estimated_500_words_per_page",
+      "words": 71,
+      "id": "cv-013-amr-shawky",
+      "type": "cv",
+      "roleTarget": "data-analyst",
+      "candidateName": "Amr Shawky",
+      "fixtures": []
+    },
+    {
+      "path": "corpus/cvs/cv-014-heba-roshdy.pdf",
+      "format": "pdf",
+      "pages": 1,
+      "pageCountMethod": "actual",
+      "ocrRequired": true,
+      "id": "cv-014-heba-roshdy",
+      "type": "cv",
+      "roleTarget": "data-analyst",
+      "candidateName": "Heba Roshdy",
+      "fixtures": []
+    },
+    {
+      "path": "corpus/cvs/cv-015-youssef-adly.txt",
+      "format": "txt",
+      "pages": 1,
+      "pageCountMethod": "estimated_500_words_per_page",
+      "words": 106,
+      "id": "cv-015-youssef-adly",
+      "type": "cv",
+      "roleTarget": "data-analyst",
+      "candidateName": "Youssef Adly",
+      "fixtures": [
+        "prompt_injection"
+      ]
+    },
+    {
+      "path": "corpus/cvs/cv-016-mariam-sabry.txt",
+      "format": "txt",
+      "pages": 1,
+      "pageCountMethod": "estimated_500_words_per_page",
+      "words": 313,
+      "id": "cv-016-mariam-sabry",
+      "type": "cv",
+      "roleTarget": "data-analyst",
+      "candidateName": "Mariam Sabry",
+      "fixtures": []
+    },
+    {
+      "path": "corpus/cvs/cv-017-khaled-fathy.pdf",
+      "format": "pdf",
+      "pages": 1,
+      "pageCountMethod": "actual",
+      "id": "cv-017-khaled-fathy",
+      "type": "cv",
+      "roleTarget": "data-analyst",
+      "candidateName": "Khaled Fathy",
+      "fixtures": []
+    },
+    {
+      "path": "corpus/cvs/cv-018-nadia-ezzat.txt",
+      "format": "txt",
+      "pages": 1,
+      "pageCountMethod": "estimated_500_words_per_page",
+      "words": 297,
+      "id": "cv-018-nadia-ezzat",
+      "type": "cv",
+      "roleTarget": "frontend-engineer",
+      "candidateName": "Nadia Ezzat",
+      "fixtures": []
+    },
+    {
+      "path": "corpus/cvs/cv-019-sherif-wahba.txt",
+      "format": "txt",
+      "pages": 1,
+      "pageCountMethod": "estimated_500_words_per_page",
+      "words": 124,
+      "id": "cv-019-sherif-wahba",
+      "type": "cv",
+      "roleTarget": "frontend-engineer",
+      "candidateName": "Sherif Wahba",
+      "fixtures": []
+    },
+    {
+      "path": "corpus/cvs/cv-020-aya-mostafa.docx",
+      "format": "docx",
+      "pages": 1,
+      "pageCountMethod": "estimated_500_words_per_page",
+      "words": 163,
+      "id": "cv-020-aya-mostafa",
+      "type": "cv",
+      "roleTarget": "frontend-engineer",
+      "candidateName": "Aya Mostafa",
+      "fixtures": [
+        "bias"
+      ]
+    },
+    {
+      "path": "corpus/cvs/cv-021-bassem-naguib.txt",
+      "format": "txt",
+      "pages": 1,
+      "pageCountMethod": "estimated_500_words_per_page",
+      "words": 94,
+      "id": "cv-021-bassem-naguib",
+      "type": "cv",
+      "roleTarget": "frontend-engineer",
+      "candidateName": "Bassem Naguib",
+      "fixtures": [
+        "prompt_injection"
+      ]
+    },
+    {
+      "path": "corpus/cvs/cv-022-salma-gaber.pdf",
+      "format": "pdf",
+      "pages": 1,
+      "pageCountMethod": "actual",
+      "ocrRequired": true,
+      "id": "cv-022-salma-gaber",
+      "type": "cv",
+      "roleTarget": "frontend-engineer",
+      "candidateName": "Salma Gaber",
+      "fixtures": []
+    },
+    {
+      "path": "corpus/cvs/cv-023-fady-rizk.txt",
+      "format": "txt",
+      "pages": 1,
+      "pageCountMethod": "estimated_500_words_per_page",
+      "words": 181,
+      "id": "cv-023-fady-rizk",
+      "type": "cv",
+      "roleTarget": "frontend-engineer",
+      "candidateName": "Fady Rizk",
+      "fixtures": []
+    },
+    {
+      "path": "corpus/cvs/cv-024-mina-abdel-malak-a.docx",
+      "format": "docx",
+      "pages": 1,
+      "pageCountMethod": "estimated_500_words_per_page",
+      "words": 124,
+      "id": "cv-024-mina-abdel-malak-a",
+      "type": "cv",
+      "roleTarget": "frontend-engineer",
+      "candidateName": "Mina Abdel Malak",
+      "fixtures": [
+        "conflicting_pair"
+      ],
+      "conflictGroup": "mina-abdel-malak"
+    },
+    {
+      "path": "corpus/cvs/cv-025-mina-abdel-malak-b.pdf",
+      "format": "pdf",
+      "pages": 1,
+      "pageCountMethod": "actual",
+      "ocrRequired": true,
+      "id": "cv-025-mina-abdel-malak-b",
+      "type": "cv",
+      "roleTarget": "frontend-engineer",
+      "candidateName": "Mina Abdel Malak",
+      "fixtures": [
+        "conflicting_pair"
+      ],
+      "conflictGroup": "mina-abdel-malak"
+    }
+  ]
+}

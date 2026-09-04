@@ -1,0 +1,25 @@
+AHMED YOUSSEF
+Backend Engineer
+ahmed.youssef.dev@example-mail.com | Cairo, Egypt | linkedin.com/in/ahmedyoussef-dev
+
+SUMMARY
+Backend engineer with 5 years of experience building and operating high-throughput services in Node.js and Go. Focused on reliability and observability — I have carried pager duty for the systems I build and treat that as part of the job, not separate from it.
+
+EXPERIENCE
+
+Senior Backend Engineer, Delta Fintech Solutions (2022 - Present)
+- Redesigned the payment-reconciliation service after a production incident caused by a race condition between two async workers processing the same transaction; root-caused it via distributed tracing, then rebuilt the workers around an idempotency-key pattern that has had zero repeat incidents in 18 months.
+- Owned the migration of our primary transactional database from a single PostgreSQL instance to a read-replica architecture, including the query audit that determined which read paths were safe to move — this cut p99 latency on the reporting API by 60%.
+- On-call rotation lead for the payments team; wrote the incident postmortem template the wider engineering org later adopted after our team's postmortems were repeatedly cited as the clearest in quarterly reviews.
+- Mentored two junior engineers through their first on-call rotations, pairing with them on their first real incidents rather than just handing them a runbook.
+
+Backend Engineer, Delta Fintech Solutions (2020 - 2022)
+- Built the notification-delivery service (Node.js, SQS) handling ~2M messages/day across email, SMS, and push, with retry and dead-letter handling designed around at-least-once delivery semantics.
+- Wrote the design doc proposing a move from synchronous webhook calls to an event-driven architecture for partner integrations; the doc was used as the reference implementation pattern for three subsequent services.
+- Found and fixed a data corruption bug in the ledger service caused by a missing transaction boundary — traced it back through six weeks of production data, quantified the blast radius, and coordinated the correction with Finance before it affected month-end reconciliation.
+
+EDUCATION
+B.Sc. in Computer Engineering, Ain Shams University
+
+SKILLS
+Node.js, Go, PostgreSQL, Kafka, SQS, Kubernetes, distributed tracing (Jaeger), API design, incident response

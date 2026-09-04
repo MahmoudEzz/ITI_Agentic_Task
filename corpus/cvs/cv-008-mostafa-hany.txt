@@ -1,0 +1,24 @@
+MOSTAFA HANY
+Backend Engineer | Distributed Systems
+mostafa.hany.eng@example-mail.com | Cairo, Egypt | github.com/mhany-dev
+
+SUMMARY
+Backend engineer with 6 years of experience, the last three focused specifically on the reliability of payment and ledger systems where correctness bugs have direct financial consequences. I care most about the boring parts of engineering — idempotency, observability, and graceful degradation — because that is what actually determines whether a 3am page becomes a five-minute fix or a multi-hour incident.
+
+EXPERIENCE
+
+Staff-track Backend Engineer, Meridian Pay (2021 - Present)
+- Proposed and led the adoption of an idempotency-key pattern across all payment-mutating endpoints after a partner integration double-charged a batch of customers due to a retried webhook; the pattern is now mandatory for any new mutating endpoint per our engineering standards, which I authored.
+- Diagnosed a subtle data corruption bug that had been silently affecting roughly 0.3% of transactions for four months, caused by a floating-point rounding inconsistency between two currency-conversion code paths; fixed it and built the reconciliation tooling to identify and correct every affected historical record.
+- Serve as the escalation point for the most difficult production incidents across the payments organization, not just my own team; three other teams have specifically requested my involvement in their incident retrospectives this year.
+- Gave an internal tech talk on distributed idempotency patterns that is now part of the standard onboarding curriculum for new backend hires.
+
+Backend Engineer, Meridian Pay (2019 - 2021)
+- Built the core ledger service (Go, PostgreSQL) from scratch, including the double-entry accounting model and the reconciliation job that runs nightly against our banking partner's settlement files.
+- Introduced contract testing between the ledger service and its five consumer services after a schema change broke two of them silently in production; this caught two would-be breaking changes before release in the following year.
+
+EDUCATION
+B.Sc. in Computer Engineering, Cairo University
+
+SKILLS
+Go, PostgreSQL, Kafka, gRPC, Kubernetes, distributed systems design, incident command, contract testing

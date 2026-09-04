@@ -1,0 +1,63 @@
+NORTHFIELD DIGITAL — CANDIDATE DATA HANDLING & PRIVACY POLICY
+Legal & People Operations
+Version 2.0
+
+1. PURPOSE AND SCOPE
+
+This policy governs how Northfield Digital collects, stores, processes, and eventually deletes candidate data throughout the hiring lifecycle, including data processed by any automated or AI-assisted screening system. It applies to every candidate who submits an application, regardless of outcome.
+
+2. WHAT DATA IS COLLECTED
+
+Application data: resume/CV, cover letter (where submitted), portfolio or work sample links, and responses to any application questions. Process data: interview notes, structured competency scores and their supporting citations, interviewer feedback, and the hiring decision with its stated reasons. Voluntary demographic data: candidates may optionally self-identify demographic information for equal-opportunity monitoring purposes only; this data is stored separately from the hiring decision record and is never made available to interviewers or to any automated screening system's scoring step.
+
+3. WHAT LEAVES NORTHFIELD'S INFRASTRUCTURE
+
+Candidate data processed by an automated screening system may be sent to a third-party language model provider only where a data processing agreement is in place with that provider prohibiting the use of Northfield's candidate data for the provider's own model training, and only after protected-characteristic and proxy information has already been removed per the Diversity & Anti-Bias Hiring Policy's structural requirements — meaning the redaction step must occur before data leaves Northfield's own infrastructure, not after, wherever technically feasible. Where a locally hosted model is used instead of a third-party provider, no candidate data leaves Northfield's infrastructure at all, and this is the preferred configuration wherever an equivalent capability exists.
+
+4. RETENTION
+
+Application and process data for candidates who are not hired is retained for 24 months from the final decision date, after which it is deleted, except where a longer retention period is required by applicable law or is necessary to defend against a specific legal claim already raised. Data for hired candidates transitions into the employee record retention schedule described in the Employee Handbook. Voluntary demographic data follows the same 24-month schedule, independent of the associated candidate record.
+
+5. CANDIDATE RIGHTS
+
+A candidate may request a copy of the evidence-based reasons behind a hiring decision that affected them, consistent with the record-retention purpose described in the Interview Process Playbook. A candidate may request deletion of their data before the standard retention period lapses, except where retention is legally required; such requests are handled by People Operations within 30 days.
+
+6. ACCESS CONTROL
+
+Access to candidate data is limited to the recruiter, hiring manager, and interview panel directly involved in that candidate's process, plus People Operations and Legal where needed for policy compliance or dispute resolution. Any system storing candidate data must enforce this scoping at the data layer, not only through application-level convention — meaning a person or system without a legitimate role in a specific candidate's process should be structurally unable to query that candidate's record, not merely asked not to.
+
+7. SECURITY REQUIREMENTS FOR SCREENING TOOLS
+
+Any tool that ingests candidate-submitted documents (resumes, portfolios) must treat the content of those documents as untrusted input, not as trusted instructions, regardless of how the content is phrased. A document that contains text formatted to look like a system instruction, a formatting directive, or an instruction addressed to an AI assistant must still be treated only as candidate-submitted content to be evaluated, never as an instruction the system should follow. Uploaded files must be validated for actual file type before processing (not merely trusted based on file extension), and must be scanned for known malware signatures before being opened by any parsing or extraction component.
+
+8. INCIDENT REPORTING
+
+Any suspected unauthorized access to candidate data, or any observed instance of a screening tool having been influenced by content embedded in a candidate-submitted document in a way that bypassed its intended evaluation logic, must be reported to Legal and Engineering leadership within 24 hours of discovery, treated with the same severity as a security incident affecting production customer data.
+
+9. THIRD-PARTY VENDOR REQUIREMENTS
+
+Any third-party vendor with access to candidate data (applicant tracking systems, background-check providers, assessment platforms) must be reviewed by Legal and must sign a data processing agreement consistent with this policy before integration. A vendor list with current agreement status is maintained by Legal and reviewed annually.
+
+10. POLICY OWNERSHIP
+
+This policy is owned jointly by Legal and People Operations and is reviewed at least annually, or immediately upon introducing any new automated screening capability that changes what candidate data is processed or where it is sent.
+
+11. DATA MINIMIZATION IN AUTOMATED SCREENING
+
+Any automated screening system must be designed to hold and pass forward only the data genuinely needed for the step it is performing. Concretely: a step scoring rubric competencies needs the relevant evidence snippets and their source citations, not the candidate's full name, contact details, or any other document content unrelated to the competency being scored. Where a system is found to be passing more candidate data into a step than that step requires, this is treated as a policy defect to be corrected, following the same remediation approach described in the Diversity & Anti-Bias Hiring Policy for scoring defects, whether or not the excess data was ever misused.
+
+12. AUDIT LOGGING STANDARDS
+
+Every automated decision point in the hiring process (an automated pre-screening score, an exclusion or redaction decision, a routing decision to human review) must be logged with: what decision was made, what evidence or input it was based on (referenced by pointer or citation, not duplicated wholesale into the log), a timestamp, and the specific version of the tool or rubric that produced it. Logs must never contain a candidate's full, unredacted document content, since a log with broader access than the original hiring workflow would otherwise become the weakest point in the system's data handling. Log retention follows the same 24-month schedule as the underlying candidate record it relates to.
+
+13. CROSS-BORDER DATA TRANSFER
+
+Where a candidate applies from outside Egypt, or where a third-party service used in screening (including any hosted language model provider) processes data outside Egypt, Legal reviews the transfer for compliance with the destination's and origin's applicable data protection requirements before the integration goes live, and documents the legal basis for the transfer. This review is independent of, and in addition to, the data processing agreement requirement described in section 3.
+
+14. HANDLING A SUSPECTED PROMPT INJECTION OR DOCUMENT-BASED ATTACK
+
+Where a candidate-submitted or other ingested document is found to contain content designed to manipulate an automated screening system's behavior (an embedded instruction, a formatting trick intended to hide text from human reviewers while remaining machine-readable, or similar), the document and the fact of the attempted manipulation must be logged as a security-relevant event per section 8, and the specific screening run affected must be flagged for full human review rather than trusted based on its automated output. Where the same pattern is observed across multiple candidates or documents, Engineering and Legal jointly assess whether it indicates a systemic vulnerability requiring a fix to the screening system itself, versus an isolated incident.
+
+15. DATA SUBJECT ACCESS REQUESTS: PROCESS DETAIL
+
+A candidate's request under section 5 is routed to People Operations, who compile the evidence-based record of the decision (the cited resume/document sections, the competency scores derived from them, and the final decision) into a response within the 30-day window. Voluntary demographic data, being stored separately and never used in the decision itself per section 2, is excluded from this compiled record but is separately deletable on request per the same section 5 right. Where a request is unusually complex (for example, spanning multiple application cycles for the same candidate), People Operations may extend the response window by up to 30 additional days, with the candidate notified of the extension and the reason within the original 30-day window.
