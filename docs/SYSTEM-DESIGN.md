@@ -28,8 +28,8 @@ Realistic estimate is ~50-55h against the brief's 40h target, stated candidly ra
 | Phase | Scope | Status |
 |---|---|---|
 | 0 | Repo & process scaffolding — folder structure, doc skeletons, ADRs, CI skeleton, tooling, Docker skeleton | Done |
-| 1 | Domain & contracts foundation — entities, domain errors, Zod contracts, unit tests for pure domain logic | Domain errors done; entities/contracts pending |
-| 2 | Ingestion (FR-1), corpus authoring in parallel — extract→clean→chunk→embed→index against real Postgres+pgvector, idempotent re-ingestion | Pending |
+| 1 | Domain & contracts foundation — entities, domain errors, Zod contracts, unit tests for pure domain logic | Done |
+| 2 | Ingestion (FR-1), corpus authoring in parallel — extract→clean→chunk→embed→index against real Postgres+pgvector, idempotent re-ingestion | Done |
 | 3 | Retrieval + Q&A + citations + refusal (FR-2) — **first demoable slice** | Pending |
 | 4 | Multi-agent workflow + approval gate + orchestration controls (FR-4/FR-5) — **second demoable slice** | Pending |
 | 5 | T6 document in/out — OCR with confidence flagging, DOCX + PDF generation | Pending |

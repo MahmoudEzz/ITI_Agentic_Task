@@ -51,6 +51,29 @@ export class KnexDocumentRepository extends DocumentRepositoryPort {
     return rowToDocument(row);
   }
 
+  async upsert(document) {
+    const [row] = await this.#knex("documents")
+      .insert({
+        id: document.id,
+        type: document.type,
+        title: document.title,
+        source_format: document.sourceFormat,
+        version: document.version ?? 1,
+        created_by: document.createdBy,
+        candidate_id: document.candidateId ?? null,
+        source_path: document.sourcePath,
+        content_hash: document.contentHash,
+        status: document.status ?? "pending",
+        status_message: document.statusMessage ?? null,
+        ocr_required: document.ocrRequired ?? false,
+        updated_at: this.#knex.fn.now(),
+      })
+      .onConflict("id")
+      .merge()
+      .returning("*");
+    return rowToDocument(row);
+  }
+
   async findById(id) {
     const row = await this.#knex("documents").where({ id }).first();
     return rowToDocument(row);

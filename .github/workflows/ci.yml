@@ -26,6 +26,13 @@ jobs:
     env:
       DATABASE_URL: postgres://domain_copilot:domain_copilot@localhost:5432/domain_copilot
       JWT_SECRET: ci-test-secret-not-a-real-secret
+      # puppeteer (a real dependency for Phase 5's PDF generation) otherwise
+      # downloads its own Chromium on every `npm ci` — this alone took the
+      # install step from seconds to ~7 minutes once puppeteer landed.
+      # Nothing in CI launches a browser, so skip it entirely; both var names
+      # are set since Puppeteer has used each across versions.
+      PUPPETEER_SKIP_DOWNLOAD: "true"
+      PUPPETEER_SKIP_CHROMIUM_DOWNLOAD: "true"
     steps:
       - uses: actions/checkout@v7
 
@@ -55,6 +62,7 @@ jobs:
       - name: Dependency audit
         run: npm audit --audit-level=high
         continue-on-error: true
+        timeout-minutes: 2
 
   secret-scan:
     runs-on: ubuntu-latest

@@ -123,4 +123,9 @@ export class PgVectorStore extends VectorStorePort {
     const rows = await query;
     return rows.map((row) => rowToChunkResult(row, null));
   }
+
+  async getChunkerVersionForDocument(documentId) {
+    const row = await this.#knex("chunks").select("chunker_version").where({ document_id: documentId }).first();
+    return row?.chunker_version ?? null;
+  }
 }

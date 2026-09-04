@@ -9,6 +9,14 @@ export class DocumentRepositoryPort {
     throw new Error("DocumentRepositoryPort.findById not implemented");
   }
 
+  // Insert-or-fully-replace by id — the ingestion use case identifies a
+  // document by a caller-supplied stable id (e.g. the corpus manifest's own
+  // id), not a freshly generated one, so re-ingesting the same source is an
+  // update to the same row rather than a duplicate.
+  async upsert(_document) {
+    throw new Error("DocumentRepositoryPort.upsert not implemented");
+  }
+
   // Idempotent re-ingestion (FR-1) hinges on this: same contentHash means
   // the source file hasn't changed since the last successful ingest.
   async findByContentHash(_contentHash) {

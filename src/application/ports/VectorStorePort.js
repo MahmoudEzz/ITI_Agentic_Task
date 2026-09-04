@@ -21,4 +21,13 @@ export class VectorStorePort {
   async findByCandidateId(_candidateId, _options) {
     throw new Error("VectorStorePort.findByCandidateId not implemented");
   }
+
+  // Returns the chunkerVersion stamped on this document's existing chunks
+  // (null if none exist yet). The ingestion use case compares this against
+  // the current CHUNKER_VERSION to decide whether an otherwise-unchanged
+  // document still needs re-chunking because the chunking strategy itself
+  // changed — see Chunk.js and ADR-0001.
+  async getChunkerVersionForDocument(_documentId) {
+    throw new Error("VectorStorePort.getChunkerVersionForDocument not implemented");
+  }
 }
