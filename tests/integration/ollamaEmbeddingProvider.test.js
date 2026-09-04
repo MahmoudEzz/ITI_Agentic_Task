@@ -53,7 +53,7 @@ test("embed() splits a larger batch into multiple requests and still returns res
   }
 });
 
-test("semantically similar text produces a higher cosine similarity than unrelated text", async () => {
+test("semantically similar text produces a higher cosine similarity than unrelated text", { skip }, async () => {
   const [backend, kubernetes, painting] = await provider.embed([
     "Backend engineer with experience in distributed systems",
     "Experienced with container orchestration and Kubernetes",
