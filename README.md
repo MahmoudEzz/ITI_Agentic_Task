@@ -4,7 +4,7 @@ An agentic RAG platform that screens candidates against a role's competency rubr
 
 **Built for:** ITI Technical Instructor (Post-Graduate Training) technical assessment.
 
-> **Status: early scaffolding.** This README will grow into the full "assume the reader has Docker and 15 minutes" quick-start as each phase lands. Right now it documents what exists and the variant this repository implements — not a finished demo yet.
+> **Status: Phases 0-2 done** (scaffolding, domain/contracts, ingestion — see `docs/SYSTEM-DESIGN.md`'s phase table). Ingestion is real and verified end-to-end against the full corpus. No retrieval, agents, or UI yet — not a finished demo. This README grows into the full "assume the reader has Docker and 15 minutes" quick-start as each remaining phase lands.
 
 ## Assigned variant
 
@@ -35,21 +35,25 @@ teaching/          the teaching pack (slides, lab, assessment map)
 
 ## Quick start
 
-Full application quick-start (migrations, seed data, `npm run dev`) lands with Phase 2. What's real and verified today:
+The HTTP API (`npm run dev`/`npm start`) and structured rubric/competency seed data (`npm run seed`) land with Phases 4 and 7. What's real and verified today — ingestion end-to-end against real Postgres+pgvector and the full 42-document corpus:
 
 ```bash
-cp .env.example .env        # required once the api service is included (Phase 2+); fill in GEMINI_API_KEY when you have one
-docker compose up -d ollama
+cp .env.example .env        # fill in GEMINI_API_KEY when you have one; not needed for the commands below
+docker compose up -d postgres ollama
 docker compose run --rm ollama-pull   # first run: ~2.6GB image + ~2.3GB of models, several minutes
 docker compose exec ollama ollama list   # should show llama3.2:3b and nomic-embed-text
+
+npm install
+npm run migrate     # creates candidates/documents/chunks/competencies/rubrics tables
+npm run ingest       # extracts, chunks, embeds, and indexes the full corpus — idempotent re-runs skip unchanged docs
 ```
 
-The `api` service has nothing to serve yet (`src/adapters/http/server.js` doesn't exist until Phase 2/7) and its `env_file` requires a real `.env` — copy the example now so it's not a surprise later, but for today's verified commands above (`ollama` only), it isn't actually needed.
+`npm run seed` is declared but not yet implemented — it will populate `competencies`/`rubrics` from the corpus's rubric documents once Phase 4 (Rubric Scorer) defines the structured shape it consumes. The `api` service has nothing to serve yet (`src/adapters/http/server.js` doesn't exist until Phase 7).
 
 ```bash
-npm install
 npm test            # unit tests
 npm run test:contract
+npm run test:integration   # requires postgres running, see above
 npm run lint
 ```
 
