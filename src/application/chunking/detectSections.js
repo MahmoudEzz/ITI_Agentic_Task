@@ -1,6 +1,20 @@
 // Structure-aware section detection (ADR-0001): a heading is a short,
-// standalone line — ALL CAPS or Title Case, no trailing period, on its own
-// line surrounded by blank lines (or the very start/end of the document).
+// standalone line — ALL CAPS or Title Case, no trailing period — preceded by
+// an actual blank line. Only the preceding side is required: real CVs in the
+// corpus commonly put a blank line *before* a heading but not after it (e.g.
+// "SUMMARY\nBackend engineer with..." with no blank line in between) —
+// requiring blank-on-both-sides was tested against the actual corpus and
+// silently missed SUMMARY/EDUCATION/SKILLS headings in a real CV, catching
+// only EXPERIENCE (which happened to have a blank line on both sides).
+//
+// Deliberately NOT treating the start of the document as "preceded by a
+// blank line": a CV's very first line is almost always a name/title (e.g.
+// "AHMED YOUSSEF", two title-case words), which otherwise passes the
+// Title-Case/ALL-CAPS check and gets misread as a section heading — also
+// found by testing against real corpus content, not assumed. The cost is
+// that a document genuinely opening with a heading on line one won't be
+// detected as such; its content just stays in the leading heading:null
+// section, which the fallback chunker still handles correctly.
 // This is a heuristic, not a parser — it's deliberately permissive because
 // the corpus (CVs, job descriptions, policies) doesn't share one formatting
 // convention, and a document that matches nothing here still gets chunked,
@@ -13,6 +27,12 @@ function isHeadingCandidate(line) {
   const trimmed = line.trim();
   if (!trimmed || trimmed.length > MAX_HEADING_LENGTH) return false;
   if (trimmed.endsWith(".")) return false;
+  // A job-entry title line ("Senior Engineer, Acme Corp") is title-case and
+  // comma-separated — real section headings essentially never contain a
+  // comma. Found by testing chunkExperienceEntries' own fixtures against
+  // detectSections: without this, such a line got misread as a new
+  // top-level heading, fragmenting the Experience section it belongs to.
+  if (trimmed.includes(",")) return false;
 
   const words = trimmed.replace(/:$/, "").split(/\s+/);
   if (words.length > MAX_HEADING_WORDS) return false;
@@ -44,11 +64,9 @@ export function detectSections(text) {
     const line = lines[i];
     const lineStart = cursor;
     const lineEnd = cursor + line.length;
-    const prevLine = i > 0 ? lines[i - 1] : "";
-    const nextLine = i < lines.length - 1 ? lines[i + 1] : "";
-    const isSurroundedByBlankOrEdge = (i === 0 || prevLine.trim() === "") && (i === lines.length - 1 || nextLine.trim() === "");
+    const isPrecededByBlank = i > 0 && lines[i - 1].trim() === "";
 
-    if (isSurroundedByBlankOrEdge && isHeadingCandidate(line)) {
+    if (isPrecededByBlank && isHeadingCandidate(line)) {
       flush(lineStart);
       currentHeading = line.trim().replace(/:$/, "");
       currentStart = lineEnd + 1; // skip past this heading line
