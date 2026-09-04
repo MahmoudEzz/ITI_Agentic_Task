@@ -21,7 +21,17 @@ _TODO (Phase 3-4): fill in with concrete, measurable acceptance targets, e.g. re
 
 ## 4. Requirements (uniquely ID'd, BR-xx)
 
-_TODO: populated incrementally as each FR/phase lands. Each entry: ID, statement, acceptance criteria, linked implementation evidence (file/PR/test)._
+| ID | Statement | Acceptance criteria | Status |
+|---|---|---|---|
+| BR-01 | The system ingests documents in at least 2 source formats | `.txt`, `.docx`, and `.pdf` all extract to real text via a dedicated adapter per format | Implemented |
+| BR-02 | A scanned/image-only PDF is detected and flagged, never silently ingested as empty | Extraction yield below a chars-per-page threshold sets `needs_ocr`; verified against 5 real scanned-CV fixtures in the corpus, all correctly flagged | Implemented (OCR itself deferred to Phase 5, T6) |
+| BR-03 | Re-running ingestion on an unchanged corpus is a no-op | Re-ingesting all 42 corpus documents completes in <1s with 0 new embedding calls when content and chunker version are both unchanged | Implemented |
+| BR-04 | A change to the chunking strategy re-chunks previously-ingested documents even if their source content hasn't changed | Chunk rows carry a `chunkerVersion`; ingestion compares it against the current version and re-chunks on mismatch | Implemented |
+| BR-05 | A single document's ingestion failure does not abort a batch ingest | Every ingestion outcome (indexed/needs_ocr/skipped/failed) is a returned status, never a thrown error, at both the per-document and batch level | Implemented |
+| BR-06 | Chunking is a deliberate, documented decision justified against the corpus's actual structure | ADR-0001; structure-aware section/experience-entry detection verified against real corpus CVs and a policy document, not only synthetic fixtures | Implemented |
+| BR-07 | Hybrid (dense + keyword) retrieval with a documented fusion method | Reciprocal Rank Fusion (k=60) over pgvector cosine similarity + Postgres full-text search; unit-verified | Implemented (not yet exposed via a retrieval use case/API — Phase 3) |
+
+_Further BR entries added in the same PR as each subsequent phase lands._
 
 ## 5. Explicit out-of-scope
 
@@ -54,4 +64,12 @@ _TODO: populated as risks materialize during the build (e.g. structured-output r
 
 ## 9. Traceability matrix
 
-_TODO: `BR-xx → implemented / partial / deferred → evidence (file / PR / test)`, populated as each requirement is delivered. Will not be back-filled from memory — each row is added in the PR that implements it._
+| BR | Status | Evidence |
+|---|---|---|
+| BR-01 | Implemented | `src/adapters/extraction/{Txt,Docx,Pdf}Extractor.js`; `tests/integration/extraction.test.js` |
+| BR-02 | Implemented | `src/adapters/extraction/PdfExtractor.js` (`MIN_CHARS_PER_PAGE`); verified against real scanned CVs in PR #24/#28 |
+| BR-03 | Implemented | `src/application/ingestion/ingestDocument.js`; `tests/integration/ingestDocument.test.js`; real 42-doc corpus re-run in <1s (PR #28) |
+| BR-04 | Implemented | `VectorStorePort.getChunkerVersionForDocument`; `ingestDocument.js`; PR #28 |
+| BR-05 | Implemented | `ingestDocument.js`'s single try/catch around the full pipeline; `ingestCorpus.js`; PR #28 |
+| BR-06 | Implemented | `docs/adr/0001-chunking-and-retrieval-strategy.md`; `src/application/chunking/`; PR #26 |
+| BR-07 | Implemented | `src/adapters/vectorstore/PgVectorStore.js` (`hybridSearch`); `tests/integration/repositories.test.js`; PR #23 |
