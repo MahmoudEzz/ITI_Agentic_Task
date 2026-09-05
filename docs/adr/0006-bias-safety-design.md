@@ -2,7 +2,7 @@
 
 ## Status
 
-Proposed (mechanism implemented since Phase 1; wired into the actual pipeline in Phase 4 — see issue #13; flip to Accepted once the name-swap invariance metric runs for real against Phase 4's Rubric Scorer)
+Accepted (mechanism implemented since Phase 1; wired into the actual pipeline in Phase 4 — see issue #13; the name-swap invariance metric ran for real against the Rubric Scorer in Phase 8 — see `tests/integration/rubricScorerNameSwapInvariance.test.js` and `docs/EVALUATION.md`: byte-identical payload after redaction, confirmed; a 1-point real score drift on the LLM-level check, attributed to model sampling variance since the payload was proven identical before either call, not to bias)
 
 ## Context
 
