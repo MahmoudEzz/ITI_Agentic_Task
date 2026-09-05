@@ -14,6 +14,23 @@ let container, knex, app, baseUrl;
 
 const RECRUITER = { email: "sse-recruiter@example.com", password: "password-a", role: "recruiter" };
 
+// Same rationale and guard pattern as tests/integration/ollamaProvider.test.js:
+// CI runs no Ollama service, and the /ask test below makes real embedding +
+// streaming-completion calls against it — a missing guard here caused a real
+// CI failure in exactly this shape once already (see that file's own comment).
+const OLLAMA_HOST = process.env.OLLAMA_HOST ?? "http://localhost:11434";
+async function isOllamaReachable() {
+  try {
+    const response = await fetch(`${OLLAMA_HOST}/api/tags`, { signal: AbortSignal.timeout(2000) });
+    return response.ok;
+  } catch {
+    return false;
+  }
+}
+const skipAsk = (await isOllamaReachable())
+  ? false
+  : `Ollama not reachable at ${OLLAMA_HOST} — run locally with \`docker compose up -d ollama && docker compose run --rm ollama-pull\` to exercise this suite`;
+
 before(async () => {
   container = buildContainer();
   knex = container.resolve("knex");
@@ -76,7 +93,7 @@ async function readSse(response) {
   return frames;
 }
 
-test("POST /ask streams real incremental deltas via Ollama, ending in a real resolved-citation answer", async () => {
+test("POST /ask streams real incremental deltas via Ollama, ending in a real resolved-citation answer", { skip: skipAsk }, async () => {
   const embeddingProvider = container.resolve("embeddingProvider");
   const documentRepository = container.resolve("documentRepository");
   const vectorStore = container.resolve("vectorStore");
