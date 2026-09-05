@@ -18,6 +18,14 @@ export class VectorStorePort {
     throw new Error("VectorStorePort.searchByKeyword not implemented");
   }
 
+  // Fused dense+keyword retrieval (ADR-0001, Reciprocal Rank Fusion). Each
+  // result's `score` is the fused rank score — not a confidence magnitude,
+  // never threshold on it. `denseSimilarity` (raw cosine, 0-1, null for a
+  // keyword-only hit) is the field a refusal decision should use instead.
+  async hybridSearch(_queryText, _embedding, _options) {
+    throw new Error("VectorStorePort.hybridSearch not implemented");
+  }
+
   async findByCandidateId(_candidateId, _options) {
     throw new Error("VectorStorePort.findByCandidateId not implemented");
   }

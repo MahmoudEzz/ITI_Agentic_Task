@@ -19,6 +19,11 @@ const ChunkResultSchema = z
     section: z.string().nullable().optional(),
     page: z.number().int().nullable().optional(),
     ocrConfidence: z.number().min(0).max(100).nullable().optional(),
+    // Raw cosine similarity (0-1), distinct from `score` (the fused RRF rank
+    // score, uninterpretable as a confidence magnitude — see ADR-0001). null
+    // for a keyword-only match with no dense hit. This is what
+    // decideRefusal.js thresholds on, never `score`.
+    denseSimilarity: z.number().min(0).max(1).nullable().optional(),
   })
   .strict();
 

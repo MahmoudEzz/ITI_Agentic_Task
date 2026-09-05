@@ -90,7 +90,11 @@ export class PgVectorStore extends VectorStorePort {
   }
 
   // Hybrid retrieval fusion (ADR-0001): fuse two independently-ranked result
-  // sets by reciprocal rank, not by combining raw scores.
+  // sets by reciprocal rank, not by combining raw scores. The fused
+  // `rrfScore` becomes `score` on the output — a rank-position artifact, not
+  // a confidence magnitude. `denseSimilarity` (raw cosine, from the dense
+  // pass only) is carried through separately so a refusal decision has an
+  // interpretable 0-1 number to threshold on instead.
   async hybridSearch(queryText, embedding, options = {}) {
     const [denseResults, keywordResults] = await Promise.all([
       this.searchByEmbedding(embedding, options),
@@ -99,7 +103,7 @@ export class PgVectorStore extends VectorStorePort {
 
     const fused = new Map();
     denseResults.forEach((result, rank) => {
-      fused.set(result.chunkId, { result, rrfScore: 1 / (RRF_K + rank + 1) });
+      fused.set(result.chunkId, { result, rrfScore: 1 / (RRF_K + rank + 1), denseSimilarity: result.score });
     });
     keywordResults.forEach((result, rank) => {
       const existing = fused.get(result.chunkId);
@@ -107,14 +111,14 @@ export class PgVectorStore extends VectorStorePort {
       if (existing) {
         existing.rrfScore += rrfContribution;
       } else {
-        fused.set(result.chunkId, { result, rrfScore: rrfContribution });
+        fused.set(result.chunkId, { result, rrfScore: rrfContribution, denseSimilarity: null });
       }
     });
 
     return [...fused.values()]
       .sort((a, b) => b.rrfScore - a.rrfScore)
       .slice(0, options.topK ?? 8)
-      .map(({ result, rrfScore }) => ({ ...result, score: rrfScore }));
+      .map(({ result, rrfScore, denseSimilarity }) => ({ ...result, score: rrfScore, denseSimilarity }));
   }
 
   async findByCandidateId(candidateId, { section } = {}) {
