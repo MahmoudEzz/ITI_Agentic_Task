@@ -10,13 +10,15 @@ The brief mandates a single provider interface (completion, streaming, tool call
 
 ## Decision
 
-One `LLMProviderPort` interface — `complete`, `stream`, `toolCall`, `embed` — with three implementations:
+**Amendment (Phase 3, landed ahead of the original Phase 4 plan):** Phase 3's Q&A use case needed a working text-generation call before Phase 4 existed, so `LLMProviderPort` was built now with `complete` only — `stream` (SSE) and `toolCall` (agents) are added when Phase 7 and Phase 4 actually need them, since a port method every adapter would just throw `not implemented` on on day one is worse than an absent method. `embed` was already its own `EmbeddingProviderPort` since Phase 2, not folded into this one as originally sketched below — text generation and embeddings are genuinely separate capabilities with separate adapters (`OllamaEmbeddingProvider` vs. `OllamaProvider`), and splitting them means a change to one never forces a stub change on the other. The fallback chain (below) is real, implemented as `FallbackLLMProvider`, config-driven from `LLM_PROVIDER_CHAIN`.
 
-- **OllamaProvider** (primary, local) — generation via `llama3.2:3b` or `qwen2.5:3b`, embeddings via `nomic-embed-text`, using Ollama's schema-constrained decoding (`format: <json-schema>`) for every structured agent output.
-- **GeminiProvider** (secondary, hosted, genuinely free tier) — same interface, mapping the same schema to Gemini's structured-output/response-schema field.
-- **MockProvider** — deterministic canned responses, used only in CI/unit tests, never in a live run.
+One `LLMProviderPort` interface — eventually `complete`, `stream`, `toolCall` (`embed` lives on its own port, see amendment above) — with three implementations:
 
-Fallback chain: primary (Ollama) → secondary (Gemini) on failure/timeout → refuse or degrade (never silently substitute the mock in a live run).
+- **OllamaProvider** (primary, local) — `complete` built in Phase 3 via `ollama.chat()`; generation via `llama3.2:3b`, schema-constrained decoding (`format: <json-schema>`) lands with Phase 4's structured agent outputs (`complete`'s `schema` param already threads through to `format`, unused until then).
+- **GeminiProvider** (secondary, hosted, genuinely free tier) — same interface, via `@google/genai`'s `generateContent`, mapping `schema` to `responseSchema`/`responseMimeType`.
+- **MockProvider** — not yet built; Phase 3's `FallbackLLMProvider` unit test uses inline stub objects instead, since a formal `MockProvider` class only earns its keep once Phase 4's agents need canned *structured* (schema-shaped) responses, not just canned text.
+
+Fallback chain: primary (Ollama) → secondary (Gemini) on failure → refuse (never silently substitute a mock in a live run). Built as `FallbackLLMProvider`, wired from `LLM_PROVIDER_CHAIN` in `src/infra/config/container.js`. Explicit timeout/backoff controls (the "or timeout" half of this line) are Phase 4 orchestration scope (`docs/SYSTEM-DESIGN.md`'s orchestrator "Controls" section), not built here — a slow provider in Phase 3 just responds slowly, it does not yet trigger fallback.
 
 The schema passed to `complete({ schema })` is generated once, from the same Zod contract in `src/contracts`, via `zod-to-json-schema` — both providers validate against output shaped by the identical source of truth, so "typed contracts" means one schema per contract, not two hand-maintained copies. Retry-on-validation-failure (max 2 attempts) is a last-resort safety net, not the primary mechanism for getting well-formed output.
 

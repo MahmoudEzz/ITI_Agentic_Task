@@ -31,6 +31,7 @@ _TODO (Phase 3-4): fill in with concrete, measurable acceptance targets, e.g. re
 | BR-06 | Chunking is a deliberate, documented decision justified against the corpus's actual structure | ADR-0001; structure-aware section/experience-entry detection verified against real corpus CVs and a policy document, not only synthetic fixtures | Implemented |
 | BR-07 | Hybrid (dense + keyword) retrieval with a documented fusion method | Reciprocal Rank Fusion (k=60) over pgvector cosine similarity + Postgres full-text search; unit-verified | Implemented (not yet exposed via a retrieval use case/API — Phase 3) |
 | BR-08 | No claim may be made without evidence; insufficient evidence produces a refusal, not an inference | Refusal decision is deterministic (raw dense cosine similarity vs. a configured threshold), computed before any LLM call, never the model's own self-assessment | Implemented (decision function only — not yet wired into a Q&A use case, tracked in issue #32) |
+| BR-09 | The system works with at least 2 genuinely working LLM providers behind one interface, with a documented fallback | `LLMProviderPort.complete`; real `OllamaProvider` (local) and `GeminiProvider` (hosted) implementations, `FallbackLLMProvider` tries each in `LLM_PROVIDER_CHAIN` order | Implemented |
 
 _Further BR entries added in the same PR as each subsequent phase lands._
 
@@ -75,3 +76,4 @@ _TODO: populated as risks materialize during the build (e.g. structured-output r
 | BR-06 | Implemented | `docs/adr/0001-chunking-and-retrieval-strategy.md`; `src/application/chunking/`; PR #26 |
 | BR-07 | Implemented | `src/adapters/vectorstore/PgVectorStore.js` (`hybridSearch`); `tests/integration/repositories.test.js`; PR #23 |
 | BR-08 | Implemented | `src/domain/services/decideRefusal.js`; `tests/unit/decideRefusal.test.js`; `docs/adr/0001` |
+| BR-09 | Implemented | `src/application/ports/LLMProviderPort.js`; `src/adapters/llm/{OllamaProvider,GeminiProvider,FallbackLLMProvider}.js`; `docs/adr/0005` |
