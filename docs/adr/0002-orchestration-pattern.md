@@ -2,7 +2,7 @@
 
 ## Status
 
-Proposed (implemented in Phase 4; flip to Accepted once landed and tested)
+Proposed (the FSM through `AWAIT_APPROVAL`, including the `DEGRADED_DRAFT` fallback, has landed and been tested — see Consequences; the approval gate → `GENERATE_REPORT` → `COMPLETE` portion this ADR's diagram also describes lands with issue #41, so Phase 4 as a whole isn't done yet — flip to Accepted once it is)
 
 ## Context
 
@@ -34,3 +34,4 @@ Named as **one** pattern (pipeline), not hedged as "pipeline/state-machine" — 
 - Every run's state transitions are persisted (`runs`, `run_steps` tables), giving exact step-by-step inspectability by run ID — this was a design goal, not an afterthought.
 - Because the pattern is fixed-sequence, adding a genuinely dynamic step later (e.g. an agent that decides whether to re-query for more evidence) would require deliberately introducing a supervisor sub-pattern for that one step, not retrofitting the whole pipeline.
 - The `DEGRADED_DRAFT` state is the concrete mechanism satisfying FR-5's "graceful degradation to plain RAG" requirement at the orchestrator level, not just as a Q&A-endpoint fallback.
+- **Verified (Phase 4, `runScreeningWorkflow.js`):** every transition is validated against `Run.js`'s own transition table before being persisted, so the orchestrator can never write a state that table doesn't allow — including the constraint that `REDACT_PROTECTED_ATTRS` has no legal `DEGRADED_DRAFT` exit, which shaped where in the batch a failure is attributed (see the file's own comments). A forced-failure unit test actually reaches `DEGRADED_DRAFT` via a stub, and a live run against the real corpus and a real local Ollama produced it for real: 2 of 4 candidates were genuinely OCR-blocked (no chunks), the run degraded correctly, and the surviving 2 candidates got a real composite-score-ranked shortlist. The same live run also surfaced Ollama's model runner crashing under sustained load on an earlier, larger batch (see ADR-0005's Consequences) — `FallbackLLMProvider` caught it and fell through to Gemini exactly as designed, itself blocked only on the disclosed missing-API-key gap.
