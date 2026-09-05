@@ -44,16 +44,18 @@ docker compose run --rm ollama-pull   # first run: ~2.6GB image + ~2.3GB of mode
 docker compose exec ollama ollama list   # should show llama3.2:3b and nomic-embed-text
 
 npm install
-npm run migrate     # creates candidates/documents/chunks/competencies/rubrics tables
+npm run migrate     # creates candidates/documents/chunks/competencies/rubrics/runs/... tables
 npm run ingest       # extracts, chunks, embeds, and indexes the full corpus — idempotent re-runs skip unchanged docs
+npm run seed         # hand-authored competencies/rubrics matching the corpus rubric documents — idempotent
 ```
 
-`npm run seed` is declared but not yet implemented — it will populate `competencies`/`rubrics` from the corpus's rubric documents once Phase 4 (Rubric Scorer) defines the structured shape it consumes. The `api` service has nothing to serve yet (`src/adapters/http/server.js` doesn't exist until Phase 7).
+The `api` service has nothing to serve yet (`src/adapters/http/server.js` doesn't exist until Phase 7).
 
 ```bash
 npm test            # unit tests
 npm run test:contract
-npm run test:integration   # requires postgres running, see above
+npm run test:integration   # requires postgres running, see above, and a domain_copilot_test database — created automatically by docker/init-test-db.sh, or once by hand on an already-initialized volume (see .env.example)
+npm run migrate:test       # applies migrations to that test database (once, or after adding a new migration)
 npm run lint
 ```
 

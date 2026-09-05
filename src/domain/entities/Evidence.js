@@ -2,7 +2,7 @@ import { ValidationError, InsufficientEvidenceError } from "../errors/index.js";
 
 // candidateId here is the opaque handle (e.g. "CAND-07"), never the
 // Candidate entity itself — this is what the Rubric Scorer receives, and it
-// must be structurally incapable of carrying a name. See ADR-0004.
+// must be structurally incapable of carrying a name. See ADR-0006.
 export function createEvidence({ candidateHandle, competencyId, snippets }) {
   if (!candidateHandle) throw new ValidationError("Evidence requires a candidateHandle");
   if (!competencyId) throw new ValidationError("Evidence requires a competencyId");
