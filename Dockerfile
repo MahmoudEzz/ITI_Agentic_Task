@@ -1,8 +1,8 @@
 FROM node:22-slim
 
-# Native deps for OCR (tesseract.js still needs a rasterizer for scanned PDFs) and Puppeteer (PDF generation).
+# Native deps for Puppeteer (PDF generation) only — OCR rasterization is pure
+# JS (pdfjs-dist + @napi-rs/canvas, see ADR-0004's amendment), no poppler/pdftoppm needed.
 RUN apt-get update && apt-get install -y --no-install-recommends \
-    poppler-utils \
     chromium \
     fonts-liberation \
     && rm -rf /var/lib/apt/lists/*

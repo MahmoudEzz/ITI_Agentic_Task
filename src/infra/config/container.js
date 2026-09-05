@@ -17,6 +17,7 @@ import { KnexCompetencyRepository } from "../../adapters/relational/KnexCompeten
 import { KnexRubricRepository } from "../../adapters/relational/KnexRubricRepository.js";
 import { PgVectorStore } from "../../adapters/vectorstore/PgVectorStore.js";
 import { createExtractor } from "../../adapters/extraction/createExtractor.js";
+import { TesseractOcrAdapter } from "../../adapters/ocr/TesseractOcrAdapter.js";
 import { OllamaEmbeddingProvider } from "../../adapters/llm/OllamaEmbeddingProvider.js";
 import { OllamaProvider } from "../../adapters/llm/OllamaProvider.js";
 import { GeminiProvider } from "../../adapters/llm/GeminiProvider.js";
@@ -67,6 +68,7 @@ export function buildContainer(overrides = {}) {
     rubricRepository: asFunction(({ knex }) => new KnexRubricRepository(knex)).singleton(),
     vectorStore: asFunction(({ knex }) => new PgVectorStore(knex)).singleton(),
     extractorFactory: asValue((sourceFormat) => createExtractor(sourceFormat)),
+    ocrPort: asFunction(() => new TesseractOcrAdapter()).singleton(),
     embeddingProvider: asFunction(
       ({ config }) => new OllamaEmbeddingProvider({ host: config.ollama.host, model: config.ollama.embedModel }),
     ).singleton(),
@@ -78,8 +80,8 @@ export function buildContainer(overrides = {}) {
       });
       return new FallbackLLMProvider(providers);
     }).singleton(),
-    ingestDocument: asFunction(({ documentRepository, vectorStore, embeddingProvider, extractorFactory }) =>
-      createIngestDocumentUseCase({ documentRepository, vectorStore, embeddingProvider, extractorFactory }),
+    ingestDocument: asFunction(({ documentRepository, vectorStore, embeddingProvider, extractorFactory, ocrPort }) =>
+      createIngestDocumentUseCase({ documentRepository, vectorStore, embeddingProvider, extractorFactory, ocrPort }),
     ).singleton(),
     answerQuestion: asFunction(({ embeddingProvider, vectorStore, llmProvider, candidateRepository, config }) => {
       const { system, template } = loadPromptTemplate(path.join(repoRoot, "prompts", "answer-grounded.md"));
@@ -101,9 +103,9 @@ export function buildContainer(overrides = {}) {
     finalizeShortlist: asFunction(({ approvalRepository, shortlistRepository }) =>
       createFinalizeShortlistTool({ approvalRepository, shortlistRepository }),
     ).singleton(),
-    toolImplementations: asFunction(({ vectorStore, embeddingProvider, candidateRepository, finalizeShortlist }) => ({
+    toolImplementations: asFunction(({ vectorStore, embeddingProvider, candidateRepository, finalizeShortlist, config }) => ({
       search_corpus: createSearchCorpusTool({ vectorStore, embeddingProvider }),
-      get_candidate_chunks: createGetCandidateChunksTool({ vectorStore, candidateRepository }),
+      get_candidate_chunks: createGetCandidateChunksTool({ vectorStore, candidateRepository, ocrThresholds: config.ocr }),
       finalize_shortlist: finalizeShortlist,
     })).singleton(),
     evidenceExtractor: asFunction(({ llmProvider, competencyRepository, toolImplementations }) => {

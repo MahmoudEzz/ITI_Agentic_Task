@@ -8,6 +8,7 @@ import { PDFDocument } from "pdf-lib";
 import { buildContainer, destroyContainer } from "../../src/infra/config/container.js";
 import { createIngestDocumentUseCase } from "../../src/application/ingestion/ingestDocument.js";
 import { createExtractor } from "../../src/adapters/extraction/createExtractor.js";
+import { TesseractOcrAdapter } from "../../src/adapters/ocr/TesseractOcrAdapter.js";
 import { CHUNKER_VERSION } from "../../src/application/chunking/chunkDocument.js";
 
 // A stub, not the real Ollama provider — these tests exercise the ingestion
@@ -47,8 +48,10 @@ beforeEach(async () => {
   await knex("documents").delete();
 });
 
+const ocrPort = new TesseractOcrAdapter();
+
 function makeUseCase(embeddingProvider) {
-  return createIngestDocumentUseCase({ documentRepository, vectorStore, embeddingProvider, extractorFactory: createExtractor });
+  return createIngestDocumentUseCase({ documentRepository, vectorStore, embeddingProvider, extractorFactory: createExtractor, ocrPort });
 }
 
 test("ingestDocument indexes a document end-to-end: extract, chunk, embed, index", async () => {
@@ -161,7 +164,7 @@ test("a chunker-version bump forces re-chunking even when the source content is 
   assert.equal(chunkerVersion, CHUNKER_VERSION);
 });
 
-test("a PDF with no text layer is flagged needs_ocr, not silently indexed empty", async () => {
+test("a truly blank scanned PDF still ends up needs_ocr after a real OCR attempt yields nothing usable", async () => {
   const embeddingStub = createCountingEmbeddingStub();
   const ingestDocument = makeUseCase(embeddingStub);
 
@@ -180,14 +183,72 @@ test("a PDF with no text layer is flagged needs_ocr, not silently indexed empty"
     candidateId: null,
   });
 
+  // This document genuinely goes through OcrPort.recognize() (a real
+  // tesseract.js call, not a stub) — it lands on needs_ocr because a blank
+  // page really does OCR to empty text, not because OCR was skipped.
   assert.equal(result.status, "needs_ocr");
   assert.equal(embeddingStub.callCount(), 0); // never even attempted to embed ungrounded OCR content
 
   const doc = await documentRepository.findById("test-scanned-1");
   assert.equal(doc.status, "needs_ocr");
   assert.equal(doc.ocrRequired, true);
+  assert.match(doc.statusMessage, /yielded no usable text/);
 
   const chunkCount = (await knex("chunks").where({ document_id: "test-scanned-1" }).count("id")).at(0).count;
+  assert.equal(Number(chunkCount), 0);
+});
+
+test("a real scanned CV fixture (cv-002-sara-mansour) OCRs to usable, indexed chunks tagged with page/ocrVersion/ocrConfidence", async () => {
+  const embeddingStub = createCountingEmbeddingStub();
+  const ingestDocument = makeUseCase(embeddingStub);
+  const fixturePath = path.join(process.cwd(), "corpus", "cvs", "cv-002-sara-mansour.pdf");
+
+  const result = await ingestDocument({
+    documentId: "test-ocr-usable-1",
+    sourcePath: fixturePath,
+    sourceFormat: "pdf",
+    type: "cv",
+    title: "Sara Mansour CV (scanned)",
+    createdBy: "test-user",
+    candidateId: null,
+  });
+
+  assert.equal(result.status, "indexed");
+  assert.ok(result.chunkCount >= 1);
+  assert.ok(embeddingStub.callCount() > 0);
+
+  const doc = await documentRepository.findById("test-ocr-usable-1");
+  assert.equal(doc.status, "indexed");
+  assert.equal(doc.ocrRequired, true); // permanently records that this document needed OCR
+
+  const rows = await knex("chunks").where({ document_id: "test-ocr-usable-1" });
+  assert.ok(rows.length >= 1);
+  for (const row of rows) {
+    assert.equal(row.page, 1);
+    assert.equal(row.ocr_version, "tesseract-v1");
+    assert.ok(Number(row.ocr_confidence) > 0);
+  }
+});
+
+test("a real scanned CV fixture that OCRs to nothing usable at all (cv-025b, an intentionally illegible fixture) ends up needs_ocr, never partially indexed", async () => {
+  const embeddingStub = createCountingEmbeddingStub();
+  const ingestDocument = makeUseCase(embeddingStub);
+  const fixturePath = path.join(process.cwd(), "corpus", "cvs", "cv-025-mina-abdel-malak-b.pdf");
+
+  const result = await ingestDocument({
+    documentId: "test-ocr-unusable-1",
+    sourcePath: fixturePath,
+    sourceFormat: "pdf",
+    type: "cv",
+    title: "Mina Abdel-Malak CV (illegible scan)",
+    createdBy: "test-user",
+    candidateId: null,
+  });
+
+  assert.equal(result.status, "needs_ocr");
+  assert.equal(embeddingStub.callCount(), 0);
+
+  const chunkCount = (await knex("chunks").where({ document_id: "test-ocr-unusable-1" }).count("id")).at(0).count;
   assert.equal(Number(chunkCount), 0);
 });
 
