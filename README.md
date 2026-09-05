@@ -208,6 +208,7 @@ Expect `Report generated: asset <id> (docx), run <runId> -> COMPLETE.` and a rea
 - [`docs/EVALUATION.md`](docs/EVALUATION.md) — golden set, harness, real baseline numbers
 - [`docs/AGENTIC-WORKFLOW.md`](docs/AGENTIC-WORKFLOW.md) — how AI was used to build this, deliberately
 - [`docs/AI-USAGE-LOG.md`](docs/AI-USAGE-LOG.md) — honest log of AI delegation, mistakes, and verification
+- [`docs/SUBMISSION-CHECKLIST.md`](docs/SUBMISSION-CHECKLIST.md) — real, dated evidence for every process/hygiene requirement, including the ones not fully met
 - [`CONTRIBUTING.md`](CONTRIBUTING.md) — branching, commit, and PR conventions
 
 ## Videos

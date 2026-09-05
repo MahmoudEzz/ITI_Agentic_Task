@@ -13,7 +13,13 @@ ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true \
 WORKDIR /app
 
 COPY package.json package-lock.json ./
-RUN npm ci --omit=dev
+# --ignore-scripts: --omit=dev skips devDependencies, but npm ci still runs
+# the "prepare" lifecycle script (husky) by default, which fails with exit
+# 127 since husky itself was just omitted. Git hooks have no meaning inside
+# a container anyway (no .git directory here) — this was a real bug, found
+# by an actual clean-clone `docker compose build` before submission, not a
+# preemptive guess.
+RUN npm ci --omit=dev --ignore-scripts
 
 COPY . .
 
