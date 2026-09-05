@@ -21,4 +21,10 @@ export class RunRepositoryPort {
   async listSteps(_runId) {
     throw new Error("RunRepositoryPort.listSteps not implemented");
   }
+
+  // `createdBy` filters to one recruiter's own runs; omitted, every run —
+  // the same ownership-scoping policy as GET /runs/:id, applied to a list.
+  async findAll(_options) {
+    throw new Error("RunRepositoryPort.findAll not implemented");
+  }
 }

@@ -54,4 +54,11 @@ export class KnexRunRepository extends RunRepositoryPort {
     const rows = await this.#knex("run_steps").where({ run_id: runId }).orderBy("entered_at", "asc");
     return rows.map(rowToStep);
   }
+
+  async findAll({ createdBy } = {}) {
+    let query = this.#knex("runs").orderBy("created_at", "desc");
+    if (createdBy) query = query.where({ created_by: createdBy });
+    const rows = await query;
+    return rows.map(rowToRun);
+  }
 }

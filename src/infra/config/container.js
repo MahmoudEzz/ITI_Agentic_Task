@@ -5,7 +5,7 @@ import { fileURLToPath } from "node:url";
 
 import { loadConfig } from "./env.js";
 import { loadPromptTemplate } from "../../application/prompts/loadPromptTemplate.js";
-import { createAnswerQuestionUseCase } from "../../application/use-cases/answerQuestion.js";
+import { createAnswerQuestionUseCase, createAnswerQuestionStreamUseCase } from "../../application/use-cases/answerQuestion.js";
 import { KnexDocumentRepository } from "../../adapters/relational/KnexDocumentRepository.js";
 import { KnexCandidateRepository } from "../../adapters/relational/KnexCandidateRepository.js";
 import { KnexRunRepository } from "../../adapters/relational/KnexRunRepository.js";
@@ -113,6 +113,19 @@ export function buildContainer(overrides = {}) {
     answerQuestion: asFunction(({ embeddingProvider, vectorStore, llmProvider, candidateRepository, config }) => {
       const { system, template } = loadPromptTemplate(path.join(repoRoot, "prompts", "answer-grounded.md"));
       return createAnswerQuestionUseCase({
+        embeddingProvider,
+        vectorStore,
+        llmProvider,
+        candidateRepository,
+        promptTemplate: template,
+        systemPrompt: system,
+        refusalThreshold: config.retrieval.refusalThreshold,
+        defaultTopK: config.retrieval.topK,
+      });
+    }).singleton(),
+    answerQuestionStream: asFunction(({ embeddingProvider, vectorStore, llmProvider, candidateRepository, config }) => {
+      const { system, template } = loadPromptTemplate(path.join(repoRoot, "prompts", "answer-grounded.md"));
+      return createAnswerQuestionStreamUseCase({
         embeddingProvider,
         vectorStore,
         llmProvider,

@@ -94,6 +94,32 @@ test("happy path: reaches AWAIT_APPROVAL via the real (non-degraded) FSM sequenc
   );
 });
 
+test("onEvent fires started/completed progress events per candidate — the mechanism behind Phase 7's SSE discrete-progress-event routes", async () => {
+  const extractRedactScore = async () => ({ scores: [GOOD_SCORE], auditEntries: [] });
+  const shortlistDrafter = async ({ candidates }) => ({
+    shortlist: candidates.map((c, i) => ({ candidateHandle: c.candidateHandle, rank: i + 1, summary: "ok", interviewProbes: ["a", "b"] })),
+  });
+  const deps = makeDeps({ extractRedactScore, shortlistDrafter });
+  const runScreeningWorkflow = createRunScreeningWorkflowUseCase(deps);
+
+  const events = [];
+  await runScreeningWorkflow({
+    roleId: "backend-engineer",
+    rubricId: "rubric-x",
+    candidateHandles: ["CAND-001", "CAND-002"],
+    createdBy: "test",
+    onEvent: (event) => events.push(event.type),
+  });
+
+  const candidateEvents = events.filter((t) => t.startsWith("candidate.extract_redact_score"));
+  assert.deepEqual(candidateEvents, [
+    "candidate.extract_redact_score.started",
+    "candidate.extract_redact_score.completed",
+    "candidate.extract_redact_score.started",
+    "candidate.extract_redact_score.completed",
+  ]);
+});
+
 test("DEGRADED_DRAFT: a candidate's StructuredOutputError degrades the whole batch, survivors still get a shortlist", async () => {
   const extractRedactScore = async ({ candidateHandle }) => {
     if (candidateHandle === "CAND-002") throw new StructuredOutputError("model gave up", { attempts: 3, lastRawOutput: "{}" });

@@ -1,7 +1,7 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 
-import { createAnswerQuestionUseCase } from "../../src/application/use-cases/answerQuestion.js";
+import { createAnswerQuestionUseCase, createAnswerQuestionStreamUseCase } from "../../src/application/use-cases/answerQuestion.js";
 import { NotFoundError } from "../../src/domain/errors/index.js";
 
 const TEMPLATE = "CONTEXT:\n{{context}}\n\nQUESTION:\n{{question}}";
@@ -92,4 +92,64 @@ test("throws NotFoundError for a candidateHandle that doesn't resolve to a real 
 
   const answerQuestion = createAnswerQuestionUseCase(deps);
   await assert.rejects(() => answerQuestion({ question: "x", candidateHandle: "CAND-999" }), NotFoundError);
+});
+
+function stubStreamDeps({ chunks, deltas }) {
+  const deps = stubDeps({ chunks, completeText: "n/a" });
+  deps.llmProvider = {
+    async *stream() {
+      for (const text of deltas) yield { type: "delta", text };
+      yield { type: "done", tokensIn: 10, tokensOut: 5 };
+    },
+  };
+  return deps;
+}
+
+test("answerQuestionStream: refuses via a single onEvent, without ever calling stream()", async () => {
+  const deps = stubStreamDeps({ chunks: [{ chunkId: "c1", documentId: "d1", content: "x", denseSimilarity: 0.1 }], deltas: ["should never happen"] });
+  let streamCalled = false;
+  // eslint-disable-next-line require-yield -- asserts stream() is never even called; nothing to yield
+  deps.llmProvider.stream = async function* () {
+    streamCalled = true;
+  };
+
+  const answerQuestionStream = createAnswerQuestionStreamUseCase(deps);
+  const events = [];
+  await answerQuestionStream({ question: "x", onEvent: (e) => events.push(e) });
+
+  assert.equal(streamCalled, false);
+  assert.equal(events.length, 1);
+  assert.equal(events[0].type, "answer");
+  assert.equal(events[0].answer.refused, true);
+});
+
+test("answerQuestionStream: forwards every real delta as it arrives, then one final answer event with resolved citations", async () => {
+  const chunks = [{ chunkId: "c1", documentId: "d1", content: "5 years of Kubernetes experience.", denseSimilarity: 0.9, section: "Experience", page: 1 }];
+  const deps = stubStreamDeps({ chunks, deltas: ["The candidate has ", "5 years of Kubernetes ", "experience [1]."] });
+
+  const answerQuestionStream = createAnswerQuestionStreamUseCase(deps);
+  const events = [];
+  await answerQuestionStream({ question: "x", onEvent: (e) => events.push(e) });
+
+  const deltaEvents = events.filter((e) => e.type === "delta");
+  assert.deepEqual(deltaEvents.map((e) => e.text), ["The candidate has ", "5 years of Kubernetes ", "experience [1]."]);
+
+  const finalEvent = events.at(-1);
+  assert.equal(finalEvent.type, "answer");
+  assert.equal(finalEvent.answer.refused, false);
+  assert.equal(finalEvent.answer.answer, "The candidate has 5 years of Kubernetes experience [1].");
+  assert.equal(finalEvent.answer.citations[0].chunkId, "c1");
+});
+
+test("answerQuestionStream: a citation-free streamed response still resolves as a refusal, same as the non-streaming path", async () => {
+  const chunks = [{ chunkId: "c1", documentId: "d1", content: "real content", denseSimilarity: 0.9 }];
+  const deps = stubStreamDeps({ chunks, deltas: ["This answer cites nothing at all."] });
+
+  const answerQuestionStream = createAnswerQuestionStreamUseCase(deps);
+  const events = [];
+  await answerQuestionStream({ question: "x", onEvent: (e) => events.push(e) });
+
+  const finalEvent = events.at(-1);
+  assert.equal(finalEvent.answer.refused, true);
+  assert.equal(finalEvent.answer.refusalReason, "insufficient_evidence");
 });
