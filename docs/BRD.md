@@ -29,9 +29,10 @@ _TODO (Phase 3-4): fill in with concrete, measurable acceptance targets, e.g. re
 | BR-04 | A change to the chunking strategy re-chunks previously-ingested documents even if their source content hasn't changed | Chunk rows carry a `chunkerVersion`; ingestion compares it against the current version and re-chunks on mismatch | Implemented |
 | BR-05 | A single document's ingestion failure does not abort a batch ingest | Every ingestion outcome (indexed/needs_ocr/skipped/failed) is a returned status, never a thrown error, at both the per-document and batch level | Implemented |
 | BR-06 | Chunking is a deliberate, documented decision justified against the corpus's actual structure | ADR-0001; structure-aware section/experience-entry detection verified against real corpus CVs and a policy document, not only synthetic fixtures | Implemented |
-| BR-07 | Hybrid (dense + keyword) retrieval with a documented fusion method | Reciprocal Rank Fusion (k=60) over pgvector cosine similarity + Postgres full-text search; unit-verified | Implemented (not yet exposed via a retrieval use case/API — Phase 3) |
-| BR-08 | No claim may be made without evidence; insufficient evidence produces a refusal, not an inference | Refusal decision is deterministic (raw dense cosine similarity vs. a configured threshold), computed before any LLM call, never the model's own self-assessment | Implemented (decision function only — not yet wired into a Q&A use case, tracked in issue #32) |
+| BR-07 | Hybrid (dense + keyword) retrieval with a documented fusion method | Reciprocal Rank Fusion (k=60) over pgvector cosine similarity + Postgres full-text search; unit-verified, exposed via `answerQuestion` (BR-10) | Implemented |
+| BR-08 | No claim may be made without evidence; insufficient evidence produces a refusal, not an inference | Refusal decision is deterministic (raw dense cosine similarity vs. a configured threshold), computed before any LLM call, never the model's own self-assessment | Implemented |
 | BR-09 | The system works with at least 2 genuinely working LLM providers behind one interface, with a documented fallback | `LLMProviderPort.complete`; real `OllamaProvider` (local) and `GeminiProvider` (hosted) implementations, `FallbackLLMProvider` tries each in `LLM_PROVIDER_CHAIN` order | Implemented |
+| BR-10 | Grounded Q&A: retrieve, answer, cite, or refuse — the first demoable slice (FR-2) | `npm run ask` answers a real in-corpus question with citations resolving to actual chunk IDs; an out-of-corpus question refuses; both verified against the live ingested database, not fixtures | Implemented |
 
 _Further BR entries added in the same PR as each subsequent phase lands._
 
@@ -77,3 +78,4 @@ _TODO: populated as risks materialize during the build (e.g. structured-output r
 | BR-07 | Implemented | `src/adapters/vectorstore/PgVectorStore.js` (`hybridSearch`); `tests/integration/repositories.test.js`; PR #23 |
 | BR-08 | Implemented | `src/domain/services/decideRefusal.js`; `tests/unit/decideRefusal.test.js`; `docs/adr/0001` |
 | BR-09 | Implemented | `src/application/ports/LLMProviderPort.js`; `src/adapters/llm/{OllamaProvider,GeminiProvider,FallbackLLMProvider}.js`; `docs/adr/0005` |
+| BR-10 | Implemented | `src/application/use-cases/answerQuestion.js`; `prompts/answer-grounded.md`; `scripts/ask.js`; `tests/unit/answerQuestion.test.js`; PR #32 |
