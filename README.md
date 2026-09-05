@@ -4,7 +4,7 @@ An agentic RAG platform that screens candidates against a role's competency rubr
 
 **Built for:** ITI Technical Instructor (Post-Graduate Training) technical assessment.
 
-> **Status: Phases 0-5 done** (scaffolding, domain/contracts, ingestion, retrieval/Q&A, multi-agent screening + approval gate, T6 OCR + report generation — see `docs/SYSTEM-DESIGN.md`'s phase table). `npm run ask` (grounded Q&A with citations/refusal) and `npm run screen` (full role/candidate-pool screening through human approval through a generated DOCX/PDF report) both work end-to-end against the real corpus, a real local Ollama, and real OCR on the corpus's scanned-CV fixtures. No security hardening or web UI yet — not a finished demo. This README grows into the full "assume the reader has Docker and 15 minutes" quick-start as each remaining phase lands.
+> **Status: Phases 0-6 done** (scaffolding, domain/contracts, ingestion, retrieval/Q&A, multi-agent screening + approval gate, T6 OCR + report generation, security hardening — see `docs/SYSTEM-DESIGN.md`'s phase table). `npm run ask` (grounded Q&A with citations/refusal) and `npm run screen` (full role/candidate-pool screening through human approval through a generated DOCX/PDF report showing the actual quoted evidence per citation) both work end-to-end against the real corpus, a real local Ollama, and real OCR on the corpus's scanned-CV fixtures. A minimal Fastify HTTP shell (`node src/adapters/http/server.js`) now serves JWT auth, ownership-scoped run access/decision routes, rate-limiting, and security headers — but no web UI yet, and only 2 business routes exist ahead of Phase 7. Not a finished demo. This README grows into the full "assume the reader has Docker and 15 minutes" quick-start as each remaining phase lands.
 
 ## Assigned variant
 
@@ -35,7 +35,7 @@ teaching/          the teaching pack (slides, lab, assessment map)
 
 ## Quick start
 
-The HTTP API (`npm run dev`/`npm start`) and structured rubric/competency seed data (`npm run seed`) land with Phases 4 and 7. What's real and verified today — ingestion end-to-end against real Postgres+pgvector and the full 42-document corpus:
+A minimal HTTP API (`npm run dev`/`npm start`) exists as of Phase 6 — auth, one ownership-scoped run route, and one approval-decision route, security headers/CORS/rate-limiting; the rest of the business API and the web UI land with Phase 7. What's real and verified today — ingestion end-to-end against real Postgres+pgvector and the full 42-document corpus:
 
 ```bash
 cp .env.example .env        # fill in GEMINI_API_KEY when you have one; not needed for the commands below
@@ -49,7 +49,23 @@ npm run ingest       # extracts, chunks, embeds, and indexes the full corpus —
 npm run seed         # hand-authored competencies/rubrics matching the corpus rubric documents — idempotent
 ```
 
-The `api` service has nothing to serve yet (`src/adapters/http/server.js` doesn't exist until Phase 7).
+A real, minimal HTTP API exists as of Phase 6 (`npm run dev` / `npm start`, or via the `api` compose service):
+
+```bash
+npm run users -- create --email "recruiter1@example.com" --password "change-me" --role recruiter
+npm run users -- create --email "hm1@example.com" --password "change-me" --role hiring_manager
+
+npm run dev   # or: node src/adapters/http/server.js
+
+curl -X POST http://localhost:3000/auth/login -H "Content-Type: application/json" \
+  -d '{"email":"hm1@example.com","password":"change-me"}'   # -> { token, user }
+
+curl http://localhost:3000/runs/<runId> -H "Authorization: Bearer <token>"
+curl -X POST http://localhost:3000/runs/<runId>/decision -H "Authorization: Bearer <token>" \
+  -H "Content-Type: application/json" -d '{"decision":"approved"}'
+```
+
+Only `GET /runs/:id` and `POST /runs/:id/decision` exist as business routes so far — enough to exercise auth/ownership/rate-limit/CORS/helmet for real (see `docs/SECURITY.md`'s "Access" section). Ingest, ask, and the rest of the screening workflow are still CLI-only (`npm run ingest`/`npm run ask`/`npm run screen`, all below) until Phase 7 adds the full API and UI on top of this shell.
 
 A full screening run, human approval, and T6 report generation, against the real corpus:
 
