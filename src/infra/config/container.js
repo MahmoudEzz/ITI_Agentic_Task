@@ -37,6 +37,7 @@ import { createShortlistDrafterAgent } from "../../application/agents/shortlistD
 import { createExtractRedactScoreWorkflow } from "../../application/workflows/extractRedactScore.js";
 import { createRunScreeningWorkflowUseCase } from "../../application/workflows/runScreeningWorkflow.js";
 import { createApplyApprovalDecisionUseCase } from "../../application/workflows/applyApprovalDecision.js";
+import { createCompleteRunUseCase } from "../../application/workflows/completeRun.js";
 
 const here = path.dirname(fileURLToPath(import.meta.url));
 const repoRoot = path.join(here, "..", "..", "..");
@@ -155,6 +156,9 @@ export function buildContainer(overrides = {}) {
     ).singleton(),
     applyApprovalDecision: asFunction(({ runRepository, approvalRepository, shortlistRepository, finalizeShortlist }) =>
       createApplyApprovalDecisionUseCase({ runRepository, approvalRepository, shortlistRepository, finalizeShortlist }),
+    ).singleton(),
+    completeRun: asFunction(({ runRepository, approvalRepository, generateReport }) =>
+      createCompleteRunUseCase({ runRepository, approvalRepository, generateReport }),
     ).singleton(),
   });
 

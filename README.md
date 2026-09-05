@@ -4,7 +4,7 @@ An agentic RAG platform that screens candidates against a role's competency rubr
 
 **Built for:** ITI Technical Instructor (Post-Graduate Training) technical assessment.
 
-> **Status: Phases 0-4 done** (scaffolding, domain/contracts, ingestion, retrieval/Q&A, multi-agent screening + approval gate — see `docs/SYSTEM-DESIGN.md`'s phase table). `npm run ask` (grounded Q&A with citations/refusal) and `npm run screen` (full role/candidate-pool screening through human approval) both work end-to-end against the real corpus and a real local Ollama. No T6 document generation, security hardening, or web UI yet — not a finished demo. This README grows into the full "assume the reader has Docker and 15 minutes" quick-start as each remaining phase lands.
+> **Status: Phases 0-5 done** (scaffolding, domain/contracts, ingestion, retrieval/Q&A, multi-agent screening + approval gate, T6 OCR + report generation — see `docs/SYSTEM-DESIGN.md`'s phase table). `npm run ask` (grounded Q&A with citations/refusal) and `npm run screen` (full role/candidate-pool screening through human approval through a generated DOCX/PDF report) both work end-to-end against the real corpus, a real local Ollama, and real OCR on the corpus's scanned-CV fixtures. No security hardening or web UI yet — not a finished demo. This README grows into the full "assume the reader has Docker and 15 minutes" quick-start as each remaining phase lands.
 
 ## Assigned variant
 
@@ -50,6 +50,19 @@ npm run seed         # hand-authored competencies/rubrics matching the corpus ru
 ```
 
 The `api` service has nothing to serve yet (`src/adapters/http/server.js` doesn't exist until Phase 7).
+
+A full screening run, human approval, and T6 report generation, against the real corpus:
+
+```bash
+npm run ask -- "What backend engineering experience does CAND-001 have?"   # grounded Q&A with citations
+
+npm run screen -- run --role backend-engineer --rubric rubric-backend-engineer --by "recruiter@example.com"
+# -> prints a run id and a drafted shortlist; some candidates may fail extraction/scoring
+#    (a disclosed residual risk — see docs/SECURITY.md — or a genuinely OCR-blocked CV)
+
+npm run screen -- decide --run <runId> --decision approved --by "hiring-manager@example.com"
+npm run screen -- generate --run <runId> --format docx   # or pdf — writes to reports/generated/<runId>.<format>
+```
 
 ```bash
 npm test            # unit tests

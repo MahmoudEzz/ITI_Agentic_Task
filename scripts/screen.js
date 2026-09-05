@@ -1,4 +1,4 @@
-import { readFile } from "node:fs/promises";
+import { readFile, writeFile, mkdir } from "node:fs/promises";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -16,6 +16,8 @@ function usage() {
       "      Screens every ingested candidate targeting <roleId> (per corpus/manifest.json) against <rubricId>.",
       "  npm run screen -- decide --run <runId> --decision approved|rejected|edited_and_approved --by <decidedBy> [--comment <text>]",
       "      Applies a human decision to a run currently AWAIT_APPROVAL.",
+      "  npm run screen -- generate --run <runId> --format docx|pdf",
+      "      Generates the shortlist report for a run currently GENERATE_REPORT, then completes it.",
     ].join("\n"),
   );
 }
@@ -76,9 +78,34 @@ async function runDecide(flags, container) {
   console.log(`Approval ${result.approval.id} (${result.approval.decision}) recorded for run ${run}.`);
   if (result.finalized) {
     console.log(`Shortlist ${result.finalized.shortlistId} finalized at ${result.finalized.finalizedAt}.`);
+    console.log(`\nTo generate the report: npm run screen -- generate --run ${run} --format docx`);
   } else {
     console.log("Run rejected — no shortlist finalized.");
   }
+}
+
+// generate_report stores the file in Postgres (report_assets.content, a
+// bytea) — there's no HTTP download endpoint until Phase 7's API exists, so
+// this CLI also writes the same bytes to a local file, under the directory
+// .gitignore already anticipated for exactly this (`/reports/generated/`),
+// so the report is actually inspectable today.
+async function runGenerate(flags, container) {
+  const { run, format } = flags;
+  if (!run || !format) return usage(), process.exit(1);
+
+  const completeRun = container.resolve("completeRun");
+  const result = await completeRun({ runId: run, format });
+
+  const reportAssetRepository = container.resolve("reportAssetRepository");
+  const asset = await reportAssetRepository.findById(result.asset.assetId);
+
+  const outDir = path.join(repoRoot, "reports", "generated");
+  await mkdir(outDir, { recursive: true });
+  const outPath = path.join(outDir, `${run}.${format}`);
+  await writeFile(outPath, asset.content);
+
+  console.log(`Report generated: asset ${result.asset.assetId} (${result.asset.format}), run ${run} -> COMPLETE.`);
+  console.log(`Written to ${outPath}`);
 }
 
 async function main() {
@@ -89,6 +116,7 @@ async function main() {
   try {
     if (command === "run") await runScreen(flags, container);
     else if (command === "decide") await runDecide(flags, container);
+    else if (command === "generate") await runGenerate(flags, container);
     else {
       usage();
       process.exit(1);

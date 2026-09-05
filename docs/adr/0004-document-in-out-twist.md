@@ -2,7 +2,7 @@
 
 ## Status
 
-Proposed (implemented in Phase 5; flip to Accepted once landed and tested against the scanned-CV fixtures)
+Accepted — implemented and live-verified end-to-end in Phase 5: OCR against all 5 scanned-CV fixtures, `generate_report` producing real DOCX/PDF from a real finalized run, and the full FSM driven from a real screening run through approval, report generation, and `COMPLETE` via `npm run screen`.
 
 ## Context
 
