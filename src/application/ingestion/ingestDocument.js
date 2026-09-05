@@ -15,11 +15,12 @@ function sha256(buffer) {
 // makes idempotent re-ingestion possible at all.
 //
 // `extractorFactory` (format -> ExtractionPort instance, e.g. adapters/
-// extraction/createExtractor.js) is injected rather than imported directly —
-// application code depends only on the ExtractionPort shape it returns,
+// extraction/createExtractor.js) and `ocrPort` (an OcrPort instance, e.g.
+// adapters/ocr/TesseractOcrAdapter.js) are injected rather than imported
+// directly — application code depends only on the port shapes they return,
 // never on the concrete adapter, per CLAUDE.md's layer rule (also enforced
 // by eslint.config.js's no-restricted-imports for this directory).
-export function createIngestDocumentUseCase({ documentRepository, vectorStore, embeddingProvider, extractorFactory }) {
+export function createIngestDocumentUseCase({ documentRepository, vectorStore, embeddingProvider, extractorFactory, ocrPort }) {
   return async function ingestDocument({ documentId, sourcePath, sourceFormat, type, title, createdBy, candidateId = null }) {
     const existing = await documentRepository.findById(documentId);
     // Everything below can fail (missing/unreadable file, a bad extractor,
@@ -54,24 +55,53 @@ export function createIngestDocumentUseCase({ documentRepository, vectorStore, e
       const extractor = extractorFactory(sourceFormat);
       const extraction = await extractor.extract(sourcePath);
 
+      // `chunks` accumulates [{content, section, charRange, page, ocrVersion,
+      // ocrConfidence}] regardless of which path below fills it in — the
+      // index/insert step at the bottom is shared, since a chunk row looks
+      // identical either way (native chunks simply carry page/ocrVersion/
+      // ocrConfidence as null, exactly as before this OCR path existed).
+      let chunks;
+
       if (extraction.needsOcr) {
-        await documentRepository.upsert({
-          id: documentId,
-          type,
-          title,
-          sourceFormat,
-          createdBy,
-          candidateId,
-          sourcePath,
-          contentHash,
-          status: "needs_ocr",
-          ocrRequired: true,
+        // `ocrRequired` is set permanently true here and never cleared below —
+        // it records that this document NEEDED OCR, distinct from `status`,
+        // which tracks whether that OCR attempt actually yielded anything
+        // usable (see ADR-0004's amendment: needs_ocr now means "OCR was
+        // attempted and failed/unusable", not "OCR hasn't run yet").
+        const { pages, ocrVersion } = await ocrPort.recognize(sourcePath);
+
+        chunks = pages.flatMap((page) => {
+          const cleaned = cleanText(page.text);
+          if (cleaned.trim() === "") return []; // nothing usable on this page
+          return chunkDocument(cleaned).map((chunk) => ({
+            ...chunk,
+            page: page.pageNumber,
+            ocrVersion,
+            ocrConfidence: page.confidence,
+          }));
         });
-        return { documentId, status: "needs_ocr" };
+
+        if (chunks.length === 0) {
+          await documentRepository.upsert({
+            id: documentId,
+            type,
+            title,
+            sourceFormat,
+            createdBy,
+            candidateId,
+            sourcePath,
+            contentHash,
+            status: "needs_ocr",
+            ocrRequired: true,
+            statusMessage: "OCR was attempted but yielded no usable text on any page — needs human review",
+          });
+          return { documentId, status: "needs_ocr" };
+        }
+      } else {
+        const cleaned = cleanText(extraction.text);
+        chunks = chunkDocument(cleaned).map((chunk) => ({ ...chunk, page: null, ocrVersion: null, ocrConfidence: null }));
       }
 
-      const cleaned = cleanText(extraction.text);
-      const chunks = chunkDocument(cleaned);
       const embeddings = await embeddingProvider.embed(chunks.map((c) => c.content));
 
       await vectorStore.deleteChunksByDocumentId(documentId);
@@ -81,11 +111,13 @@ export function createIngestDocumentUseCase({ documentRepository, vectorStore, e
           documentId,
           content: chunk.content,
           section: chunk.section,
-          page: null,
+          page: chunk.page,
           charRange: chunk.charRange,
           candidateId,
           documentType: type,
           chunkerVersion: CHUNKER_VERSION,
+          ocrVersion: chunk.ocrVersion,
+          ocrConfidence: chunk.ocrConfidence,
           embedding: embeddings[i],
         })),
       );
@@ -100,6 +132,7 @@ export function createIngestDocumentUseCase({ documentRepository, vectorStore, e
         sourcePath,
         contentHash,
         status: "indexed",
+        ocrRequired: extraction.needsOcr ? true : undefined,
       });
 
       return { documentId, status: "indexed", chunkCount: chunks.length };

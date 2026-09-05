@@ -61,7 +61,11 @@ test("getCandidateChunks tool resolves a real candidateHandle and scopes results
     { id: uuid(), documentId: docId, content: "belongs to CAND-778", documentType: "cv", chunkerVersion: "v1", candidateId: otherCandidate.id, embedding: fakeEmbedding(3) },
   ]);
 
-  const getCandidateChunks = createGetCandidateChunksTool({ vectorStore, candidateRepository });
+  const getCandidateChunks = createGetCandidateChunksTool({
+    vectorStore,
+    candidateRepository,
+    ocrThresholds: { lowConfidenceThreshold: 70, unusableThreshold: 40 },
+  });
   const result = await getCandidateChunks({ candidateHandle: "CAND-777" });
 
   assert.equal(result.chunks.length, 1);
