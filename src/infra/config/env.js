@@ -39,6 +39,11 @@ const EnvSchema = z.object({
 
   OCR_LOW_CONFIDENCE_THRESHOLD: z.coerce.number().min(0).max(100).default(70),
   OCR_UNUSABLE_THRESHOLD: z.coerce.number().min(0).max(100).default(40),
+
+  // 20MB — generous for a CV/policy-doc PDF (the corpus's largest real
+  // document is a fraction of this) while still bounding worst-case memory/
+  // OCR/embedding cost per upload (OWASP Web Top 10: unrestricted upload).
+  MAX_UPLOAD_SIZE_BYTES: z.coerce.number().int().positive().default(20 * 1024 * 1024),
 });
 
 function loadConfig(env = process.env) {
@@ -65,6 +70,7 @@ function loadConfig(env = process.env) {
     llmProviderChain: Object.freeze(data.LLM_PROVIDER_CHAIN.split(",").map((s) => s.trim())),
     retrieval: Object.freeze({ topK: data.RETRIEVAL_TOP_K, refusalThreshold: data.RETRIEVAL_REFUSAL_THRESHOLD }),
     ocr: Object.freeze({ lowConfidenceThreshold: data.OCR_LOW_CONFIDENCE_THRESHOLD, unusableThreshold: data.OCR_UNUSABLE_THRESHOLD }),
+    maxUploadSizeBytes: data.MAX_UPLOAD_SIZE_BYTES,
   });
 }
 

@@ -2,6 +2,7 @@ import { createHash } from "node:crypto";
 import { readFile } from "node:fs/promises";
 
 import { cleanText } from "./cleanText.js";
+import { validateUpload } from "./validateUpload.js";
 import { chunkDocument, CHUNKER_VERSION } from "../chunking/chunkDocument.js";
 
 function sha256(buffer) {
@@ -20,7 +21,7 @@ function sha256(buffer) {
 // directly — application code depends only on the port shapes they return,
 // never on the concrete adapter, per CLAUDE.md's layer rule (also enforced
 // by eslint.config.js's no-restricted-imports for this directory).
-export function createIngestDocumentUseCase({ documentRepository, vectorStore, embeddingProvider, extractorFactory, ocrPort }) {
+export function createIngestDocumentUseCase({ documentRepository, vectorStore, embeddingProvider, extractorFactory, ocrPort, maxUploadSizeBytes }) {
   return async function ingestDocument({ documentId, sourcePath, sourceFormat, type, title, createdBy, candidateId = null }) {
     const existing = await documentRepository.findById(documentId);
     // Everything below can fail (missing/unreadable file, a bad extractor,
@@ -29,6 +30,7 @@ export function createIngestDocumentUseCase({ documentRepository, vectorStore, e
     // uncaught rejection that would abort a batch of many documents.
     try {
       const fileBuffer = await readFile(sourcePath);
+      validateUpload({ sourceFormat, fileBuffer, maxSizeBytes: maxUploadSizeBytes });
       const contentHash = sha256(fileBuffer);
 
       if (existing && existing.contentHash === contentHash && existing.status === "indexed") {

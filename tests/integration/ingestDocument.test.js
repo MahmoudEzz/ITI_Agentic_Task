@@ -50,8 +50,8 @@ beforeEach(async () => {
 
 const ocrPort = new TesseractOcrAdapter();
 
-function makeUseCase(embeddingProvider) {
-  return createIngestDocumentUseCase({ documentRepository, vectorStore, embeddingProvider, extractorFactory: createExtractor, ocrPort });
+function makeUseCase(embeddingProvider, { maxUploadSizeBytes = 20 * 1024 * 1024 } = {}) {
+  return createIngestDocumentUseCase({ documentRepository, vectorStore, embeddingProvider, extractorFactory: createExtractor, ocrPort, maxUploadSizeBytes });
 }
 
 test("ingestDocument indexes a document end-to-end: extract, chunk, embed, index", async () => {
@@ -273,4 +273,51 @@ test("an extraction failure is recorded as a failed status, not thrown — one b
   const doc = await documentRepository.findById("test-missing-1");
   assert.equal(doc.status, "failed");
   assert.ok(doc.statusMessage);
+});
+
+test("content that doesn't match its declared sourceFormat is rejected before extraction (content-sniffing, not extension trust)", async () => {
+  const embeddingStub = createCountingEmbeddingStub();
+  const ingestDocument = makeUseCase(embeddingStub);
+
+  // A real PDF's magic bytes, declared as "txt" — the same attack shape as
+  // renaming a malicious file's extension to slip past an extension check.
+  const pdfDoc = await PDFDocument.create();
+  pdfDoc.addPage();
+  const pdfBytes = await pdfDoc.save();
+  const disguisedPath = path.join(dir, "disguised.txt");
+  await writeFile(disguisedPath, pdfBytes);
+
+  const result = await ingestDocument({
+    documentId: "test-disguised-1",
+    sourcePath: disguisedPath,
+    sourceFormat: "txt",
+    type: "job_description",
+    title: "Disguised upload",
+    createdBy: "test-user",
+  });
+
+  assert.equal(result.status, "failed");
+  assert.match(result.error, /does not match its declared sourceFormat/);
+  assert.equal(embeddingStub.callCount(), 0); // rejected before ever reaching extraction/embedding
+});
+
+test("an upload exceeding the configured size cap is rejected before extraction", async () => {
+  const embeddingStub = createCountingEmbeddingStub();
+  const ingestDocument = makeUseCase(embeddingStub, { maxUploadSizeBytes: 10 });
+
+  const filePath = path.join(dir, "too-big.txt");
+  await writeFile(filePath, "This plain-text file is well over ten bytes long.");
+
+  const result = await ingestDocument({
+    documentId: "test-toobig-1",
+    sourcePath: filePath,
+    sourceFormat: "txt",
+    type: "job_description",
+    title: "Oversized upload",
+    createdBy: "test-user",
+  });
+
+  assert.equal(result.status, "failed");
+  assert.match(result.error, /exceeds the maximum allowed size/);
+  assert.equal(embeddingStub.callCount(), 0);
 });
