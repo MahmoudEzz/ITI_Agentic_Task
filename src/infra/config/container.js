@@ -22,6 +22,8 @@ import { OllamaProvider } from "../../adapters/llm/OllamaProvider.js";
 import { GeminiProvider } from "../../adapters/llm/GeminiProvider.js";
 import { FallbackLLMProvider } from "../../adapters/llm/FallbackLLMProvider.js";
 import { createIngestDocumentUseCase } from "../../application/ingestion/ingestDocument.js";
+import { createSearchCorpusTool } from "../../application/tools/searchCorpus.js";
+import { createGetCandidateChunksTool } from "../../application/tools/getCandidateChunks.js";
 
 const here = path.dirname(fileURLToPath(import.meta.url));
 const repoRoot = path.join(here, "..", "..", "..");
@@ -83,6 +85,14 @@ export function buildContainer(overrides = {}) {
         defaultTopK: config.retrieval.topK,
       });
     }).singleton(),
+    // A plain name->implementation map, not yet gated by any agent's
+    // allow-list — src/application/tools/dispatchTool.js's scoped
+    // dispatcher (created per-agent once agents exist, Phase 4 PR C) is
+    // what actually enforces which agent may call which of these.
+    toolImplementations: asFunction(({ vectorStore, embeddingProvider, candidateRepository }) => ({
+      search_corpus: createSearchCorpusTool({ vectorStore, embeddingProvider }),
+      get_candidate_chunks: createGetCandidateChunksTool({ vectorStore, candidateRepository }),
+    })).singleton(),
   });
 
   return container;

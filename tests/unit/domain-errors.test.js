@@ -6,6 +6,8 @@ import {
   NotFoundError,
   InsufficientEvidenceError,
   ApprovalRequiredError,
+  ToolNotAllowedError,
+  StructuredOutputError,
 } from "../../src/domain/errors/index.js";
 
 test("ValidationError carries a VALIDATION_ERROR code and is a DomainError", () => {
@@ -33,4 +35,21 @@ test("ApprovalRequiredError names the gated tool", () => {
   assert.equal(err.code, "APPROVAL_REQUIRED");
   assert.equal(err.toolName, "finalize_shortlist");
   assert.match(err.message, /finalize_shortlist/);
+});
+
+test("ToolNotAllowedError names the agent, the rejected tool, and what was allowed", () => {
+  const err = new ToolNotAllowedError("search_corpus", "rubric_scorer", []);
+  assert.equal(err.code, "TOOL_NOT_ALLOWED");
+  assert.equal(err.toolName, "search_corpus");
+  assert.equal(err.agentName, "rubric_scorer");
+  assert.match(err.message, /search_corpus/);
+  assert.match(err.message, /rubric_scorer/);
+  assert.match(err.message, /none/);
+});
+
+test("StructuredOutputError carries attempts and the last raw output for debugging", () => {
+  const err = new StructuredOutputError("validation failed twice", { attempts: 3, lastRawOutput: '{"x":1}' });
+  assert.equal(err.code, "STRUCTURED_OUTPUT_FAILED");
+  assert.equal(err.attempts, 3);
+  assert.equal(err.lastRawOutput, '{"x":1}');
 });
