@@ -16,6 +16,7 @@
     "seed": "node src/infra/db/seed.js",
     "ingest": "node scripts/ingest.js",
     "ask": "node scripts/ask.js",
+    "screen": "node scripts/screen.js",
     "eval": "node scripts/eval.js",
     "test": "node --test \"tests/unit/**/*.test.js\"",
     "test:contract": "node --test \"tests/contract/**/*.test.js\"",

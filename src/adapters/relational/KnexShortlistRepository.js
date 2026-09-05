@@ -8,6 +8,8 @@ function rowToShortlist(row) {
     roleId: row.role_id,
     entries: row.entries,
     degraded: row.degraded,
+    approvalId: row.approval_id,
+    finalizedAt: row.finalized_at,
     createdAt: row.created_at,
   };
 }
@@ -35,6 +37,14 @@ export class KnexShortlistRepository extends ShortlistRepositoryPort {
 
   async findByRunId(runId) {
     const row = await this.#knex("shortlists").where({ run_id: runId }).first();
+    return rowToShortlist(row);
+  }
+
+  async finalize(shortlistId, { approvalId, entries, finalizedAt }) {
+    const [row] = await this.#knex("shortlists")
+      .where({ id: shortlistId })
+      .update({ approval_id: approvalId, entries: JSON.stringify(entries), finalized_at: finalizedAt })
+      .returning("*");
     return rowToShortlist(row);
   }
 }

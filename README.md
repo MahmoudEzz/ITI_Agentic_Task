@@ -4,7 +4,7 @@ An agentic RAG platform that screens candidates against a role's competency rubr
 
 **Built for:** ITI Technical Instructor (Post-Graduate Training) technical assessment.
 
-> **Status: Phases 0-2 done** (scaffolding, domain/contracts, ingestion — see `docs/SYSTEM-DESIGN.md`'s phase table). Ingestion is real and verified end-to-end against the full corpus. No retrieval, agents, or UI yet — not a finished demo. This README grows into the full "assume the reader has Docker and 15 minutes" quick-start as each remaining phase lands.
+> **Status: Phases 0-4 done** (scaffolding, domain/contracts, ingestion, retrieval/Q&A, multi-agent screening + approval gate — see `docs/SYSTEM-DESIGN.md`'s phase table). `npm run ask` (grounded Q&A with citations/refusal) and `npm run screen` (full role/candidate-pool screening through human approval) both work end-to-end against the real corpus and a real local Ollama. No T6 document generation, security hardening, or web UI yet — not a finished demo. This README grows into the full "assume the reader has Docker and 15 minutes" quick-start as each remaining phase lands.
 
 ## Assigned variant
 

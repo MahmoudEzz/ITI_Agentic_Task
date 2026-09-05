@@ -41,7 +41,7 @@ _TODO (Phase 1): domain ← application ← adapters ← infra, with the rule "a
 | ADR | Title | Status |
 |---|---|---|
 | [ADR-0001](adr/0001-chunking-and-retrieval-strategy.md) | Chunking and retrieval strategy | Proposed |
-| [ADR-0002](adr/0002-orchestration-pattern.md) | Orchestration pattern | Proposed |
+| [ADR-0002](adr/0002-orchestration-pattern.md) | Orchestration pattern | Accepted |
 | [ADR-0003](adr/0003-vector-store-choice.md) | Vector store choice | Proposed |
 | [ADR-0004](adr/0004-document-in-out-twist.md) | T6 twist: OCR and document generation approach | Proposed |
 | [ADR-0005](adr/0005-provider-abstraction-and-structured-output.md) | Provider abstraction and structured-output strategy | Proposed |
