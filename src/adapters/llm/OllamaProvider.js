@@ -23,6 +23,8 @@ export class OllamaProvider extends LLMProviderPort {
       ...(schema ? { format: schema } : {}),
     });
 
-    return { text: response.message.content };
+    // prompt_eval_count/eval_count are Ollama's own real token counts for
+    // this call (FR-9's token accounting) — not estimated client-side.
+    return { text: response.message.content, tokensIn: response.prompt_eval_count ?? null, tokensOut: response.eval_count ?? null };
   }
 }

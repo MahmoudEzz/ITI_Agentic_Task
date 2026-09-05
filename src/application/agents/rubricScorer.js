@@ -18,7 +18,7 @@ function formatCompetencyBlocks(evidenceByCompetency) {
 }
 
 export function createRubricScorerAgent({ llmProvider, promptTemplate, systemPrompt }) {
-  return async function rubricScorer(rawInput) {
+  return async function rubricScorer(rawInput, traceContext = {}) {
     // No name-carrying field exists on this schema at all (ADR-0006) — the
     // strongest half of the bias-safety design. The redaction pass that
     // must run on evidenceSnippets.text BEFORE this input is constructed
@@ -58,6 +58,8 @@ export function createRubricScorerAgent({ llmProvider, promptTemplate, systemPro
       jsonSchema: RubricScorerOutputJsonSchema,
       system: systemPrompt,
       prompt,
+      span: "llm.rubric_scorer",
+      traceContext,
     });
   };
 }

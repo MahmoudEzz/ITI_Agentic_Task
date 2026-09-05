@@ -51,7 +51,7 @@ export function createAnswerQuestionUseCase({
   refusalThreshold,
   defaultTopK = 8,
 }) {
-  return async function answerQuestion({ question, topK, candidateHandle, documentType, section }) {
+  return async function answerQuestion({ question, topK, candidateHandle, documentType, section, correlationId }) {
     // candidateHandle (CAND-NNN, opaque) is the only candidate-scoping
     // identifier a caller may pass — resolved here to the internal
     // candidates.id that chunks.candidate_id actually stores, so this port
@@ -77,7 +77,9 @@ export function createAnswerQuestionUseCase({
     }
 
     const prompt = renderTemplate(promptTemplate, { context: buildContextBlock(chunks), question });
-    const { text } = await llmProvider.complete({ system: systemPrompt, prompt });
+    // No run exists for a plain Q&A call — correlationId is whatever the
+    // caller generated at request/script ingress (FR-9), runId stays null.
+    const { text } = await llmProvider.complete({ system: systemPrompt, prompt }, { correlationId, span: "llm.answer_question" });
     const citations = resolveCitations(text, chunks);
 
     if (citations.length === 0) {

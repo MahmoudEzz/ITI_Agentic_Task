@@ -25,7 +25,10 @@ async function main() {
   const container = buildContainer();
   const answerQuestion = container.resolve("answerQuestion");
 
-  const result = await answerQuestion({ question, ...filters });
+  // No HTTP request exists to generate one at ingress (FR-9) — the CLI is
+  // its own ingress point, so it generates its own correlation id here.
+  const correlationId = crypto.randomUUID();
+  const result = await answerQuestion({ question, ...filters, correlationId });
 
   if (result.refused) {
     console.log(`Refused: ${result.refusalReason} — insufficient evidence in the corpus to answer this question.`);

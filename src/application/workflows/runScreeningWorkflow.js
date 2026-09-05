@@ -1,6 +1,7 @@
 import { createRun, transition } from "../../domain/entities/Run.js";
 import { compositeScore } from "../../domain/entities/Score.js";
 import { StructuredOutputError, InsufficientEvidenceError, NotFoundError, DomainError } from "../../domain/errors/index.js";
+import { recordSpan } from "../tracing/recordSpan.js";
 
 // A single "plain-RAG" fallback shortlist — no LLM call at all, just a
 // deterministic ranking by composite score. This is what FR-5's
@@ -47,8 +48,9 @@ export function createRunScreeningWorkflowUseCase({
   extractRedactScore,
   shortlistDrafter,
   rubricRepository,
+  traceEventRepository,
 }) {
-  return async function runScreeningWorkflow({ roleId, rubricId, candidateHandles, createdBy }) {
+  return async function runScreeningWorkflow({ roleId, rubricId, candidateHandles, createdBy, correlationId }) {
     if (candidateHandles.length === 0) {
       throw new DomainError("runScreeningWorkflow requires at least one candidateHandle", "VALIDATION_ERROR");
     }
@@ -56,8 +58,14 @@ export function createRunScreeningWorkflowUseCase({
     const rubric = await rubricRepository.findById(rubricId);
     if (!rubric) throw new NotFoundError("Rubric", rubricId);
 
-    let run = createRun({ id: crypto.randomUUID(), workflowType: "screening", createdBy });
+    // One request = one run = one correlation scope, for this
+    // single-process app (FR-9) — a caller-supplied correlationId (HTTP
+    // request ingress) becomes the run's own id rather than a separate
+    // value tracked alongside it; the CLI (no request) falls back to
+    // generating its own, exactly as before this existed.
+    let run = createRun({ id: correlationId ?? crypto.randomUUID(), workflowType: "screening", createdBy });
     await runRepository.create(run);
+    const traceContext = { correlationId: run.id, runId: run.id };
 
     run = transition(run, "EXTRACT_EVIDENCE");
     await runRepository.transitionTo(run.id, run.state);
@@ -66,7 +74,11 @@ export function createRunScreeningWorkflowUseCase({
     const failures = [];
     for (const candidateHandle of candidateHandles) {
       try {
-        const { scores, auditEntries } = await extractRedactScore({ candidateHandle, rubricId });
+        const { scores, auditEntries } = await recordSpan(
+          traceEventRepository,
+          { ...traceContext, span: "candidate.extract_redact_score", attributes: { candidateHandle } },
+          () => extractRedactScore({ candidateHandle, rubricId }, traceContext),
+        );
         await biasAuditLogRepository.createMany(run.id, auditEntries);
         candidateResults.push({ candidateHandle, scores, compositeScore: compositeScore(scores, rubric) });
       } catch (error) {
@@ -110,10 +122,13 @@ export function createRunScreeningWorkflowUseCase({
     await runRepository.transitionTo(run.id, run.state);
 
     try {
-      const { shortlist: shortlistEntries } = await shortlistDrafter({
-        roleId,
-        candidates: candidateResults.map((c) => ({ candidateHandle: c.candidateHandle, compositeScore: c.compositeScore, scores: c.scores })),
-      });
+      const { shortlist: shortlistEntries } = await shortlistDrafter(
+        {
+          roleId,
+          candidates: candidateResults.map((c) => ({ candidateHandle: c.candidateHandle, compositeScore: c.compositeScore, scores: c.scores })),
+        },
+        traceContext,
+      );
 
       const shortlist = await shortlistRepository.create({ id: crypto.randomUUID(), runId: run.id, roleId, entries: shortlistEntries, degraded: false });
 
