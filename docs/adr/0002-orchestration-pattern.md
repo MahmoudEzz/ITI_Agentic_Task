@@ -27,6 +27,8 @@ Named as **one** pattern (pipeline), not hedged as "pipeline/state-machine" — 
 - **Planner-executor** — rejected for the same reason: the plan is not dynamic, it is the workflow itself. Planning would be redundant work re-deriving a fixed sequence.
 - **A general graph/DAG orchestration library (e.g. LangGraph)** — rejected in favor of a hand-rolled FSM so that every transition, retry, and audit log entry is exact and owned code, not framework behavior the candidate has to explain secondhand when teaching this.
 
+**Tool dispatch (Phase 4 addendum):** for the same reason a supervisor is rejected above, *which tool runs at each step* is also decided by the orchestrator's code, never by the LLM choosing to call it — no ReAct-style tool-calling loop, which would be the single most likely thing to make this pipeline unreliable on a local 3B model. What still needs to be real, not just implicit in "the code just doesn't call it," is the *restriction*: each agent declares an `allowedTools` list (`EVIDENCE_EXTRACTOR_ALLOWED_TOOLS = ["get_candidate_chunks"]`; the Rubric Scorer and Shortlist Drafter declare none — they are pure transforms), and `src/application/tools/dispatchTool.js`'s scoped dispatcher rejects (`ToolNotAllowedError`) any call outside that list even if something tries to route it through anyway. This is the mechanism behind the "restricted tool allow-list" half of FR-4, verified by a test asserting the Rubric Scorer's step attempting `search_corpus` is rejected.
+
 ## Consequences
 
 - Every run's state transitions are persisted (`runs`, `run_steps` tables), giving exact step-by-step inspectability by run ID — this was a design goal, not an afterthought.
