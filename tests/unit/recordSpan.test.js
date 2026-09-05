@@ -60,3 +60,29 @@ test("recordSpan is fail-open: with no repository, fn still runs and its result 
   const result = await recordSpan(undefined, { span: "test.span" }, async () => "ok");
   assert.equal(result, "ok");
 });
+
+test("recordSpan fires onEvent started then completed, in order, around a successful call — independent of persistence", async () => {
+  const events = [];
+  const onEvent = (event) => events.push(event.type);
+  // No repository at all — onEvent must still fire; the two concerns are orthogonal.
+  await recordSpan(undefined, { span: "agent.evidence_extractor", onEvent }, async () => "ok");
+
+  assert.deepEqual(events, ["agent.evidence_extractor.started", "agent.evidence_extractor.completed"]);
+});
+
+test("recordSpan fires onEvent started then failed (not completed) when fn throws", async () => {
+  const events = [];
+  const onEvent = (event) => events.push(event);
+  const repo = stubRepo();
+
+  await assert.rejects(() =>
+    recordSpan(repo, { span: "tool.get_candidate_chunks", onEvent }, async () => {
+      throw new Error("boom");
+    }),
+  );
+
+  assert.equal(events.length, 2);
+  assert.equal(events[0].type, "tool.get_candidate_chunks.started");
+  assert.equal(events[1].type, "tool.get_candidate_chunks.failed");
+  assert.equal(events[1].error, "boom");
+});

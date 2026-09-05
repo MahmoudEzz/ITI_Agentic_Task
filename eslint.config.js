@@ -15,6 +15,7 @@ export default [
         AbortSignal: "readonly",
         crypto: "readonly",
         Buffer: "readonly",
+        TextDecoder: "readonly",
       },
     },
     rules: {

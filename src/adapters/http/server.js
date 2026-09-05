@@ -6,6 +6,7 @@ import { registerSecurityPlugins } from "./plugins/security.js";
 import authPlugin from "./plugins/auth.js";
 import { registerAuthRoutes } from "./routes/auth.js";
 import { registerRunRoutes } from "./routes/runs.js";
+import { registerAskRoutes } from "./routes/ask.js";
 import { statusForError } from "./errorMapping.js";
 
 // The composition root for the HTTP layer: takes an already-built DI
@@ -26,7 +27,9 @@ export async function buildServer({ container, config }) {
     runRepository: container.resolve("runRepository"),
     applyApprovalDecision: container.resolve("applyApprovalDecision"),
     traceEventRepository: container.resolve("traceEventRepository"),
+    runScreeningWorkflow: container.resolve("runScreeningWorkflow"),
   });
+  await registerAskRoutes(app, { answerQuestionStream: container.resolve("answerQuestionStream") });
 
   // A single place every thrown error passes through — domain errors never
   // reach the client as a raw stack trace, and an error class added to

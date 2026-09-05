@@ -2,7 +2,7 @@
 
 ## Status
 
-Proposed — `LLMProviderPort.stream()` and its Ollama/Gemini/FallbackLLMProvider implementations have landed and are live-verified (Phase 7 PR2); the SSE HTTP routes that actually expose this to a client (`POST /ask` streaming, discrete progress events for `POST /runs`) are Phase 7 PR3's scope. Flip to Accepted once those routes land and are tested, per this project's convention of not marking a decision Accepted ahead of the code that implements it.
+Accepted — `LLMProviderPort.stream()` and its Ollama/Gemini/FallbackLLMProvider implementations (Phase 7 PR2), and the SSE HTTP routes (`POST /ask`, `POST /runs`, Phase 7 PR3) have all landed and been live-verified against a really-running server: real streamed `/ask` deltas ending in a resolved-citation answer, and a real `/runs` call showing genuine per-attempt retry progress events and a real error path from a live grounding-check rejection. `AbortController` cancellation is disclosed as a real, deliberate gap (see Consequences), not assumed done.
 
 ## Context
 

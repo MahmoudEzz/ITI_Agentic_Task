@@ -35,6 +35,36 @@ function resolveCitations(answerText, chunks) {
     }));
 }
 
+// Shared by both the plain and streaming use cases below: embed -> hybrid
+// retrieve -> deterministic refusal decision (before any LLM call, see
+// decideRefusal.js/ADR-0001). Streaming can't defer this any further than
+// the non-streaming path does — the refusal decision has to be made before
+// the first token is ever sent, or a client would see a partial "stream"
+// for a question that should have refused outright.
+async function retrieveAndDecideRefusal({ embeddingProvider, vectorStore, candidateRepository, refusalThreshold, defaultTopK }, { question, topK, candidateHandle, documentType, section }) {
+  // candidateHandle (CAND-NNN, opaque) is the only candidate-scoping
+  // identifier a caller may pass — resolved here to the internal
+  // candidates.id that chunks.candidate_id actually stores, so this port
+  // never leaks an internal DB key into a public contract.
+  let candidateId;
+  if (candidateHandle) {
+    const candidate = await candidateRepository.findByHandle(candidateHandle);
+    if (!candidate) throw new NotFoundError("Candidate", candidateHandle);
+    candidateId = candidate.id;
+  }
+
+  const [embedding] = await embeddingProvider.embed([question]);
+  const chunks = await vectorStore.hybridSearch(question, embedding, {
+    topK: topK ?? defaultTopK,
+    candidateId,
+    documentType,
+    section,
+  });
+
+  const refusal = decideRefusal(chunks, { threshold: refusalThreshold });
+  return { chunks, refusal };
+}
+
 // FR-2's Q&A slice: embed -> hybrid retrieve -> deterministic refusal
 // decision (before any LLM call, see decideRefusal.js/ADR-0001) -> grounded
 // completion -> resolve citations from what was actually retrieved. A
@@ -52,26 +82,10 @@ export function createAnswerQuestionUseCase({
   defaultTopK = 8,
 }) {
   return async function answerQuestion({ question, topK, candidateHandle, documentType, section, correlationId }) {
-    // candidateHandle (CAND-NNN, opaque) is the only candidate-scoping
-    // identifier a caller may pass — resolved here to the internal
-    // candidates.id that chunks.candidate_id actually stores, so this port
-    // never leaks an internal DB key into a public contract.
-    let candidateId;
-    if (candidateHandle) {
-      const candidate = await candidateRepository.findByHandle(candidateHandle);
-      if (!candidate) throw new NotFoundError("Candidate", candidateHandle);
-      candidateId = candidate.id;
-    }
-
-    const [embedding] = await embeddingProvider.embed([question]);
-    const chunks = await vectorStore.hybridSearch(question, embedding, {
-      topK: topK ?? defaultTopK,
-      candidateId,
-      documentType,
-      section,
-    });
-
-    const refusal = decideRefusal(chunks, { threshold: refusalThreshold });
+    const { chunks, refusal } = await retrieveAndDecideRefusal(
+      { embeddingProvider, vectorStore, candidateRepository, refusalThreshold, defaultTopK },
+      { question, topK, candidateHandle, documentType, section },
+    );
     if (refusal.refused) {
       return AnswerSchema.parse({ refused: true, answer: null, refusalReason: refusal.reason });
     }
@@ -87,5 +101,49 @@ export function createAnswerQuestionUseCase({
     }
 
     return AnswerSchema.parse({ refused: false, answer: text, citations });
+  };
+}
+
+// FR-6's SSE prose-streaming path (ADR-0007) for the same Q&A slice above —
+// identical retrieval/refusal logic, but the completion is streamed token
+// by token via `onEvent` rather than returned as one value, since citations
+// can only be resolved once the full text exists (resolveCitations needs
+// the whole string, not a partial one), the final onEvent call carries the
+// complete AnswerSchema-shaped result.
+export function createAnswerQuestionStreamUseCase({
+  embeddingProvider,
+  vectorStore,
+  llmProvider,
+  candidateRepository,
+  promptTemplate,
+  systemPrompt,
+  refusalThreshold,
+  defaultTopK = 8,
+}) {
+  return async function answerQuestionStream({ question, topK, candidateHandle, documentType, section, correlationId, onEvent }) {
+    const { chunks, refusal } = await retrieveAndDecideRefusal(
+      { embeddingProvider, vectorStore, candidateRepository, refusalThreshold, defaultTopK },
+      { question, topK, candidateHandle, documentType, section },
+    );
+    if (refusal.refused) {
+      onEvent({ type: "answer", answer: AnswerSchema.parse({ refused: true, answer: null, refusalReason: refusal.reason }) });
+      return;
+    }
+
+    const prompt = renderTemplate(promptTemplate, { context: buildContextBlock(chunks), question });
+    let fullText = "";
+    for await (const event of llmProvider.stream({ system: systemPrompt, prompt }, { correlationId, span: "llm.answer_question" })) {
+      if (event.type === "delta") {
+        fullText += event.text;
+        onEvent({ type: "delta", text: event.text });
+      }
+    }
+
+    const citations = resolveCitations(fullText, chunks);
+    const answer =
+      citations.length === 0
+        ? AnswerSchema.parse({ refused: true, answer: null, refusalReason: "insufficient_evidence" })
+        : AnswerSchema.parse({ refused: false, answer: fullText, citations });
+    onEvent({ type: "answer", answer });
   };
 }

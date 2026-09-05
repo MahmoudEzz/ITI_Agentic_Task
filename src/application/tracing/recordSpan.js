@@ -3,23 +3,51 @@
 // rather than the span silently vanishing, since a failed step is exactly
 // the kind of thing an operator inspecting a run's trace needs to see).
 //
-// `traceContext` is `{ correlationId, runId }`, threaded down from wherever
-// a request/run began (see runScreeningWorkflow.js/answerQuestion.js) —
-// deliberately optional and null-safe: a direct unit-test call to an agent
-// with no traceContext still works, it just traces with a generated,
-// otherwise-unused correlation id rather than crashing. Tracing is an
-// observability aid, not a security control, so it fails open, unlike auth.
-export async function recordSpan(traceEventRepository, { correlationId, runId = null, span, parentSpan = null, attributes = {} } = {}, fn) {
-  // No repository wired (most unit tests construct a use case without one)
-  // -> tracing is simply off, `fn` still runs normally. The same fail-open
-  // discipline applies whether or not a real traceContext was supplied.
-  if (!traceEventRepository) return fn();
-
+// `traceContext` is `{ correlationId, runId, onEvent }`, threaded down from
+// wherever a request/run began (see runScreeningWorkflow.js/answerQuestion.js).
+// `onEvent`, when given, fires `{ type: "<span>.started" | "<span>.completed"
+// | "<span>.failed", span, attributes, error? }` around the same boundary —
+// this is what lets an SSE route (Phase 7 PR3) emit live discrete progress
+// events using the exact same instrumentation point as persistence, instead
+// of a second parallel mechanism. It fires independently of persistence
+// (a caller can want live events without a traceEventRepository, or vice
+// versa) — the two concerns are orthogonal.
+//
+// Deliberately optional and null-safe throughout: a direct unit-test call
+// to an agent with no traceContext still works, it just doesn't trace or
+// emit anything. Tracing is an observability aid, not a security control,
+// so it fails open, unlike auth.
+export async function recordSpan(traceEventRepository, { correlationId, runId = null, span, parentSpan = null, attributes = {}, onEvent } = {}, fn) {
   const effectiveCorrelationId = correlationId ?? crypto.randomUUID();
   const startedAt = new Date();
 
+  onEvent?.({ type: `${span}.started`, span, attributes });
+
+  let result;
   try {
-    const result = await fn();
+    result = await fn();
+  } catch (error) {
+    onEvent?.({ type: `${span}.failed`, span, attributes, error: error.message });
+    if (traceEventRepository) {
+      await traceEventRepository.create({
+        id: crypto.randomUUID(),
+        correlationId: effectiveCorrelationId,
+        runId,
+        span,
+        parentSpan,
+        startedAt,
+        endedAt: new Date(),
+        attributes: { ...attributes, error: error.message },
+        tokensIn: null,
+        tokensOut: null,
+        costUsd: null,
+      });
+    }
+    throw error;
+  }
+
+  onEvent?.({ type: `${span}.completed`, span, attributes });
+  if (traceEventRepository) {
     await traceEventRepository.create({
       id: crypto.randomUUID(),
       correlationId: effectiveCorrelationId,
@@ -33,21 +61,6 @@ export async function recordSpan(traceEventRepository, { correlationId, runId = 
       tokensOut: result?.tokensOut ?? null,
       costUsd: result?.costUsd ?? null,
     });
-    return result;
-  } catch (error) {
-    await traceEventRepository.create({
-      id: crypto.randomUUID(),
-      correlationId: effectiveCorrelationId,
-      runId,
-      span,
-      parentSpan,
-      startedAt,
-      endedAt: new Date(),
-      attributes: { ...attributes, error: error.message },
-      tokensIn: null,
-      tokensOut: null,
-      costUsd: null,
-    });
-    throw error;
   }
+  return result;
 }

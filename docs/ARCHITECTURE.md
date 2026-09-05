@@ -92,4 +92,4 @@ _TODO (Phase 1): domain ← application ← adapters ← infra, with the rule "a
 | [ADR-0004](adr/0004-document-in-out-twist.md) | T6 twist: OCR and document generation approach | Accepted |
 | [ADR-0005](adr/0005-provider-abstraction-and-structured-output.md) | Provider abstraction and structured-output strategy | Accepted |
 | [ADR-0006](adr/0006-bias-safety-design.md) | Bias-safety design (D6's named risk) | Proposed |
-| [ADR-0007](adr/0007-streaming-strategy.md) | Streaming strategy — SSE, prose vs. discrete progress events | Proposed |
+| [ADR-0007](adr/0007-streaming-strategy.md) | Streaming strategy — SSE, prose vs. discrete progress events | Accepted |

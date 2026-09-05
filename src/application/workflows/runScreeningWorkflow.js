@@ -50,7 +50,7 @@ export function createRunScreeningWorkflowUseCase({
   rubricRepository,
   traceEventRepository,
 }) {
-  return async function runScreeningWorkflow({ roleId, rubricId, candidateHandles, createdBy, correlationId }) {
+  return async function runScreeningWorkflow({ roleId, rubricId, candidateHandles, createdBy, correlationId, onEvent }) {
     if (candidateHandles.length === 0) {
       throw new DomainError("runScreeningWorkflow requires at least one candidateHandle", "VALIDATION_ERROR");
     }
@@ -65,7 +65,7 @@ export function createRunScreeningWorkflowUseCase({
     // generating its own, exactly as before this existed.
     let run = createRun({ id: correlationId ?? crypto.randomUUID(), workflowType: "screening", createdBy });
     await runRepository.create(run);
-    const traceContext = { correlationId: run.id, runId: run.id };
+    const traceContext = { correlationId: run.id, runId: run.id, onEvent };
 
     run = transition(run, "EXTRACT_EVIDENCE");
     await runRepository.transitionTo(run.id, run.state);
