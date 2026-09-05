@@ -9,6 +9,17 @@ import { readFileSync } from "node:fs";
 // Frontmatter format is deliberately minimal (flat `key: value` lines
 // between `---` markers) rather than pulling in a YAML dependency for
 // three scalar fields.
+//
+// A body containing a literal `===USER===` line splits into `system`
+// (static role/instructions, no untrusted content, no {{vars}}) and
+// `template` (the part rendered with {{vars}}, where untrusted retrieved
+// content actually goes) — passed to LLMProviderPort.complete({ system,
+// prompt }) as genuinely separate channels, not concatenated into one
+// string. This is real privilege separation (docs/SECURITY.md's "Strict
+// privilege separation" row), not just an instruction embedded in the same
+// prompt telling the model to please ignore embedded instructions. A file
+// with no marker returns `system: null` and the whole body as `template`,
+// unchanged from before this existed.
 export function loadPromptTemplate(filePath) {
   const raw = readFileSync(filePath, "utf-8");
   const match = raw.match(/^---\n([\s\S]*?)\n---\n([\s\S]*)$/);
@@ -27,5 +38,15 @@ export function loadPromptTemplate(filePath) {
       }),
   );
 
-  return { ...frontmatter, template: body.trim() };
+  const USER_MARKER = "\n===USER===\n";
+  const markerIndex = body.indexOf(USER_MARKER);
+  if (markerIndex === -1) {
+    return { ...frontmatter, system: null, template: body.trim() };
+  }
+
+  return {
+    ...frontmatter,
+    system: body.slice(0, markerIndex).trim(),
+    template: body.slice(markerIndex + USER_MARKER.length).trim(),
+  };
 }

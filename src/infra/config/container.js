@@ -24,6 +24,11 @@ import { FallbackLLMProvider } from "../../adapters/llm/FallbackLLMProvider.js";
 import { createIngestDocumentUseCase } from "../../application/ingestion/ingestDocument.js";
 import { createSearchCorpusTool } from "../../application/tools/searchCorpus.js";
 import { createGetCandidateChunksTool } from "../../application/tools/getCandidateChunks.js";
+import { createScopedToolDispatcher } from "../../application/tools/dispatchTool.js";
+import { createEvidenceExtractorAgent, EVIDENCE_EXTRACTOR_ALLOWED_TOOLS } from "../../application/agents/evidenceExtractor.js";
+import { createRubricScorerAgent } from "../../application/agents/rubricScorer.js";
+import { createShortlistDrafterAgent } from "../../application/agents/shortlistDrafter.js";
+import { createExtractRedactScoreWorkflow } from "../../application/workflows/extractRedactScore.js";
 
 const here = path.dirname(fileURLToPath(import.meta.url));
 const repoRoot = path.join(here, "..", "..", "..");
@@ -74,13 +79,14 @@ export function buildContainer(overrides = {}) {
       createIngestDocumentUseCase({ documentRepository, vectorStore, embeddingProvider, extractorFactory }),
     ).singleton(),
     answerQuestion: asFunction(({ embeddingProvider, vectorStore, llmProvider, candidateRepository, config }) => {
-      const { template } = loadPromptTemplate(path.join(repoRoot, "prompts", "answer-grounded.md"));
+      const { system, template } = loadPromptTemplate(path.join(repoRoot, "prompts", "answer-grounded.md"));
       return createAnswerQuestionUseCase({
         embeddingProvider,
         vectorStore,
         llmProvider,
         candidateRepository,
         promptTemplate: template,
+        systemPrompt: system,
         refusalThreshold: config.retrieval.refusalThreshold,
         defaultTopK: config.retrieval.topK,
       });
@@ -93,6 +99,26 @@ export function buildContainer(overrides = {}) {
       search_corpus: createSearchCorpusTool({ vectorStore, embeddingProvider }),
       get_candidate_chunks: createGetCandidateChunksTool({ vectorStore, candidateRepository }),
     })).singleton(),
+    evidenceExtractor: asFunction(({ llmProvider, competencyRepository, toolImplementations }) => {
+      const { system, template } = loadPromptTemplate(path.join(repoRoot, "prompts", "evidence-extractor.md"));
+      const callTool = createScopedToolDispatcher({
+        agentName: "evidence_extractor",
+        allowedTools: EVIDENCE_EXTRACTOR_ALLOWED_TOOLS,
+        implementations: toolImplementations,
+      });
+      return createEvidenceExtractorAgent({ llmProvider, competencyRepository, callTool, promptTemplate: template, systemPrompt: system });
+    }).singleton(),
+    rubricScorer: asFunction(({ llmProvider }) => {
+      const { system, template } = loadPromptTemplate(path.join(repoRoot, "prompts", "rubric-scorer.md"));
+      return createRubricScorerAgent({ llmProvider, promptTemplate: template, systemPrompt: system });
+    }).singleton(),
+    shortlistDrafter: asFunction(({ llmProvider }) => {
+      const { system, template } = loadPromptTemplate(path.join(repoRoot, "prompts", "shortlist-drafter.md"));
+      return createShortlistDrafterAgent({ llmProvider, promptTemplate: template, systemPrompt: system });
+    }).singleton(),
+    extractRedactScore: asFunction(({ evidenceExtractor, rubricScorer, rubricRepository, competencyRepository }) =>
+      createExtractRedactScoreWorkflow({ evidenceExtractor, rubricScorer, rubricRepository, competencyRepository }),
+    ).singleton(),
   });
 
   return container;

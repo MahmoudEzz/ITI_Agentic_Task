@@ -1,12 +1,7 @@
 import { decideRefusal } from "../../domain/services/decideRefusal.js";
 import { AnswerSchema } from "../../contracts/retrieval.js";
 import { NotFoundError } from "../../domain/errors/index.js";
-
-// {{var}} substitution only — no I/O, no external templating engine, the
-// prompt file itself is the only place the actual wording lives (CLAUDE.md).
-function renderTemplate(template, vars) {
-  return template.replace(/\{\{(\w+)\}\}/g, (_match, key) => vars[key] ?? "");
-}
+import { renderTemplate } from "../prompts/renderTemplate.js";
 
 // Every entry gets a stable [n] marker matching its position — the same
 // numbering the prompt instructs the model to cite by, and the only
@@ -52,6 +47,7 @@ export function createAnswerQuestionUseCase({
   llmProvider,
   candidateRepository,
   promptTemplate,
+  systemPrompt,
   refusalThreshold,
   defaultTopK = 8,
 }) {
@@ -81,7 +77,7 @@ export function createAnswerQuestionUseCase({
     }
 
     const prompt = renderTemplate(promptTemplate, { context: buildContextBlock(chunks), question });
-    const { text } = await llmProvider.complete({ prompt });
+    const { text } = await llmProvider.complete({ system: systemPrompt, prompt });
     const citations = resolveCitations(text, chunks);
 
     if (citations.length === 0) {
