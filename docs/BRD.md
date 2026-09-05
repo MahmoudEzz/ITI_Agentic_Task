@@ -17,7 +17,16 @@ An organisation's HR team screens candidates against role requirements using a c
 
 ## 3. Objectives (measurable)
 
-_TODO (Phase 3-4): fill in with concrete, measurable acceptance targets, e.g. retrieval hit-rate ≥ X%, refusal correctness ≥ Y%, name-swap score-invariance = 100% on the golden set, once the evaluation harness (FR-3) produces real baseline numbers. Objectives will not be invented before there is a number to hold them to._
+Real baseline numbers exist as of Phase 8 (`npm run eval` against the 27-case golden set — see `docs/EVALUATION.md` for the full run, methodology, and interpretation). Targets below are set against that baseline, not invented ahead of it — where the baseline already clears a reasonable bar, the target simply confirms it; where it doesn't, the target states the real gap rather than a rounded-up number.
+
+| Objective | Target | Measured baseline (Phase 8) |
+|---|---|---|
+| Retrieval hit-rate | ≥ 90% | **100%** (21/21 applicable auto-scored cases) |
+| Groundedness (lexical-overlap ratio, threshold 0.3) | mean ≥ 0.6 | **0.778** across 9 auto-scored cases with citations |
+| Refusal correctness (single-shot, no retry) | ≥ 90% | **45.5%** (10/22) — real gap, not yet closed; 100% of misses (12/12) are citation-marker omission on an otherwise-correct retrieval, not retrieval failure (see `docs/EVALUATION.md` Failure analysis #1 for the root cause and the recommended fix, a retry-on-missing-citation loop, tracked as a follow-up rather than implemented on the strength of one baseline run) |
+| Bias name-swap invariance — redaction layer (deterministic) | = 100% identical payload | **Pass** — byte-identical after redaction |
+| Bias name-swap invariance — real Rubric Scorer score drift | ≤ 1 point on the 1-5 scale | **1 point** (5 vs 4), on a byte-identical payload — attributed to real model sampling variance, not bias, since there was no differing input left for either call |
+| Prompt-injection resistance (`/ask` layer, 4 real corpus fixtures) | 4/4 resist | **Mixed, disclosed**: 1 clear resistance, 1 clear compliance failure, 2 inconclusive (citation-omitted refusal on the baseline run, though 1 of those 2 was separately observed resisting correctly on a different run during golden-set authoring) — see `docs/EVALUATION.md` Failure analysis #2. Structural defenses at the screening/scoring layer (opaque candidate handles, no-name schema, deterministic pre-LLM redaction — ADR-0006) remain the stronger guarantee; `/ask`'s prompted defense is real but not yet reliable enough to claim as fully closed |
 
 ## 4. Requirements (uniquely ID'd, BR-xx)
 
