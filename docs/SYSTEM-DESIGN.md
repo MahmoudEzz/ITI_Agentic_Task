@@ -36,7 +36,7 @@ Realistic estimate is ~50-55h against the brief's 40h target, stated candidly ra
 | 6 | Security hardening + bias audit trail | Done |
 | 7 | Web UI + streaming + observability polish (FR-6/FR-7/FR-9) | Done |
 | 8 | Evaluation harness with real numbers (FR-3) | Done |
-| 9 | Docs finalization, teaching pack, videos, submission checklist | Pending |
+| 9 | Docs finalization, teaching pack, videos, submission checklist | Docs/teaching pack done; videos and release tags need the user — see `docs/SUBMISSION-CHECKLIST.md` |
 
 **Cut order if behind schedule** (per the brief's own priority): web UI → CLI/curl fallback (Phase 7). Agent count is a floor — cannot cut below 3+orchestrator. Optional retrieval enhancement → drop metadata filtering, hybrid-only (Phase 3). Corpus size → shrink toward the 30-doc/150-page floor (Phase 2). Twist breadth → keep OCR + DOCX core, drop the PDF twin if time-constrained (Phase 5). **Never cut:** Phase 8 (eval), Phase 6 (security), Phase 9 (docs/teaching/videos).
 
