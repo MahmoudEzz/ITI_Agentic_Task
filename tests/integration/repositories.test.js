@@ -165,6 +165,11 @@ test("PgVectorStore.hybridSearch fuses dense and keyword results via reciprocal 
   const results = await vectorStore.hybridSearch("Kubernetes", fakeEmbedding(1), { topK: 5 });
   assert.ok(results.length >= 1);
   assert.match(results[0].content, /Kubernetes/);
+  // The exact-embedding dense hit must report a real cosine similarity,
+  // distinct from the fused RRF `score` — this is what decideRefusal.js
+  // thresholds on (see ADR-0001).
+  assert.ok(typeof results[0].denseSimilarity === "number");
+  assert.ok(results[0].denseSimilarity > 0.99);
 });
 
 test("PgVectorStore.deleteChunksByDocumentId removes exactly that document's chunks", async () => {

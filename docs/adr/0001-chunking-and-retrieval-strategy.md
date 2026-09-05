@@ -16,6 +16,8 @@ The corpus is structurally irregular: CVs vary wildly in section naming/ordering
 
 **The one required enhancement**: **metadata filtering** by `candidateId` / `section` / `documentType` — retrieval for "does candidate X show evidence of competency Y" is restricted to candidate X's own chunks and relevant sections, rather than relying on semantic similarity alone to avoid cross-candidate contamination.
 
+**Refusal (Phase 3)**: deterministic, threshold-based on raw dense cosine similarity (`denseSimilarity`), decided before any LLM call — never the model's own self-assessment. Critically, this thresholds on `denseSimilarity`, not the fused RRF `score`: RRF's rank-position score (`1/(60+rank)`) is ~0.0164 for the top hit regardless of whether that hit is a perfect match or garbage, so it carries no confidence magnitude and would make a threshold meaningless. `PgVectorStore.hybridSearch` carries both fields through separately for exactly this reason. A keyword-only match (`denseSimilarity: null`) cannot on its own avoid refusal — kept to one number and one threshold so the decision is defensible in the eval harness and explainable in one sentence, at the cost of never letting a strong lexical-only match rescue an answer with no semantic support. Pure function: `src/domain/services/decideRefusal.js`. The threshold itself (`RETRIEVAL_REFUSAL_THRESHOLD`, default 0.35) is provisional, in config not hardcoded, pending real tuning against Phase 8's golden set — same treatment as the OCR confidence cutoffs.
+
 ## Alternatives considered
 
 - **Fixed-size chunking only** — simpler, but tested against this corpus's structure it would split a single job's bullet points across chunks arbitrarily, weakening evidence citations for a specific role/period. Rejected.
