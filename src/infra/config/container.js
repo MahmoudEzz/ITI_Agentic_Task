@@ -24,12 +24,14 @@ import { FallbackLLMProvider } from "../../adapters/llm/FallbackLLMProvider.js";
 import { createIngestDocumentUseCase } from "../../application/ingestion/ingestDocument.js";
 import { createSearchCorpusTool } from "../../application/tools/searchCorpus.js";
 import { createGetCandidateChunksTool } from "../../application/tools/getCandidateChunks.js";
+import { createFinalizeShortlistTool } from "../../application/tools/finalizeShortlist.js";
 import { createScopedToolDispatcher } from "../../application/tools/dispatchTool.js";
 import { createEvidenceExtractorAgent, EVIDENCE_EXTRACTOR_ALLOWED_TOOLS } from "../../application/agents/evidenceExtractor.js";
 import { createRubricScorerAgent } from "../../application/agents/rubricScorer.js";
 import { createShortlistDrafterAgent } from "../../application/agents/shortlistDrafter.js";
 import { createExtractRedactScoreWorkflow } from "../../application/workflows/extractRedactScore.js";
 import { createRunScreeningWorkflowUseCase } from "../../application/workflows/runScreeningWorkflow.js";
+import { createApplyApprovalDecisionUseCase } from "../../application/workflows/applyApprovalDecision.js";
 
 const here = path.dirname(fileURLToPath(import.meta.url));
 const repoRoot = path.join(here, "..", "..", "..");
@@ -96,9 +98,13 @@ export function buildContainer(overrides = {}) {
     // allow-list — src/application/tools/dispatchTool.js's scoped
     // dispatcher (created per-agent once agents exist, Phase 4 PR C) is
     // what actually enforces which agent may call which of these.
-    toolImplementations: asFunction(({ vectorStore, embeddingProvider, candidateRepository }) => ({
+    finalizeShortlist: asFunction(({ approvalRepository, shortlistRepository }) =>
+      createFinalizeShortlistTool({ approvalRepository, shortlistRepository }),
+    ).singleton(),
+    toolImplementations: asFunction(({ vectorStore, embeddingProvider, candidateRepository, finalizeShortlist }) => ({
       search_corpus: createSearchCorpusTool({ vectorStore, embeddingProvider }),
       get_candidate_chunks: createGetCandidateChunksTool({ vectorStore, candidateRepository }),
+      finalize_shortlist: finalizeShortlist,
     })).singleton(),
     evidenceExtractor: asFunction(({ llmProvider, competencyRepository, toolImplementations }) => {
       const { system, template } = loadPromptTemplate(path.join(repoRoot, "prompts", "evidence-extractor.md"));
@@ -131,6 +137,9 @@ export function buildContainer(overrides = {}) {
           shortlistDrafter,
           rubricRepository,
         }),
+    ).singleton(),
+    applyApprovalDecision: asFunction(({ runRepository, approvalRepository, shortlistRepository, finalizeShortlist }) =>
+      createApplyApprovalDecisionUseCase({ runRepository, approvalRepository, shortlistRepository, finalizeShortlist }),
     ).singleton(),
   });
 

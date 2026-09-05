@@ -31,7 +31,7 @@ Realistic estimate is ~50-55h against the brief's 40h target, stated candidly ra
 | 1 | Domain & contracts foundation — entities, domain errors, Zod contracts, unit tests for pure domain logic | Done |
 | 2 | Ingestion (FR-1), corpus authoring in parallel — extract→clean→chunk→embed→index against real Postgres+pgvector, idempotent re-ingestion | Done |
 | 3 | Retrieval + Q&A + citations + refusal (FR-2) — **first demoable slice** | Done |
-| 4 | Multi-agent workflow + approval gate + orchestration controls (FR-4/FR-5) — **second demoable slice** | Pending |
+| 4 | Multi-agent workflow + approval gate + orchestration controls (FR-4/FR-5) — **second demoable slice** | Done |
 | 5 | T6 document in/out — OCR with confidence flagging, DOCX + PDF generation | Pending |
 | 6 | Security hardening + bias audit trail | Pending |
 | 7 | Web UI + streaming + observability polish (FR-6/FR-7/FR-9) | Pending |
