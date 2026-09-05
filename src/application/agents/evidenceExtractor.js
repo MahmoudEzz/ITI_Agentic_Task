@@ -16,6 +16,24 @@ function formatChunks(chunks) {
   return chunks.map((c) => `[chunkId: ${c.chunkId}]\n${c.content}`).join("\n\n");
 }
 
+// Whitespace/case-insensitive containment, not exact-string containment —
+// the model quotes verbatim spans in practice (verified against real corpus
+// CVs) but sometimes normalizes internal whitespace when copying across a
+// line break. Never fuzzy/similarity matching: this must stay a mechanical
+// yes/no check, not a judgment call an LLM could be argued into.
+function normalizeForContainment(text) {
+  return text.toLowerCase().replace(/\s+/g, " ").trim();
+}
+
+function isGroundedInChunk(snippetText, chunkContent) {
+  // chunkContent is undefined when sourceChunkId isn't a known chunk at all —
+  // the sibling .refine() above already flags that case with a more specific
+  // message, but this still fails closed (false, not true) rather than
+  // treating "I can't even find the chunk" as grounded.
+  if (chunkContent === undefined) return false;
+  return normalizeForContainment(chunkContent).includes(normalizeForContainment(snippetText));
+}
+
 export function createEvidenceExtractorAgent({ llmProvider, competencyRepository, callTool, promptTemplate, systemPrompt }) {
   return async function evidenceExtractor(rawInput) {
     const input = EvidenceExtractorInputSchema.parse(rawInput);
@@ -41,9 +59,19 @@ export function createEvidenceExtractorAgent({ llmProvider, competencyRepository
     // never trusted through. Never validate this as "does the schema shape
     // match," which a hallucinated-but-well-formed id would still pass.
     const knownChunkIds = new Set(chunks.map((c) => c.chunkId));
+    const contentByChunkId = new Map(chunks.map((c) => [c.chunkId, c.content]));
     const scopedOutputSchema = EvidenceExtractorOutputSchema.refine(
       (data) => data.evidenceByCompetency.every((entry) => entry.snippets.every((snippet) => knownChunkIds.has(snippet.sourceChunkId))),
       { message: "every sourceChunkId must reference a chunk actually fetched for this candidate" },
+    ).refine(
+      // A real chunk id is necessary but not sufficient — this catches the
+      // case a short/low-content chunk (an OCR chunk that only captured a
+      // header line, for instance) gets cited for evidence its actual text
+      // could never support. Confidence-threshold filtering in
+      // get_candidate_chunks decides WHETHER a chunk is used; this decides
+      // whether the model's claims about it are real.
+      (data) => data.evidenceByCompetency.every((entry) => entry.snippets.every((snippet) => isGroundedInChunk(snippet.text, contentByChunkId.get(snippet.sourceChunkId)))),
+      { message: "every snippet's text must actually appear in its cited chunk's content — a hallucinated-but-real chunk id is not grounding" },
     );
 
     return runStructuredCompletion({
