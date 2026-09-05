@@ -2,7 +2,7 @@ import { z } from "zod";
 
 // Every field here is deliberate. In particular, RubricScorerInputSchema is
 // `.strict()` and has no field capable of carrying a name or raw CV text —
-// this is the schema-level half of the bias-safety design (ADR-0004,
+// this is the schema-level half of the bias-safety design (ADR-0006,
 // docs/SECURITY.md). The pure-function half is
 // src/domain/services/redactProtectedAttributes.js (Phase 1, issue #8).
 

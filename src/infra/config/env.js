@@ -10,6 +10,14 @@ const EnvSchema = z.object({
   JWT_SECRET: z.string().min(1),
 
   DATABASE_URL: z.string().min(1),
+  // Integration tests truncate tables between cases (see
+  // tests/integration/repositories.test.js's beforeEach) — pointed at
+  // DATABASE_URL, that wipes whatever `npm run ingest` populated out from
+  // under local dev (issue #35). Only consulted when NODE_ENV=test; CI
+  // (which sets neither NODE_ENV nor this var, only DATABASE_URL) falls
+  // through to DATABASE_URL unchanged, since its Postgres is ephemeral
+  // per run anyway and has nothing to lose.
+  TEST_DATABASE_URL: z.string().optional().default(""),
 
   OLLAMA_HOST: z.string().min(1).default("http://localhost:11434"),
   OLLAMA_MODEL: z.string().min(1).default("llama3.2:3b"),
@@ -39,7 +47,7 @@ function loadConfig(env = process.env) {
     port: data.PORT,
     nodeEnv: data.NODE_ENV,
     jwtSecret: data.JWT_SECRET,
-    databaseUrl: data.DATABASE_URL,
+    databaseUrl: data.NODE_ENV === "test" && data.TEST_DATABASE_URL ? data.TEST_DATABASE_URL : data.DATABASE_URL,
     ollama: Object.freeze({ host: data.OLLAMA_HOST, model: data.OLLAMA_MODEL, embedModel: data.OLLAMA_EMBED_MODEL }),
     gemini: Object.freeze({ apiKey: data.GEMINI_API_KEY, model: data.GEMINI_MODEL }),
     llmProviderChain: Object.freeze(data.LLM_PROVIDER_CHAIN.split(",").map((s) => s.trim())),

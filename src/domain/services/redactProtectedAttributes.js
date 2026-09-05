@@ -1,5 +1,5 @@
 // Pure, deterministic redaction — no LLM call, no network, ever. This is the
-// point of the bias-safety design (docs/SECURITY.md, ADR-0004): the
+// point of the bias-safety design (docs/SECURITY.md, ADR-0006): the
 // exclusion cannot be prompted around because it happens before an LLM ever
 // sees the text. Regex/keyword matching has real recall limits (documented
 // candidly in docs/SECURITY.md) — this is a mitigation, not a guarantee.
@@ -12,7 +12,7 @@
 const DROP_RATIO_THRESHOLD = 0.4;
 
 // Closed, documented list — mirrors docs/SECURITY.md exactly. Direct
-// attributes and their proxies are both in scope (see ADR-0004): a proxy is
+// attributes and their proxies are both in scope (see ADR-0006): a proxy is
 // flagged with the same weight as the direct attribute it stands in for.
 const PATTERNS = Object.freeze([
   // --- direct attributes ---

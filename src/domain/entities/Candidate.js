@@ -1,7 +1,7 @@
 import { ValidationError } from "../errors/index.js";
 
 // Opaque handle format (e.g. "CAND-07") is deliberate: this is the only
-// identifier that reaches the Rubric Scorer (see ADR-0004 / docs/SECURITY.md
+// identifier that reaches the Rubric Scorer (see ADR-0006 / docs/SECURITY.md
 // bias-safety design). A real name never flows through this entity's public
 // shape into the scoring path.
 const HANDLE_PATTERN = /^CAND-\d+$/;

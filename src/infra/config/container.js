@@ -6,11 +6,15 @@ import { fileURLToPath } from "node:url";
 import { loadConfig } from "./env.js";
 import { loadPromptTemplate } from "../../application/prompts/loadPromptTemplate.js";
 import { createAnswerQuestionUseCase } from "../../application/use-cases/answerQuestion.js";
-
-const here = path.dirname(fileURLToPath(import.meta.url));
-const repoRoot = path.join(here, "..", "..", "..");
 import { KnexDocumentRepository } from "../../adapters/relational/KnexDocumentRepository.js";
 import { KnexCandidateRepository } from "../../adapters/relational/KnexCandidateRepository.js";
+import { KnexRunRepository } from "../../adapters/relational/KnexRunRepository.js";
+import { KnexApprovalRepository } from "../../adapters/relational/KnexApprovalRepository.js";
+import { KnexScoreRepository } from "../../adapters/relational/KnexScoreRepository.js";
+import { KnexShortlistRepository } from "../../adapters/relational/KnexShortlistRepository.js";
+import { KnexBiasAuditLogRepository } from "../../adapters/relational/KnexBiasAuditLogRepository.js";
+import { KnexCompetencyRepository } from "../../adapters/relational/KnexCompetencyRepository.js";
+import { KnexRubricRepository } from "../../adapters/relational/KnexRubricRepository.js";
 import { PgVectorStore } from "../../adapters/vectorstore/PgVectorStore.js";
 import { createExtractor } from "../../adapters/extraction/createExtractor.js";
 import { OllamaEmbeddingProvider } from "../../adapters/llm/OllamaEmbeddingProvider.js";
@@ -18,6 +22,9 @@ import { OllamaProvider } from "../../adapters/llm/OllamaProvider.js";
 import { GeminiProvider } from "../../adapters/llm/GeminiProvider.js";
 import { FallbackLLMProvider } from "../../adapters/llm/FallbackLLMProvider.js";
 import { createIngestDocumentUseCase } from "../../application/ingestion/ingestDocument.js";
+
+const here = path.dirname(fileURLToPath(import.meta.url));
+const repoRoot = path.join(here, "..", "..", "..");
 
 // Maps a config-declared provider name (LLM_PROVIDER_CHAIN, e.g. "ollama,gemini")
 // to the concrete adapter it names — the "swap provider = config change"
@@ -41,6 +48,13 @@ export function buildContainer(overrides = {}) {
     knex: asValue(knex),
     documentRepository: asFunction(({ knex }) => new KnexDocumentRepository(knex)).singleton(),
     candidateRepository: asFunction(({ knex }) => new KnexCandidateRepository(knex)).singleton(),
+    runRepository: asFunction(({ knex }) => new KnexRunRepository(knex)).singleton(),
+    approvalRepository: asFunction(({ knex }) => new KnexApprovalRepository(knex)).singleton(),
+    scoreRepository: asFunction(({ knex }) => new KnexScoreRepository(knex)).singleton(),
+    shortlistRepository: asFunction(({ knex }) => new KnexShortlistRepository(knex)).singleton(),
+    biasAuditLogRepository: asFunction(({ knex }) => new KnexBiasAuditLogRepository(knex)).singleton(),
+    competencyRepository: asFunction(({ knex }) => new KnexCompetencyRepository(knex)).singleton(),
+    rubricRepository: asFunction(({ knex }) => new KnexRubricRepository(knex)).singleton(),
     vectorStore: asFunction(({ knex }) => new PgVectorStore(knex)).singleton(),
     extractorFactory: asValue((sourceFormat) => createExtractor(sourceFormat)),
     embeddingProvider: asFunction(
