@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Domain Copilot</title>
+<link rel="stylesheet" href="style.css" />
+</head>
+<body>
+<header>
+  <h1>Domain Copilot</h1>
+  <div id="session-info"></div>
+</header>
+
+<nav id="tabs">
+  <button data-tab="login" class="active">Login</button>
+  <button data-tab="ask">Ask</button>
+  <button data-tab="ingest">Ingest</button>
+  <button data-tab="runs">Run workflow</button>
+  <button data-tab="trace">Trace</button>
+</nav>
+
+<main>
+  <section id="tab-login" class="tab active">
+    <h2>Login</h2>
+    <p class="hint">No self-registration — accounts are provisioned with <code>npm run users -- create</code>.</p>
+    <form id="login-form">
+      <label>Email <input type="email" id="login-email" required /></label>
+      <label>Password <input type="password" id="login-password" required /></label>
+      <button type="submit">Log in</button>
+    </form>
+    <pre id="login-status" class="status"></pre>
+  </section>
+
+  <section id="tab-ask" class="tab">
+    <h2>Ask (grounded Q&amp;A, streamed)</h2>
+    <form id="ask-form">
+      <label>Question <input type="text" id="ask-question" size="60" required /></label>
+      <label>Candidate handle (optional) <input type="text" id="ask-candidate" placeholder="CAND-001" /></label>
+      <button type="submit">Ask</button>
+    </form>
+    <div id="ask-output" class="stream-output"></div>
+    <div id="ask-citations"></div>
+  </section>
+
+  <section id="tab-ingest" class="tab">
+    <h2>Ingest</h2>
+    <p class="hint">
+      Document upload is not exposed over HTTP yet — a scoped, disclosed gap (see <code>docs/SECURITY.md</code>).
+      Ingestion is CLI-only for now:
+    </p>
+    <pre>npm run ingest</pre>
+    <p class="hint">Extracts, chunks, embeds, and indexes the full corpus against the real database this API also reads from — idempotent, safe to re-run.</p>
+  </section>
+
+  <section id="tab-runs" class="tab">
+    <h2>Run workflow</h2>
+    <form id="run-form">
+      <label>Role ID <input type="text" id="run-role" placeholder="backend-engineer" required /></label>
+      <label>Rubric ID <input type="text" id="run-rubric" placeholder="rubric-backend-engineer" required /></label>
+      <label>Candidate handles (comma-separated) <input type="text" id="run-candidates" placeholder="CAND-001,CAND-002" required /></label>
+      <button type="submit">Start screening run</button>
+    </form>
+    <div id="run-progress" class="stream-output"></div>
+    <div id="run-result"></div>
+
+    <h3>Existing runs</h3>
+    <button id="runs-refresh">Refresh</button>
+    <table id="runs-table"><thead><tr><th>Run ID</th><th>State</th><th>Created by</th><th>Created at</th></tr></thead><tbody></tbody></table>
+
+    <h3>Approval decision</h3>
+    <form id="decision-form">
+      <label>Run ID <input type="text" id="decision-run-id" required /></label>
+      <label>Decision
+        <select id="decision-value">
+          <option value="approved">approved</option>
+          <option value="rejected">rejected</option>
+          <option value="edited_and_approved">edited_and_approved</option>
+        </select>
+      </label>
+      <label>Comment <input type="text" id="decision-comment" /></label>
+      <button type="submit">Submit decision</button>
+    </form>
+    <pre id="decision-status" class="status"></pre>
+  </section>
+
+  <section id="tab-trace" class="tab">
+    <h2>Trace</h2>
+    <form id="trace-form">
+      <label>Run ID <input type="text" id="trace-run-id" required /></label>
+      <button type="submit">Load trace</button>
+    </form>
+    <table id="trace-table"><thead><tr><th>Span</th><th>Started</th><th>Duration (ms)</th><th>Tokens in/out</th><th>Cost USD</th><th>Attributes</th></tr></thead><tbody></tbody></table>
+  </section>
+</main>
+
+<script src="app.js"></script>
+</body>
+</html>

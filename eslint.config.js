@@ -49,6 +49,19 @@ export default [
     },
   },
   {
+    // The static web UI (Phase 7 PR4) runs in a browser, not Node — its
+    // own global set (document/window/etc), not this file's Node globals.
+    files: ["src/adapters/web/public/**/*.js"],
+    languageOptions: {
+      globals: {
+        document: "readonly",
+        window: "readonly",
+        fetch: "readonly",
+        TextDecoder: "readonly",
+      },
+    },
+  },
+  {
     ignores: ["node_modules/**", "corpus/**", "reports/**"],
   },
 ];

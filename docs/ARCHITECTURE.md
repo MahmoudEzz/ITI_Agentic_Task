@@ -10,15 +10,81 @@ Alternatives considered: layered/N-tier (rejected — doesn't name an explicit s
 
 ## C4 Level 1 — System Context
 
-_TODO (Phase 7)._
+```mermaid
+flowchart TB
+    recruiter["Recruiter\n(person)"]
+    hm["Hiring Manager\n(person)"]
+    dc["Domain Copilot\n(this system)"]
+    ollama["Ollama\n(local LLM, primary)"]
+    gemini["Gemini API\n(hosted LLM, fallback)"]
+
+    recruiter -- "ingest, ask, run screening (CLI or web UI)" --> dc
+    hm -- "everything a recruiter can, plus approve/reject/edit, view trace/audit" --> dc
+    dc -- "prompts, redacted evidence only" --> ollama
+    dc -. "fallback only, on Ollama failure" .-> gemini
+```
 
 ## C4 Level 2 — Containers
 
-_TODO (Phase 7)._
+```mermaid
+flowchart TB
+    subgraph client["Clients"]
+        cli["CLI scripts\n(npm run ask/screen/ingest/users)"]
+        browser["Browser\n(static UI, src/adapters/web/public)"]
+    end
+
+    subgraph api["Domain Copilot API (one Node.js process)"]
+        fastify["Fastify HTTP server\n(src/adapters/http)"]
+        app["Application layer\n(use cases, agents, orchestrator FSM)"]
+        domain["Domain layer\n(entities, pure services — zero deps)"]
+    end
+
+    pg[("PostgreSQL + pgvector\n(relational + vector store, one instance)")]
+    ollama["Ollama\n(local, primary)"]
+    gemini["Gemini API\n(hosted, fallback)"]
+
+    browser -- "HTTPS/JSON + SSE, JWT bearer" --> fastify
+    cli -- "direct container.resolve() —\nno HTTP, trusted local operator" --> app
+    fastify --> app
+    app --> domain
+    app -- "Knex" --> pg
+    app -- "LLMProviderPort" --> ollama
+    app -. "fallback only" .-> gemini
+```
 
 ## C4 Level 3 — Components
 
-_TODO (Phase 7)._
+Scoped to the HTTP container (Level 2's `api` box) — the piece that changed most this phase.
+
+```mermaid
+flowchart TB
+    subgraph http["src/adapters/http"]
+        server["server.js\n(buildServer — composition root for this layer)"]
+        authp["plugins/auth.js\n(requireAuth, requireRole)"]
+        secp["plugins/security.js\n(helmet, cors, rate-limit)"]
+        askr["routes/ask.js\n(POST /ask, SSE)"]
+        runsr["routes/runs.js\n(GET/POST /runs, GET /runs/:id[/trace], POST /runs/:id/decision)"]
+        authr["routes/auth.js\n(POST /auth/login)"]
+    end
+
+    subgraph appl["src/application (selected use cases)"]
+        aqs["answerQuestion.js\n(answerQuestion, answerQuestionStream)"]
+        rsw["runScreeningWorkflow.js"]
+        aad["applyApprovalDecision.js"]
+        trace["tracing/{recordSpan,createTracingLLMProvider}.js"]
+    end
+
+    ports["Ports\n(RunRepositoryPort, TraceEventRepositoryPort,\nLLMProviderPort, ...)"]
+    adapters["Adapters\n(Knex*Repository, OllamaProvider,\nGeminiProvider, FallbackLLMProvider)"]
+
+    server --> authp & secp --> askr & runsr & authr
+    askr --> aqs
+    runsr --> rsw & aad
+    aqs -.->|traceContext, onEvent| trace
+    rsw -.->|traceContext, onEvent| trace
+    aqs & rsw & aad --> ports
+    ports -.->|implemented by| adapters
+```
 
 ## Sequence diagram — full agentic workflow (incl. approval gate and streaming)
 

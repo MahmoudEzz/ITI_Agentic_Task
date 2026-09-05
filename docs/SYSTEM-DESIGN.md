@@ -34,7 +34,7 @@ Realistic estimate is ~50-55h against the brief's 40h target, stated candidly ra
 | 4 | Multi-agent workflow + approval gate + orchestration controls (FR-4/FR-5) — **second demoable slice** | Done |
 | 5 | T6 document in/out — OCR with confidence flagging, DOCX + PDF generation | Done |
 | 6 | Security hardening + bias audit trail | Done |
-| 7 | Web UI + streaming + observability polish (FR-6/FR-7/FR-9) | Pending |
+| 7 | Web UI + streaming + observability polish (FR-6/FR-7/FR-9) | Done |
 | 8 | Evaluation harness with real numbers (FR-3) | Pending |
 | 9 | Docs finalization, teaching pack, videos, submission checklist | Pending |
 

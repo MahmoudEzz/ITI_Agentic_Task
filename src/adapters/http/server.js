@@ -1,4 +1,7 @@
 import Fastify from "fastify";
+import fastifyStatic from "@fastify/static";
+import path from "node:path";
+import { fileURLToPath } from "node:url";
 
 import { loadConfig } from "../../infra/config/env.js";
 import { buildContainer } from "../../infra/config/container.js";
@@ -8,6 +11,9 @@ import { registerAuthRoutes } from "./routes/auth.js";
 import { registerRunRoutes } from "./routes/runs.js";
 import { registerAskRoutes } from "./routes/ask.js";
 import { statusForError } from "./errorMapping.js";
+
+const here = path.dirname(fileURLToPath(import.meta.url));
+const webPublicDir = path.join(here, "..", "web", "public");
 
 // The composition root for the HTTP layer: takes an already-built DI
 // container (so tests can inject a test config/knex the same way
@@ -20,7 +26,46 @@ export async function buildServer({ container, config }) {
   await registerSecurityPlugins(app, config);
   await app.register(authPlugin, { tokenPort: container.resolve("tokenPort") });
 
+  // The minimal static UI (Phase 7 PR4) — plain HTML/CSS/vanilla JS, no
+  // build step, served under /app so it can never collide with an API
+  // route at the root path (POST /ask, GET /runs, etc). The page itself
+  // calls the same authenticated JSON/SSE API a curl/CLI user would.
+  await app.register(fastifyStatic, { root: webPublicDir, prefix: "/app/" });
+  app.get("/", async (_request, reply) => reply.redirect("/app/"));
+
   app.get("/healthz", async () => ({ status: "ok" }));
+
+  // FR-9: liveness (above) says "the process is up"; readiness says "the
+  // process can actually do its job." Postgres/pgvector is a hard
+  // dependency — its check has no timeout override because every request
+  // needs it anyway. Ollama is checked with a short timeout and reported
+  // as its own degraded dimension rather than failing the whole probe: a
+  // slow/cold local model (documented, real variance — see
+  // docs/SYSTEM-DESIGN.md's gap table) would otherwise make a compose
+  // healthcheck flap the whole API in and out of "ready" for no real
+  // outage. A 200 with checks.ollama = false is the correct signal here,
+  // not a 503 — the Q&A/screening routes will simply be slow or fall
+  // back to Gemini, not unavailable.
+  app.get("/readyz", async (_request, reply) => {
+    const knex = container.resolve("knex");
+    const checks = { postgres: false, ollama: false };
+
+    try {
+      await knex.raw("select 1");
+      checks.postgres = true;
+    } catch {
+      // stays false
+    }
+
+    try {
+      const response = await fetch(`${config.ollama.host}/api/tags`, { signal: AbortSignal.timeout(1500) });
+      checks.ollama = response.ok;
+    } catch {
+      // stays false
+    }
+
+    reply.status(checks.postgres ? 200 : 503).send({ status: checks.postgres ? "ready" : "not_ready", checks });
+  });
 
   await registerAuthRoutes(app, { login: container.resolve("login") });
   await registerRunRoutes(app, {
