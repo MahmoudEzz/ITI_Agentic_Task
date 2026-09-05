@@ -7,7 +7,18 @@ import { KnexCandidateRepository } from "../../adapters/relational/KnexCandidate
 import { PgVectorStore } from "../../adapters/vectorstore/PgVectorStore.js";
 import { createExtractor } from "../../adapters/extraction/createExtractor.js";
 import { OllamaEmbeddingProvider } from "../../adapters/llm/OllamaEmbeddingProvider.js";
+import { OllamaProvider } from "../../adapters/llm/OllamaProvider.js";
+import { GeminiProvider } from "../../adapters/llm/GeminiProvider.js";
+import { FallbackLLMProvider } from "../../adapters/llm/FallbackLLMProvider.js";
 import { createIngestDocumentUseCase } from "../../application/ingestion/ingestDocument.js";
+
+// Maps a config-declared provider name (LLM_PROVIDER_CHAIN, e.g. "ollama,gemini")
+// to the concrete adapter it names — the "swap provider = config change"
+// acceptance test (ADR-0005) hinges on this being the only place that mapping exists.
+const LLM_PROVIDER_FACTORIES = {
+  ollama: (config) => new OllamaProvider({ host: config.ollama.host, model: config.ollama.model }),
+  gemini: (config) => new GeminiProvider({ apiKey: config.gemini.apiKey, model: config.gemini.model }),
+};
 
 // Composition root: the only place in the codebase allowed to know about
 // every concrete adapter at once (see CLAUDE.md). `overrides` lets tests
@@ -28,6 +39,14 @@ export function buildContainer(overrides = {}) {
     embeddingProvider: asFunction(
       ({ config }) => new OllamaEmbeddingProvider({ host: config.ollama.host, model: config.ollama.embedModel }),
     ).singleton(),
+    llmProvider: asFunction(({ config }) => {
+      const providers = config.llmProviderChain.map((name) => {
+        const factory = LLM_PROVIDER_FACTORIES[name];
+        if (!factory) throw new Error(`Unknown LLM provider "${name}" in LLM_PROVIDER_CHAIN`);
+        return { name, provider: factory(config) };
+      });
+      return new FallbackLLMProvider(providers);
+    }).singleton(),
     ingestDocument: asFunction(({ documentRepository, vectorStore, embeddingProvider, extractorFactory }) =>
       createIngestDocumentUseCase({ documentRepository, vectorStore, embeddingProvider, extractorFactory }),
     ).singleton(),
