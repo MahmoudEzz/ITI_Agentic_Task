@@ -13,6 +13,11 @@ test("RetrievalQuerySchema rejects an unknown field", () => {
   assert.equal(result.success, false);
 });
 
+test("RetrievalQuerySchema accepts a well-formed candidateHandle and rejects a malformed one", () => {
+  assert.equal(RetrievalQuerySchema.safeParse({ question: "x", candidateHandle: "CAND-001" }).success, true);
+  assert.equal(RetrievalQuerySchema.safeParse({ question: "x", candidateHandle: "Ahmed Youssef" }).success, false);
+});
+
 test("AnswerSchema accepts a non-refused answer with at least one citation", () => {
   const result = AnswerSchema.safeParse({
     refused: false,

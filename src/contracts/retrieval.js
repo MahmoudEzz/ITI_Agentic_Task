@@ -9,7 +9,14 @@ export const RetrievalQuerySchema = z
   .object({
     question: z.string().min(1),
     topK: z.number().int().positive().max(50).optional(),
-    candidateId: z.string().optional(),
+    // Opaque handle (CAND-NNN), never the internal candidates.id primary
+    // key — consistent with every other agent-facing contract in this repo
+    // (see agents.js). answerQuestion.js resolves it to the internal id
+    // before filtering chunks.
+    candidateHandle: z
+      .string()
+      .regex(/^CAND-\d+$/)
+      .optional(),
     documentType: z.string().optional(),
     section: z.string().optional(),
   })

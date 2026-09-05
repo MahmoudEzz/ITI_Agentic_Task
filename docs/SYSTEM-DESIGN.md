@@ -30,7 +30,7 @@ Realistic estimate is ~50-55h against the brief's 40h target, stated candidly ra
 | 0 | Repo & process scaffolding — folder structure, doc skeletons, ADRs, CI skeleton, tooling, Docker skeleton | Done |
 | 1 | Domain & contracts foundation — entities, domain errors, Zod contracts, unit tests for pure domain logic | Done |
 | 2 | Ingestion (FR-1), corpus authoring in parallel — extract→clean→chunk→embed→index against real Postgres+pgvector, idempotent re-ingestion | Done |
-| 3 | Retrieval + Q&A + citations + refusal (FR-2) — **first demoable slice** | Pending |
+| 3 | Retrieval + Q&A + citations + refusal (FR-2) — **first demoable slice** | Done |
 | 4 | Multi-agent workflow + approval gate + orchestration controls (FR-4/FR-5) — **second demoable slice** | Pending |
 | 5 | T6 document in/out — OCR with confidence flagging, DOCX + PDF generation | Pending |
 | 6 | Security hardening + bias audit trail | Pending |
@@ -54,6 +54,8 @@ Realistic estimate is ~50-55h against the brief's 40h target, stated candidly ra
 | DR/backup | No | Out of scope for an assessment deployment | Documented as a known gap; Postgres data is reproducible from `npm run ingest` against the committed corpus | ~2h for scheduled `pg_dump` + off-box storage |
 | Full multi-tenant isolation (T0) | No, ownership-scoping only | T0 is not the assigned twist | Per-user `createdBy` scoping enforced server-side on every resource | ~1-2 days for full tenant-schema isolation + the cross-tenant-leakage test T0 requires |
 | Corpus page-count floor (150+ pages) | Partial — 42 documents (well past the 30-doc floor), 69 pages | Every document is realistic, purpose-built content (a real job description, a real 3-entry CV, a real 12-page policy) rather than padding; hitting 150 pages by inflating individual documents would make chunking/retrieval fixtures less representative of a real corpus, not more | Corpus is diverse across all required fixture types (bias, injection — including the indirect-via-policy-document case, OCR, conflicting sources) despite the shorter total length, so FR-2/FR-3 evaluation is not blocked by this gap | ~2-3h to add 3-4 more policy/reference documents at similar length and depth to the existing ones, closing most of the remaining ~80 pages |
+
+| Isolated test database | No, integration tests run against whatever `DATABASE_URL` resolves to | CI's Postgres service container is already ephemeral per run, so this cost was invisible until local dev exposed it (issue #35) | None yet — `npm run ingest` after running `test:integration`/`test:all` locally restores real corpus data the tests truncated | ~1-2h for a `TEST_DATABASE_URL` pointing at a second local database |
 
 _Additional rows added here as later phases (OCR confidence tuning, PDF-vs-DOCX scope, etc.) surface further deferrals worth recording._
 

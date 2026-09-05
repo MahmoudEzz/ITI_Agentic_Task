@@ -1,7 +1,14 @@
 import { createContainer, asValue, asFunction, InjectionMode } from "awilix";
 import knexFactory from "knex";
+import path from "node:path";
+import { fileURLToPath } from "node:url";
 
 import { loadConfig } from "./env.js";
+import { loadPromptTemplate } from "../../application/prompts/loadPromptTemplate.js";
+import { createAnswerQuestionUseCase } from "../../application/use-cases/answerQuestion.js";
+
+const here = path.dirname(fileURLToPath(import.meta.url));
+const repoRoot = path.join(here, "..", "..", "..");
 import { KnexDocumentRepository } from "../../adapters/relational/KnexDocumentRepository.js";
 import { KnexCandidateRepository } from "../../adapters/relational/KnexCandidateRepository.js";
 import { PgVectorStore } from "../../adapters/vectorstore/PgVectorStore.js";
@@ -50,6 +57,18 @@ export function buildContainer(overrides = {}) {
     ingestDocument: asFunction(({ documentRepository, vectorStore, embeddingProvider, extractorFactory }) =>
       createIngestDocumentUseCase({ documentRepository, vectorStore, embeddingProvider, extractorFactory }),
     ).singleton(),
+    answerQuestion: asFunction(({ embeddingProvider, vectorStore, llmProvider, candidateRepository, config }) => {
+      const { template } = loadPromptTemplate(path.join(repoRoot, "prompts", "answer-grounded.md"));
+      return createAnswerQuestionUseCase({
+        embeddingProvider,
+        vectorStore,
+        llmProvider,
+        candidateRepository,
+        promptTemplate: template,
+        refusalThreshold: config.retrieval.refusalThreshold,
+        defaultTopK: config.retrieval.topK,
+      });
+    }).singleton(),
   });
 
   return container;
