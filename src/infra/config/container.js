@@ -15,6 +15,8 @@ import { KnexShortlistRepository } from "../../adapters/relational/KnexShortlist
 import { KnexBiasAuditLogRepository } from "../../adapters/relational/KnexBiasAuditLogRepository.js";
 import { KnexCompetencyRepository } from "../../adapters/relational/KnexCompetencyRepository.js";
 import { KnexRubricRepository } from "../../adapters/relational/KnexRubricRepository.js";
+import { KnexReportAssetRepository } from "../../adapters/relational/KnexReportAssetRepository.js";
+import { ReportDocumentGenerator } from "../../adapters/docgen/ReportDocumentGenerator.js";
 import { PgVectorStore } from "../../adapters/vectorstore/PgVectorStore.js";
 import { createExtractor } from "../../adapters/extraction/createExtractor.js";
 import { TesseractOcrAdapter } from "../../adapters/ocr/TesseractOcrAdapter.js";
@@ -26,6 +28,8 @@ import { createIngestDocumentUseCase } from "../../application/ingestion/ingestD
 import { createSearchCorpusTool } from "../../application/tools/searchCorpus.js";
 import { createGetCandidateChunksTool } from "../../application/tools/getCandidateChunks.js";
 import { createFinalizeShortlistTool } from "../../application/tools/finalizeShortlist.js";
+import { createGenerateReportTool } from "../../application/tools/generateReport.js";
+import { createBuildReportContentUseCase } from "../../application/reporting/buildReportContent.js";
 import { createScopedToolDispatcher } from "../../application/tools/dispatchTool.js";
 import { createEvidenceExtractorAgent, EVIDENCE_EXTRACTOR_ALLOWED_TOOLS } from "../../application/agents/evidenceExtractor.js";
 import { createRubricScorerAgent } from "../../application/agents/rubricScorer.js";
@@ -66,6 +70,7 @@ export function buildContainer(overrides = {}) {
     biasAuditLogRepository: asFunction(({ knex }) => new KnexBiasAuditLogRepository(knex)).singleton(),
     competencyRepository: asFunction(({ knex }) => new KnexCompetencyRepository(knex)).singleton(),
     rubricRepository: asFunction(({ knex }) => new KnexRubricRepository(knex)).singleton(),
+    reportAssetRepository: asFunction(({ knex }) => new KnexReportAssetRepository(knex)).singleton(),
     vectorStore: asFunction(({ knex }) => new PgVectorStore(knex)).singleton(),
     extractorFactory: asValue((sourceFormat) => createExtractor(sourceFormat)),
     ocrPort: asFunction(() => new TesseractOcrAdapter()).singleton(),
@@ -103,10 +108,18 @@ export function buildContainer(overrides = {}) {
     finalizeShortlist: asFunction(({ approvalRepository, shortlistRepository }) =>
       createFinalizeShortlistTool({ approvalRepository, shortlistRepository }),
     ).singleton(),
-    toolImplementations: asFunction(({ vectorStore, embeddingProvider, candidateRepository, finalizeShortlist, config }) => ({
+    buildReportContent: asFunction(({ runRepository, shortlistRepository, scoreRepository, competencyRepository, rubricRepository, vectorStore }) =>
+      createBuildReportContentUseCase({ runRepository, shortlistRepository, scoreRepository, competencyRepository, rubricRepository, vectorStore }),
+    ).singleton(),
+    documentGenerator: asFunction(() => new ReportDocumentGenerator()).singleton(),
+    generateReport: asFunction(({ approvalRepository, reportAssetRepository, buildReportContent, documentGenerator }) =>
+      createGenerateReportTool({ approvalRepository, reportAssetRepository, buildReportContent, documentGenerator }),
+    ).singleton(),
+    toolImplementations: asFunction(({ vectorStore, embeddingProvider, candidateRepository, finalizeShortlist, generateReport, config }) => ({
       search_corpus: createSearchCorpusTool({ vectorStore, embeddingProvider }),
       get_candidate_chunks: createGetCandidateChunksTool({ vectorStore, candidateRepository, ocrThresholds: config.ocr }),
       finalize_shortlist: finalizeShortlist,
+      generate_report: generateReport,
     })).singleton(),
     evidenceExtractor: asFunction(({ llmProvider, competencyRepository, toolImplementations }) => {
       const { system, template } = loadPromptTemplate(path.join(repoRoot, "prompts", "evidence-extractor.md"));
