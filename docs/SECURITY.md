@@ -6,12 +6,12 @@
 
 | Control | Threat addressed | Status |
 |---|---|---|
-| Object-ownership checks (`createdBy` scoping, server-enforced) on runs (recruiter sees only runs they created; hiring managers can view/decide any run — see the note under "Access" below for why the two roles are scoped differently) | Broken access control — a recruiter reading/acting on another recruiter's pool | Planned — Phase 6 (HTTP routes land next in this phase; the users/auth foundation is Implemented) |
+| Object-ownership checks (`createdBy` scoping, server-enforced) on runs (recruiter sees only runs they created; hiring managers can view/decide any run — see "Access" below for why the two roles are scoped differently) | Broken access control — a recruiter reading/acting on another recruiter's pool | Implemented (Phase 6 PR2) — `GET /runs/:id` throws `NotFoundError` (404, not 403) for a recruiter viewing a run they don't own, so existence isn't disclosed either; live-verified via `fastify.inject()` against a real second-recruiter case |
 | JWT auth (`jsonwebtoken`) + `bcryptjs` password hashing | Cryptographic failures — plaintext/weak credential storage | Implemented (Phase 6 PR1) — `UserRepositoryPort`/`KnexUserRepository`, `PasswordHasherPort`/`BcryptPasswordHasher`, `TokenPort`/`JwtTokenPort`, `login` use case; `npm run users -- create` provisions accounts (no self-registration UI is planned). Pure-JS `bcryptjs` chosen over native `bcrypt` for the same reason as ADR-0004's OCR rasterization swap — no native binding to compile, identical behavior on host/CI/Docker |
 | Parameterized queries throughout (Knex, no raw string interpolation except the documented pgvector `<=>` escape hatch) | SQL injection | Implemented (Phase 2) |
 | Upload validation via content-sniffing (`file-type`), not extension trust; size limits | Malicious/oversized file upload | Planned — Phase 6 |
-| `@fastify/rate-limit` per IP/user | Abuse, credential stuffing, cost-exhaustion via request flooding | Planned — Phase 6 |
-| `@fastify/helmet` security headers + explicit CORS allow-list | Security misconfiguration | Planned — Phase 6 |
+| `@fastify/rate-limit` per IP/user | Abuse, credential stuffing, cost-exhaustion via request flooding | Implemented (Phase 6 PR2) — live-verified: a real burst against a real running server returns real `429`s past the configured window |
+| `@fastify/helmet` security headers + explicit CORS allow-list | Security misconfiguration | Implemented (Phase 6 PR2) — live-verified against a real running server (`CSP`, `X-Content-Type-Options`, `X-Frame-Options`, etc. all present on a real response); CORS is an explicit `CORS_ALLOWED_ORIGINS` allow-list, never `*` |
 | `npm audit` + `gitleaks` in CI, committed lockfile | Dependency/supply-chain risk, secret leakage | Implemented (Phase 0) |
 | Audit logging (auth events, approval actions, tool calls) that never logs request bodies containing secrets or raw candidate PII | Auditable security logging without sensitive disclosure | Planned — Phase 6 |
 
@@ -29,7 +29,9 @@
 
 ## Access (auth, roles, ownership)
 
-Two roles (`docs/BRD.md`'s personas): **recruiter** (ingest, run the screening workflow, view) and **hiring_manager** (everything a recruiter can do, plus approve/reject/edit-and-approve, trigger `generate_report`, view the bias audit trail). `POST /auth/login` (Phase 6 PR2) issues a JWT (`{ sub: <email>, role }`) via `TokenPort`/`JwtTokenPort`; there is no self-registration — accounts are provisioned with `npm run users -- create`.
+Two roles (`docs/BRD.md`'s personas): **recruiter** (ingest, run the screening workflow, view) and **hiring_manager** (everything a recruiter can do, plus approve/reject/edit-and-approve, trigger `generate_report`, view the bias audit trail). `POST /auth/login` issues a JWT (`{ sub: <email>, role }`) via `TokenPort`/`JwtTokenPort`; there is no self-registration — accounts are provisioned with `npm run users -- create`.
+
+**The HTTP shell (Phase 6 PR2)** — `src/adapters/http/server.js`'s `buildServer()` — registers `@fastify/helmet`, `@fastify/cors` (explicit `CORS_ALLOWED_ORIGINS` allow-list), and `@fastify/rate-limit` globally, plus a `requireAuth`/`requireRole(role)` preHandler pair built on `TokenPort`. Only `GET /runs/:id` and `POST /runs/:id/decision` exist as business routes so far — enough to exercise every one of these controls for real via `fastify.inject()` against a real Postgres-backed container, without pulling Phase 7's full API/UI forward. `GET /healthz` is unauthenticated by design (a liveness probe, no sensitive data); `/readyz` (Postgres/pgvector/Ollama reachability) remains Phase 7 scope, alongside the rest of the business API.
 
 **Ownership scoping is resolved once, at the run, not per-table.** `runs.created_by` is the only ownership column that matters: `shortlists`, `scores`, `approvals`, and `report_assets` have no `created_by` of their own and are reachable only via `run_id`, so scoping a run scopes everything under it — adding `created_by` to all four tables would be schema churn with no access-control benefit. `documents.created_by` and `candidates.created_by` scope directly since those are reachable independent of any run.
 
