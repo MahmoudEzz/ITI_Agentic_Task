@@ -2,7 +2,7 @@
 
 ## Status
 
-Proposed (implemented in Phase 2; flip to Accepted once landed and tested)
+Accepted — implemented in Phase 2, exercised continuously since through every phase's integration tests against real dockerized Postgres+pgvector (ingestion, retrieval, screening, report generation).
 
 ## Context
 

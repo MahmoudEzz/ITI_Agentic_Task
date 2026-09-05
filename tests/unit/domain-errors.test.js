@@ -8,6 +8,8 @@ import {
   ApprovalRequiredError,
   ToolNotAllowedError,
   StructuredOutputError,
+  AuthenticationError,
+  AuthorizationError,
 } from "../../src/domain/errors/index.js";
 
 test("ValidationError carries a VALIDATION_ERROR code and is a DomainError", () => {
@@ -52,4 +54,16 @@ test("StructuredOutputError carries attempts and the last raw output for debuggi
   assert.equal(err.code, "STRUCTURED_OUTPUT_FAILED");
   assert.equal(err.attempts, 3);
   assert.equal(err.lastRawOutput, '{"x":1}');
+});
+
+test("AuthenticationError has a sensible default message and code", () => {
+  const err = new AuthenticationError();
+  assert.equal(err.code, "AUTHENTICATION_REQUIRED");
+  assert.match(err.message, /authentication/i);
+});
+
+test("AuthorizationError has a sensible default message and code", () => {
+  const err = new AuthorizationError();
+  assert.equal(err.code, "NOT_AUTHORIZED");
+  assert.match(err.message, /not authorized/i);
 });

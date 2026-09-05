@@ -2,7 +2,7 @@
 
 ## Status
 
-Proposed (implemented in Phase 4; flip to Accepted once landed and tested)
+Accepted — implemented in Phase 4, live-verified against real Ollama and real Gemini (schema-constrained decoding, the fallback chain, and the retry-on-validation-failure backstop), and exercised again by every subsequent phase's real screening runs.
 
 ## Context
 

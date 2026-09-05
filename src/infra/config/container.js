@@ -16,6 +16,9 @@ import { KnexBiasAuditLogRepository } from "../../adapters/relational/KnexBiasAu
 import { KnexCompetencyRepository } from "../../adapters/relational/KnexCompetencyRepository.js";
 import { KnexRubricRepository } from "../../adapters/relational/KnexRubricRepository.js";
 import { KnexReportAssetRepository } from "../../adapters/relational/KnexReportAssetRepository.js";
+import { KnexUserRepository } from "../../adapters/relational/KnexUserRepository.js";
+import { BcryptPasswordHasher } from "../../adapters/auth/BcryptPasswordHasher.js";
+import { JwtTokenPort } from "../../adapters/auth/JwtTokenPort.js";
 import { ReportDocumentGenerator } from "../../adapters/docgen/ReportDocumentGenerator.js";
 import { PgVectorStore } from "../../adapters/vectorstore/PgVectorStore.js";
 import { createExtractor } from "../../adapters/extraction/createExtractor.js";
@@ -38,6 +41,8 @@ import { createExtractRedactScoreWorkflow } from "../../application/workflows/ex
 import { createRunScreeningWorkflowUseCase } from "../../application/workflows/runScreeningWorkflow.js";
 import { createApplyApprovalDecisionUseCase } from "../../application/workflows/applyApprovalDecision.js";
 import { createCompleteRunUseCase } from "../../application/workflows/completeRun.js";
+import { createLoginUseCase } from "../../application/auth/login.js";
+import { createCreateUserAccountUseCase } from "../../application/auth/createUserAccount.js";
 
 const here = path.dirname(fileURLToPath(import.meta.url));
 const repoRoot = path.join(here, "..", "..", "..");
@@ -72,6 +77,9 @@ export function buildContainer(overrides = {}) {
     competencyRepository: asFunction(({ knex }) => new KnexCompetencyRepository(knex)).singleton(),
     rubricRepository: asFunction(({ knex }) => new KnexRubricRepository(knex)).singleton(),
     reportAssetRepository: asFunction(({ knex }) => new KnexReportAssetRepository(knex)).singleton(),
+    userRepository: asFunction(({ knex }) => new KnexUserRepository(knex)).singleton(),
+    passwordHasher: asFunction(({ config }) => new BcryptPasswordHasher({ saltRounds: config.bcryptSaltRounds })).singleton(),
+    tokenPort: asFunction(({ config }) => new JwtTokenPort({ secret: config.jwtSecret, expiresIn: config.jwtExpiresIn })).singleton(),
     vectorStore: asFunction(({ knex }) => new PgVectorStore(knex)).singleton(),
     extractorFactory: asValue((sourceFormat) => createExtractor(sourceFormat)),
     ocrPort: asFunction(() => new TesseractOcrAdapter()).singleton(),
@@ -159,6 +167,12 @@ export function buildContainer(overrides = {}) {
     ).singleton(),
     completeRun: asFunction(({ runRepository, approvalRepository, generateReport }) =>
       createCompleteRunUseCase({ runRepository, approvalRepository, generateReport }),
+    ).singleton(),
+    login: asFunction(({ userRepository, passwordHasher, tokenPort }) =>
+      createLoginUseCase({ userRepository, passwordHasher, tokenPort }),
+    ).singleton(),
+    createUserAccount: asFunction(({ userRepository, passwordHasher }) =>
+      createCreateUserAccountUseCase({ userRepository, passwordHasher }),
     ).singleton(),
   });
 
