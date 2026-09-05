@@ -94,8 +94,8 @@ export function buildContainer(overrides = {}) {
       });
       return new FallbackLLMProvider(providers);
     }).singleton(),
-    ingestDocument: asFunction(({ documentRepository, vectorStore, embeddingProvider, extractorFactory, ocrPort }) =>
-      createIngestDocumentUseCase({ documentRepository, vectorStore, embeddingProvider, extractorFactory, ocrPort }),
+    ingestDocument: asFunction(({ documentRepository, vectorStore, embeddingProvider, extractorFactory, ocrPort, config }) =>
+      createIngestDocumentUseCase({ documentRepository, vectorStore, embeddingProvider, extractorFactory, ocrPort, maxUploadSizeBytes: config.maxUploadSizeBytes }),
     ).singleton(),
     answerQuestion: asFunction(({ embeddingProvider, vectorStore, llmProvider, candidateRepository, config }) => {
       const { system, template } = loadPromptTemplate(path.join(repoRoot, "prompts", "answer-grounded.md"));
