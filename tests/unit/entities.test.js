@@ -10,6 +10,7 @@ import { createEvidence } from "../../src/domain/entities/Evidence.js";
 import { createScore, compositeScore } from "../../src/domain/entities/Score.js";
 import { createRun, transition, isTerminal } from "../../src/domain/entities/Run.js";
 import { createApproval } from "../../src/domain/entities/Approval.js";
+import { createUser } from "../../src/domain/entities/User.js";
 import { ValidationError, InsufficientEvidenceError } from "../../src/domain/errors/index.js";
 
 test("Candidate rejects a handle that doesn't match the opaque CAND-N format", () => {
@@ -185,4 +186,15 @@ test("An edited_and_approved Approval requires an editDiff to remain auditable",
   assert.doesNotThrow(() =>
     createApproval({ id: "a1", runId: "run1", decision: "edited_and_approved", decidedBy: "hm1", editDiff: { field: "old->new" } }),
   );
+});
+
+test("User rejects an invalid email, a missing passwordHash, and an unknown role", () => {
+  assert.throws(() => createUser({ id: "u1", email: "not-an-email", passwordHash: "h", role: "recruiter" }), ValidationError);
+  assert.throws(() => createUser({ id: "u1", email: "a@b.com", passwordHash: "", role: "recruiter" }), ValidationError);
+  assert.throws(() => createUser({ id: "u1", email: "a@b.com", passwordHash: "h", role: "admin" }), ValidationError);
+});
+
+test("User lowercases email so lookups are case-insensitive", () => {
+  const user = createUser({ id: "u1", email: "Recruiter@Example.com", passwordHash: "h", role: "recruiter" });
+  assert.equal(user.email, "recruiter@example.com");
 });

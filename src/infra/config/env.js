@@ -8,6 +8,12 @@ const EnvSchema = z.object({
   PORT: z.coerce.number().int().positive().default(3000),
   NODE_ENV: z.enum(["development", "test", "production"]).default("development"),
   JWT_SECRET: z.string().min(1),
+  JWT_EXPIRES_IN: z.string().min(1).default("8h"),
+  BCRYPT_SALT_ROUNDS: z.coerce.number().int().positive().default(10),
+
+  CORS_ALLOWED_ORIGINS: z.string().optional().default(""),
+  RATE_LIMIT_MAX: z.coerce.number().int().positive().default(100),
+  RATE_LIMIT_WINDOW_MS: z.coerce.number().int().positive().default(60_000),
 
   DATABASE_URL: z.string().min(1),
   // Integration tests truncate tables between cases (see
@@ -47,6 +53,12 @@ function loadConfig(env = process.env) {
     port: data.PORT,
     nodeEnv: data.NODE_ENV,
     jwtSecret: data.JWT_SECRET,
+    jwtExpiresIn: data.JWT_EXPIRES_IN,
+    bcryptSaltRounds: data.BCRYPT_SALT_ROUNDS,
+    corsAllowedOrigins: Object.freeze(
+      data.CORS_ALLOWED_ORIGINS.split(",").map((s) => s.trim()).filter(Boolean),
+    ),
+    rateLimit: Object.freeze({ max: data.RATE_LIMIT_MAX, windowMs: data.RATE_LIMIT_WINDOW_MS }),
     databaseUrl: data.NODE_ENV === "test" && data.TEST_DATABASE_URL ? data.TEST_DATABASE_URL : data.DATABASE_URL,
     ollama: Object.freeze({ host: data.OLLAMA_HOST, model: data.OLLAMA_MODEL, embedModel: data.OLLAMA_EMBED_MODEL }),
     gemini: Object.freeze({ apiKey: data.GEMINI_API_KEY, model: data.GEMINI_MODEL }),

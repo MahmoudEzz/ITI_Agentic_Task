@@ -49,6 +49,25 @@ export class ToolNotAllowedError extends DomainError {
   }
 }
 
+// No valid credentials/token — the HTTP layer maps this to 401. Thrown by
+// login() on a wrong email/password and by TokenPort.verify() on a
+// missing/invalid/expired token; both collapse to the same error so neither
+// leaks which half of "who are you" failed.
+export class AuthenticationError extends DomainError {
+  constructor(message = "Authentication required") {
+    super(message, "AUTHENTICATION_REQUIRED");
+  }
+}
+
+// A caller is authenticated but not allowed to perform this action (wrong
+// role, or a resource owned by someone else) — the HTTP layer maps this to
+// 403/404 depending on whether existence itself should be disclosed.
+export class AuthorizationError extends DomainError {
+  constructor(message = "Not authorized to perform this action") {
+    super(message, "NOT_AUTHORIZED");
+  }
+}
+
 // Schema-constrained decoding (ADR-0005) still failed Zod validation after
 // exhausting retries — the orchestrator catches this specifically to decide
 // whether to transition a run to DEGRADED_DRAFT (FR-5) rather than FAILED.
