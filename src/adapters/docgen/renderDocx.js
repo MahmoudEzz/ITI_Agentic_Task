@@ -10,18 +10,33 @@ function citationLabel(citationsByChunkId, chunkId) {
   return citation.page != null ? `${citation.documentTitle}, p.${citation.page}` : citation.documentTitle;
 }
 
+// Shows the actual quoted evidence next to its resolved location, not just
+// the location — closing the disclosed gap where a hiring manager had to
+// open the source document to notice a citation was, say, one contact-info
+// line. `evidenceSnippets` is real/grounded text resolved by
+// extractRedactScore.js, never re-requested from the model; a score
+// persisted before that field existed falls back to citation-only display.
+function evidenceLines(score, citationsByChunkId) {
+  if (score.evidenceSnippets && score.evidenceSnippets.length > 0) {
+    return score.evidenceSnippets.map(
+      (snippet) => `${citationLabel(citationsByChunkId, snippet.sourceChunkId)}: "${snippet.text}"`,
+    );
+  }
+  return score.evidenceChunkIds.map((id) => citationLabel(citationsByChunkId, id));
+}
+
 function scoringTable(candidate, competencies, citationsByChunkId) {
   const scoreByCompetency = new Map(candidate.scores.map((s) => [s.competencyId, s]));
 
   const headerRow = new TableRow({
-    children: ["Competency", "Score", "Rationale", "Citations"].map(
+    children: ["Competency", "Score", "Rationale", "Evidence"].map(
       (text) => new TableCell({ children: [new Paragraph({ children: [new TextRun({ text, bold: true })] })] }),
     ),
   });
 
   const rows = competencies.map((competency) => {
     const score = scoreByCompetency.get(competency.id);
-    const citations = score ? score.evidenceChunkIds.map((id) => citationLabel(citationsByChunkId, id)).join("; ") : "—";
+    const citations = score ? evidenceLines(score, citationsByChunkId).join("; ") : "—";
     return new TableRow({
       children: [
         new Paragraph(competency.name),

@@ -7,6 +7,9 @@ function rowToScore(row) {
     value: Number(row.value),
     rationale: row.rationale,
     evidenceChunkIds: row.evidence_chunk_ids,
+    // null for a score persisted before this column existed — the report
+    // renderer falls back to a resolved-citation-only display for those.
+    evidenceSnippets: row.evidence_snippets ?? [],
   };
 }
 
@@ -33,6 +36,7 @@ export class KnexScoreRepository extends ScoreRepositoryPort {
         value: score.value,
         rationale: score.rationale,
         evidence_chunk_ids: JSON.stringify(score.evidenceChunkIds),
+        evidence_snippets: JSON.stringify(score.evidenceSnippets ?? []),
       })),
     );
   }
