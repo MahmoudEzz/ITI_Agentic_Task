@@ -128,6 +128,21 @@ export class PgVectorStore extends VectorStorePort {
     return rows.map((row) => rowToChunkResult(row, null));
   }
 
+  async findByIds(chunkIds) {
+    if (chunkIds.length === 0) return [];
+    const rows = await this.#knex("chunks")
+      .join("documents", "chunks.document_id", "documents.id")
+      .select("chunks.id as chunk_id", "chunks.page", "chunks.section", "documents.id as document_id", "documents.title as document_title")
+      .whereIn("chunks.id", chunkIds);
+    return rows.map((row) => ({
+      chunkId: row.chunk_id,
+      documentId: row.document_id,
+      documentTitle: row.document_title,
+      page: row.page ?? null,
+      section: row.section ?? null,
+    }));
+  }
+
   async getChunkerVersionForDocument(documentId) {
     const row = await this.#knex("chunks").select("chunker_version").where({ document_id: documentId }).first();
     return row?.chunker_version ?? null;

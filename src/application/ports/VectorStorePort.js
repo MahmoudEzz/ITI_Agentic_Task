@@ -30,6 +30,13 @@ export class VectorStorePort {
     throw new Error("VectorStorePort.findByCandidateId not implemented");
   }
 
+  // Resolves chunk ids to their citation-relevant metadata (document title,
+  // page, section) — used by generate_report to turn a Score's
+  // evidenceChunkIds into readable citations, not for retrieval ranking.
+  async findByIds(_chunkIds) {
+    throw new Error("VectorStorePort.findByIds not implemented");
+  }
+
   // Returns the chunkerVersion stamped on this document's existing chunks
   // (null if none exist yet). The ingestion use case compares this against
   // the current CHUNKER_VERSION to decide whether an otherwise-unchanged
