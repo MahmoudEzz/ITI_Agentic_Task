@@ -10,6 +10,18 @@ function citationLabel(citationsByChunkId, chunkId) {
   return citation.page != null ? `${citation.documentTitle}, p.${citation.page}` : citation.documentTitle;
 }
 
+// See renderDocx.js's evidenceLines for why the quoted text is shown next
+// to the resolved location, not just the location. Returns plain text —
+// the caller escapes the whole joined string once, same as citationLabel's
+// output always has, so this must not escape internally (that would
+// double-escape).
+function evidenceLines(score, citationsByChunkId) {
+  if (score.evidenceSnippets && score.evidenceSnippets.length > 0) {
+    return score.evidenceSnippets.map((snippet) => `${citationLabel(citationsByChunkId, snippet.sourceChunkId)}: "${snippet.text}"`);
+  }
+  return score.evidenceChunkIds.map((id) => citationLabel(citationsByChunkId, id));
+}
+
 function scoringTableHtml(candidate, competencies, citationsByChunkId) {
   if (candidate.scores.length === 0) {
     return `<p class="degraded-note">No scores recorded — this candidate was included via degraded, LLM-free ranking.</p>`;
@@ -18,7 +30,7 @@ function scoringTableHtml(candidate, competencies, citationsByChunkId) {
   const rows = competencies
     .map((competency) => {
       const score = scoreByCompetency.get(competency.id);
-      const citations = score ? score.evidenceChunkIds.map((id) => citationLabel(citationsByChunkId, id)).join("; ") : "—";
+      const citations = score ? evidenceLines(score, citationsByChunkId).join("; ") : "—";
       return `<tr>
         <td>${escapeHtml(competency.name)}</td>
         <td>${score ? `${score.value}/${competency.scaleMax}` : "—"}</td>
@@ -27,7 +39,7 @@ function scoringTableHtml(candidate, competencies, citationsByChunkId) {
       </tr>`;
     })
     .join("\n");
-  return `<table><thead><tr><th>Competency</th><th>Score</th><th>Rationale</th><th>Citations</th></tr></thead><tbody>${rows}</tbody></table>`;
+  return `<table><thead><tr><th>Competency</th><th>Score</th><th>Rationale</th><th>Evidence</th></tr></thead><tbody>${rows}</tbody></table>`;
 }
 
 function candidateSectionHtml(candidate, competencies, citationsByChunkId) {

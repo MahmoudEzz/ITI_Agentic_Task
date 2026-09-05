@@ -63,6 +63,14 @@ export const RubricScorerOutputSchema = z
             value: z.number(),
             rationale: z.string().min(1),
             evidenceChunkIds: z.array(z.string().min(1)).min(1),
+            // Never produced by the model itself — resolved afterward by
+            // extractRedactScore.js from the real, already-grounded input
+            // snippets (see its own comment) and attached before this same
+            // shape is reused as ShortlistDrafterInputSchema's per-score
+            // shape below. Optional so the model's raw output (validated
+            // against this same schema in rubricScorer.js, before that
+            // enrichment happens) still passes without it.
+            evidenceSnippets: z.array(EvidenceSnippetSchema).optional(),
           })
           .strict(),
       )

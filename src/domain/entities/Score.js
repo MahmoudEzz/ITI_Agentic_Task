@@ -1,6 +1,6 @@
 import { ValidationError } from "../errors/index.js";
 
-export function createScore({ candidateHandle, competencyId, value, scaleMin, scaleMax, rationale, evidenceChunkIds }) {
+export function createScore({ candidateHandle, competencyId, value, scaleMin, scaleMax, rationale, evidenceChunkIds, evidenceSnippets = [] }) {
   if (!candidateHandle) throw new ValidationError("Score requires a candidateHandle");
   if (!competencyId) throw new ValidationError("Score requires a competencyId");
   if (typeof value !== "number" || value < scaleMin || value > scaleMax) {
@@ -11,7 +11,19 @@ export function createScore({ candidateHandle, competencyId, value, scaleMin, sc
     throw new ValidationError("Score requires at least one evidenceChunkId — a score without a citation is not grounded");
   }
 
-  return Object.freeze({ candidateHandle, competencyId, value, rationale, evidenceChunkIds: Object.freeze([...evidenceChunkIds]) });
+  // The actual quoted evidence text (resolved from real, already-grounded
+  // snippets — see extractRedactScore.js) shown alongside a score's
+  // citations in the generated report. Not itself a grounding mechanism —
+  // evidenceChunkIds is what's validated — just what makes the citation
+  // legible without opening the source document.
+  return Object.freeze({
+    candidateHandle,
+    competencyId,
+    value,
+    rationale,
+    evidenceChunkIds: Object.freeze([...evidenceChunkIds]),
+    evidenceSnippets: Object.freeze([...evidenceSnippets]),
+  });
 }
 
 // Weighted average of per-competency scores against a rubric's weights.

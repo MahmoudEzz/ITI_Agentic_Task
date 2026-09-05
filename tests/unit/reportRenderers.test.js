@@ -1,5 +1,6 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
+import mammoth from "mammoth";
 
 import { renderReportHtml } from "../../src/adapters/docgen/renderReportHtml.js";
 import { renderDocx } from "../../src/adapters/docgen/renderDocx.js";
@@ -61,6 +62,31 @@ test("renderDocx produces a non-empty real docx buffer for a normal candidate", 
   assert.ok(buffer.length > 0);
   // A real .docx is a zip archive — starts with the PK magic bytes.
   assert.equal(buffer.slice(0, 2).toString("ascii"), "PK");
+});
+
+test("renderReportHtml shows the actual quoted evidence text next to its resolved citation, closing the citation-shows-location-not-text gap", () => {
+  const content = reportContent();
+  content.candidates[0].scores[0].evidenceSnippets = [{ sourceChunkId: "chunk-1", text: "Led a payments migration end to end." }];
+  const citationsByChunkId = new Map([["chunk-1", { chunkId: "chunk-1", documentId: "doc-1", documentTitle: "CAND-001 CV", page: 2 }]]);
+  const html = renderReportHtml({ ...content, citationsByChunkId });
+  assert.match(html, /CAND-001 CV, p\.2: &quot;Led a payments migration end to end\.&quot;/);
+});
+
+test("renderReportHtml falls back to citation-only display for a score with no evidenceSnippets (pre-migration data)", () => {
+  const html = renderReportHtml(reportContent({ citationsByChunkId: new Map([["chunk-1", { chunkId: "chunk-1", documentId: "doc-1", documentTitle: "CAND-001 CV", page: 2 }]]) }));
+  assert.match(html, /CAND-001 CV, p\.2/);
+  assert.doesNotMatch(html, /: &quot;/);
+});
+
+test("renderDocx embeds the actual quoted evidence text, verified by re-extracting the real docx buffer's text", async () => {
+  const content = reportContent();
+  content.candidates[0].scores[0].evidenceSnippets = [{ sourceChunkId: "chunk-1", text: "Led a payments migration end to end." }];
+  const citationsByChunkId = new Map([["chunk-1", { chunkId: "chunk-1", documentId: "doc-1", documentTitle: "CAND-001 CV", page: 2 }]]);
+  const buffer = await renderDocx({ ...content, citationsByChunkId });
+
+  const { value: text } = await mammoth.extractRawText({ buffer });
+  assert.match(text, /Led a payments migration end to end\./);
+  assert.match(text, /CAND-001 CV, p\.2/);
 });
 
 test("renderDocx handles a degraded candidate with zero scores without throwing", async () => {
