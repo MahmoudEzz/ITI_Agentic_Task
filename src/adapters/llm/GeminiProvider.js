@@ -21,6 +21,12 @@ export class GeminiProvider extends LLMProviderPort {
       },
     });
 
-    return { text: response.text };
+    // usageMetadata is Gemini's own real token counts for this call
+    // (FR-9's token accounting) — not estimated client-side.
+    return {
+      text: response.text,
+      tokensIn: response.usageMetadata?.promptTokenCount ?? null,
+      tokensOut: response.usageMetadata?.candidatesTokenCount ?? null,
+    };
   }
 }

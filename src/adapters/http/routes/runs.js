@@ -13,12 +13,22 @@ function assertCanView(run, user) {
   if (run.createdBy !== user.email) throw new NotFoundError("Run", run.id);
 }
 
-export async function registerRunRoutes(app, { runRepository, applyApprovalDecision }) {
+export async function registerRunRoutes(app, { runRepository, applyApprovalDecision, traceEventRepository }) {
   app.get("/runs/:id", { preHandler: app.requireAuth }, async (request, reply) => {
     const run = await runRepository.findById(request.params.id);
     if (!run) throw new NotFoundError("Run", request.params.id);
     assertCanView(run, request.user);
     reply.send(run);
+  });
+
+  // Same ownership scoping as GET /runs/:id (FR-9's trace view) — the
+  // trace is part of the run, not a separately-permissioned resource.
+  app.get("/runs/:id/trace", { preHandler: app.requireAuth }, async (request, reply) => {
+    const run = await runRepository.findById(request.params.id);
+    if (!run) throw new NotFoundError("Run", request.params.id);
+    assertCanView(run, request.user);
+    const events = await traceEventRepository.findByRunId(request.params.id);
+    reply.send({ runId: request.params.id, events });
   });
 
   // No ownership check here beyond the role gate itself — any hiring

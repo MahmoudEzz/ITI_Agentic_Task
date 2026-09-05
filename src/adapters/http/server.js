@@ -25,6 +25,7 @@ export async function buildServer({ container, config }) {
   await registerRunRoutes(app, {
     runRepository: container.resolve("runRepository"),
     applyApprovalDecision: container.resolve("applyApprovalDecision"),
+    traceEventRepository: container.resolve("traceEventRepository"),
   });
 
   // A single place every thrown error passes through — domain errors never

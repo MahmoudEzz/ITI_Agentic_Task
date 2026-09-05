@@ -98,6 +98,35 @@ test("GET /runs/:id: an unknown run id is 404 even for a hiring manager", async 
   assert.equal(res.statusCode, 404);
 });
 
+test("GET /runs/:id/trace: returns real trace_events rows, ownership-scoped the same as GET /runs/:id", async () => {
+  const runId = await createRun({ createdBy: RECRUITER_A.email });
+  const traceEventRepository = container.resolve("traceEventRepository");
+  await traceEventRepository.create({
+    id: crypto.randomUUID(),
+    correlationId: runId,
+    runId,
+    span: "llm.evidence_extractor",
+    startedAt: new Date(),
+    endedAt: new Date(),
+    attributes: {},
+    tokensIn: 50,
+    tokensOut: 20,
+    costUsd: 0,
+  });
+
+  const ownerToken = await loginAs(RECRUITER_A);
+  const ownerRes = await app.inject({ method: "GET", url: `/runs/${runId}/trace`, headers: { authorization: `Bearer ${ownerToken}` } });
+  assert.equal(ownerRes.statusCode, 200);
+  const body = ownerRes.json();
+  assert.equal(body.events.length, 1);
+  assert.equal(body.events[0].span, "llm.evidence_extractor");
+  assert.equal(body.events[0].correlationId, runId);
+
+  const otherToken = await loginAs(RECRUITER_B);
+  const otherRes = await app.inject({ method: "GET", url: `/runs/${runId}/trace`, headers: { authorization: `Bearer ${otherToken}` } });
+  assert.equal(otherRes.statusCode, 404);
+});
+
 test("POST /runs/:id/decision: a recruiter is forbidden (403) regardless of ownership", async () => {
   const runId = await createRun({ createdBy: RECRUITER_A.email });
   const token = await loginAs(RECRUITER_A);

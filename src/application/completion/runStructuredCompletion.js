@@ -12,12 +12,12 @@ import { StructuredOutputError } from "../../domain/errors/index.js";
 // (see contracts/agents.js) — this file never imports zod itself, so
 // application code that needs schema validation still only ever touches
 // contracts' pre-built schema instances, same as answerQuestion.js.
-export async function runStructuredCompletion({ llmProvider, zodSchema, jsonSchema, system, prompt, maxAttempts = 3 }) {
+export async function runStructuredCompletion({ llmProvider, zodSchema, jsonSchema, system, prompt, maxAttempts = 3, span, traceContext }) {
   let lastRawOutput = null;
   let lastIssues = null;
 
   for (let attempt = 1; attempt <= maxAttempts; attempt++) {
-    const { text } = await llmProvider.complete({ system, prompt, schema: jsonSchema });
+    const { text } = await llmProvider.complete({ system, prompt, schema: jsonSchema }, { ...traceContext, span, attributes: { attempt } });
     lastRawOutput = text;
 
     let parsedJson;

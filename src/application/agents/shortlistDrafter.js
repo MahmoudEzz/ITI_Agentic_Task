@@ -16,7 +16,7 @@ function formatCandidateBlocks(candidates) {
 }
 
 export function createShortlistDrafterAgent({ llmProvider, promptTemplate, systemPrompt }) {
-  return async function shortlistDrafter(rawInput) {
+  return async function shortlistDrafter(rawInput, traceContext = {}) {
     const input = ShortlistDrafterInputSchema.parse(rawInput);
 
     const prompt = renderTemplate(promptTemplate, {
@@ -39,6 +39,8 @@ export function createShortlistDrafterAgent({ llmProvider, promptTemplate, syste
       jsonSchema: ShortlistDrafterOutputJsonSchema,
       system: systemPrompt,
       prompt,
+      span: "llm.shortlist_drafter",
+      traceContext,
     });
   };
 }

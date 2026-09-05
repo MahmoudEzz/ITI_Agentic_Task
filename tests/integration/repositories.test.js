@@ -191,3 +191,40 @@ test("PgVectorStore.deleteChunksByDocumentId removes exactly that document's chu
   assert.equal(remaining.length, 1);
   assert.equal(remaining[0].document_id, otherDocId);
 });
+
+test("KnexTraceEventRepository: create and findByRunId round-trip real timestamps/tokens/cost", async () => {
+  const runRepository = container.resolve("runRepository");
+  const traceEventRepository = container.resolve("traceEventRepository");
+  const runId = uuid();
+  await runRepository.create({ id: runId, workflowType: "screening", state: "EXTRACT_EVIDENCE", createdBy: "test-user" });
+
+  try {
+    const startedAt = new Date();
+    await traceEventRepository.create({
+      id: uuid(),
+      correlationId: runId,
+      runId,
+      span: "llm.rubric_scorer",
+      parentSpan: null,
+      startedAt,
+      endedAt: new Date(startedAt.getTime() + 500),
+      attributes: { attempt: 1 },
+      tokensIn: 120,
+      tokensOut: 45,
+      costUsd: 0,
+    });
+
+    const events = await traceEventRepository.findByRunId(runId);
+    assert.equal(events.length, 1);
+    const [event] = events;
+    assert.equal(event.correlationId, runId);
+    assert.equal(event.span, "llm.rubric_scorer");
+    assert.equal(event.tokensIn, 120);
+    assert.equal(event.tokensOut, 45);
+    assert.equal(event.costUsd, 0);
+    assert.deepEqual(event.attributes, { attempt: 1 });
+    assert.ok(event.endedAt > event.startedAt);
+  } finally {
+    await knex("runs").where({ id: runId }).delete(); // cascades trace_events
+  }
+});

@@ -35,10 +35,10 @@ function isGroundedInChunk(snippetText, chunkContent) {
 }
 
 export function createEvidenceExtractorAgent({ llmProvider, competencyRepository, callTool, promptTemplate, systemPrompt }) {
-  return async function evidenceExtractor(rawInput) {
+  return async function evidenceExtractor(rawInput, traceContext = {}) {
     const input = EvidenceExtractorInputSchema.parse(rawInput);
 
-    const { chunks } = await callTool("get_candidate_chunks", { candidateHandle: input.candidateHandle });
+    const { chunks } = await callTool("get_candidate_chunks", { candidateHandle: input.candidateHandle }, traceContext);
     if (chunks.length === 0) {
       throw new InsufficientEvidenceError(`No CV chunks found for candidate ${input.candidateHandle} — cannot extract evidence`);
     }
@@ -80,6 +80,8 @@ export function createEvidenceExtractorAgent({ llmProvider, competencyRepository
       jsonSchema: EvidenceExtractorOutputJsonSchema,
       system: systemPrompt,
       prompt,
+      span: "llm.evidence_extractor",
+      traceContext,
     });
   };
 }

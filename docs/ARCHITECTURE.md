@@ -26,7 +26,53 @@ _TODO (Phase 9, once Phases 4-7 land): request → orchestrator FSM transitions 
 
 ## Data-flow diagram — trust boundaries & what the LLM provider sees
 
-_TODO (Phase 6, alongside security hardening): marks the boundary between (a) raw ingested documents / candidate PII, (b) the redacted evidence payload that actually reaches the LLM provider (Ollama local vs. Gemini hosted — called out separately, since only the Gemini path leaves the local machine), and (c) what is persisted in the trace store._
+Landed in Phase 7 (delayed from its original Phase 6 slot — better timing anyway, since `trace_events` is one of the three zones and didn't exist until this phase decided what it actually persists).
+
+```mermaid
+flowchart TB
+    subgraph Z1["Zone 1 — raw ingested data (candidate PII, never leaves this zone as-is)"]
+        RAW[Raw CV / JD / policy document]
+        CHUNK[Chunk content in Postgres+pgvector]
+        RAW --> CHUNK
+    end
+
+    subgraph Z2["Zone 2 — structurally redacted, opaque-handle payload (what an LLM provider actually receives)"]
+        REDACT["redactProtectedAttributes.js\n(pure, deterministic, no LLM call)"]
+        EVSNIP["Evidence snippets\n(candidate referred to only as CAND-N)"]
+        CHUNK -- "Evidence Extractor's get_candidate_chunks call" --> REDACT
+        REDACT --> EVSNIP
+    end
+
+    subgraph OLLAMA["Ollama — local, never leaves this machine"]
+        OL[llama3.2:3b]
+    end
+    subgraph GEMINI["Gemini — hosted, THIS is what actually leaves the machine"]
+        GM[Gemini API]
+    end
+
+    EVSNIP -- "primary (LLM_PROVIDER_CHAIN)" --> OLLAMA
+    EVSNIP -- "fallback only, on Ollama failure" --> GEMINI
+
+    subgraph Z3["Zone 3 — trace store (trace_events)"]
+        TRACE["span, correlation_id, run_id,\ntokens_in/out, cost_usd, attributes"]
+    end
+
+    OLLAMA -. "traced via createTracingLLMProvider" .-> TRACE
+    GEMINI -. "traced via createTracingLLMProvider" .-> TRACE
+    REDACT -. "audit entries -> bias_audit_log (category+position only, never the matched text)" .-> Z1
+
+    style Z1 fill:#fce8e8,stroke:#c0392b
+    style Z2 fill:#eafaf1,stroke:#27ae60
+    style Z3 fill:#eaf2fb,stroke:#2980b9
+    style GEMINI fill:#fff3cd,stroke:#e6a700
+```
+
+**What crosses each boundary, and what doesn't:**
+- Zone 1 → Zone 2: only after `redactProtectedAttributes.js` runs — a pure function, no network access, so this boundary cannot be prompted around (ADR-0006). A candidate's real name never crosses it at all; `RubricScorerInputSchema` has no field capable of carrying one.
+- Zone 2 → Ollama: stays on the local machine — the default, primary path (`LLM_PROVIDER_CHAIN=ollama,gemini`).
+- Zone 2 → Gemini: only on Ollama failure/timeout (`FallbackLLMProvider`) — this is the one path where redacted evidence text leaves the local machine, called out explicitly here rather than left implicit in the provider abstraction.
+- Zone 2/Ollama/Gemini → Zone 3 (`trace_events`): every LLM call is traced (`createTracingLLMProvider`, Phase 7 PR1) — real token counts (Ollama's `prompt_eval_count`/`eval_count`, Gemini's `usageMetadata`), `cost_usd` genuinely 0 for both configured providers (no invented price table). Trace attributes never include the evidence text itself, only span/timing/token metadata — the trace store is an observability record, not a second copy of Zone 2's payload.
+- Zone 3 → Zone 1 (dashed): `bias_audit_log` records *that* a redaction happened (category, position) but deliberately never the matched text itself, so the audit trail can't become a second copy of the PII it's proving was removed (docs/SECURITY.md).
 
 ## ER diagram
 
