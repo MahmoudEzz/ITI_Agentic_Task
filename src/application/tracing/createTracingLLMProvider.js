@@ -21,5 +21,61 @@ export function createTracingLLMProvider({ llmProvider, traceEventRepository }) 
         },
       );
     },
+
+    // Can't reuse recordSpan directly — that wraps a single Promise, and a
+    // stream must forward each delta to the caller as it arrives (that's
+    // the entire point of SSE), not buffer until the whole thing finishes.
+    // Same fields end up in the same trace_events row either way; this is
+    // just the generator-shaped version of the same bookkeeping.
+    async *stream(request, traceContext = {}) {
+      if (!traceEventRepository) {
+        yield* llmProvider.stream(request);
+        return;
+      }
+
+      const startedAt = new Date();
+      const correlationId = traceContext.correlationId ?? crypto.randomUUID();
+      const span = traceContext.span ?? "llm.stream";
+      let tokensIn = null;
+      let tokensOut = null;
+
+      try {
+        for await (const event of llmProvider.stream(request)) {
+          if (event.type === "done") {
+            tokensIn = event.tokensIn;
+            tokensOut = event.tokensOut;
+          }
+          yield event;
+        }
+        await traceEventRepository.create({
+          id: crypto.randomUUID(),
+          correlationId,
+          runId: traceContext.runId ?? null,
+          span,
+          parentSpan: traceContext.parentSpan ?? null,
+          startedAt,
+          endedAt: new Date(),
+          attributes: traceContext.attributes ?? {},
+          tokensIn,
+          tokensOut,
+          costUsd: 0,
+        });
+      } catch (error) {
+        await traceEventRepository.create({
+          id: crypto.randomUUID(),
+          correlationId,
+          runId: traceContext.runId ?? null,
+          span,
+          parentSpan: traceContext.parentSpan ?? null,
+          startedAt,
+          endedAt: new Date(),
+          attributes: { ...(traceContext.attributes ?? {}), error: error.message },
+          tokensIn: null,
+          tokensOut: null,
+          costUsd: null,
+        });
+        throw error;
+      }
+    },
   };
 }

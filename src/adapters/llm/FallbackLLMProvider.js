@@ -25,4 +25,28 @@ export class FallbackLLMProvider extends LLMProviderPort {
     }
     throw new Error(`All LLM providers in the fallback chain failed — ${failures.join("; ")}`);
   }
+
+  // Failover only before the first delta has actually reached the caller —
+  // once a chunk has been yielded, the caller (an SSE client, ultimately)
+  // has already seen live output from that provider; silently restarting
+  // from a different one at that point would emit a second, overlapping
+  // stream rather than a clean handoff, so any failure past that point
+  // propagates directly instead (ADR-0007).
+  async *stream(request) {
+    const failures = [];
+    for (const { name, provider } of this.#providers) {
+      let yieldedAny = false;
+      try {
+        for await (const event of provider.stream(request)) {
+          yieldedAny = true;
+          yield event;
+        }
+        return;
+      } catch (error) {
+        if (yieldedAny) throw error;
+        failures.push(`${name}: ${error.message}`);
+      }
+    }
+    throw new Error(`All LLM providers in the fallback chain failed — ${failures.join("; ")}`);
+  }
 }
