@@ -2,7 +2,7 @@
 
 ## Status
 
-Proposed (implemented in Phase 2-3; flip to Accepted once landed and tested against the golden set)
+Accepted — implemented in Phase 2-3 and tested against the golden set in Phase 8: `npm run eval` measured 100% retrieval hit-rate (21/21 applicable cases) across job descriptions, rubrics, policies, the competency framework, and individual CVs, including with `candidateHandle`/`documentType` metadata filters applied — see `docs/EVALUATION.md`.
 
 ## Context
 

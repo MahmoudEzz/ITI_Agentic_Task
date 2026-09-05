@@ -88,7 +88,57 @@ flowchart TB
 
 ## Sequence diagram — full agentic workflow (incl. approval gate and streaming)
 
-_TODO (Phase 9, once Phases 4-7 land): request → orchestrator FSM transitions → Evidence Extractor → redaction stage → Rubric Scorer → Shortlist Drafter (streamed) → AWAIT_APPROVAL → hiring-manager decision → GENERATE_REPORT (DOCX + PDF) → COMPLETE, with the DEGRADED_DRAFT branch shown explicitly._
+Two candidates shown (`CAND-A` scores cleanly, `CAND-B` fails extraction) so the `DEGRADED_DRAFT` branch — the most distinctive thing about this orchestrator (ADR-0002) — is visible rather than asserted. `Run.js`'s real transition table (`src/domain/entities/Run.js`) is what's drawn here, not a simplified retelling of it.
+
+```mermaid
+sequenceDiagram
+    actor R as Recruiter
+    participant HTTP as POST /runs (SSE)
+    participant FSM as runScreeningWorkflow<br/>(Run.js FSM)
+    participant EE as Evidence Extractor
+    participant RD as redactProtectedAttributes<br/>(pure, no LLM)
+    participant RS as Rubric Scorer
+    participant SD as Shortlist Drafter
+    participant Trace as recordSpan → trace_events
+    actor HM as Hiring Manager
+
+    R->>HTTP: roleId, rubricId, [CAND-A, CAND-B]
+    HTTP->>FSM: run.state = INGEST_CONTEXT
+    FSM-->>HTTP: progress: ingest_context.started/completed
+    FSM->>FSM: transition -> EXTRACT_EVIDENCE
+
+    par CAND-A (succeeds)
+        FSM->>EE: extractEvidence(CAND-A)
+        EE->>Trace: tool.get_candidate_chunks span
+        EE-->>FSM: evidenceByCompetency (grounded, real chunk ids)
+        FSM->>RD: redact(evidence text)
+        RD-->>FSM: redacted snippets + bias_audit_log entries
+        FSM->>RS: score(redacted evidence, opaque handle CAND-A)
+        RS->>Trace: llm.rubric_scorer span (tokens, cost_usd)
+        RS-->>FSM: scores (evidenceChunkIds validated against real input)
+    and CAND-B (fails)
+        FSM->>EE: extractEvidence(CAND-B)
+        EE->>Trace: tool.get_candidate_chunks span
+        EE--xFSM: StructuredOutputError (schema retries exhausted)
+    end
+
+    FSM->>FSM: transition -> DEGRADED_DRAFT<br/>(one candidate failed — the batch still proceeds, visibly labeled)
+    FSM->>SD: draftShortlist([CAND-A's real scores])
+    SD-->>FSM: shortlist entries + interview probes (streamed prose deltas)
+    FSM-->>HTTP: progress: llm.shortlist_drafter deltas (SSE)
+    FSM->>FSM: transition -> AWAIT_APPROVAL
+    FSM-->>HTTP: result: run, degraded=true, shortlist
+    HTTP-->>R: SSE result event
+
+    HM->>HTTP: POST /runs/:id/decision {edited_and_approved}
+    HTTP->>FSM: applyApprovalDecision
+    FSM->>FSM: transition -> GENERATE_REPORT
+    FSM->>FSM: finalize_shortlist (ApprovalRequiredError if no real backing approval)
+    FSM->>FSM: generate_report -> DOCX + PDF (report_assets)
+    FSM->>FSM: transition -> COMPLETE
+    FSM-->>HTTP: 200 {run, reportAssets}
+    HTTP-->>HM: run complete, degraded shortlist disclosed, not hidden
+```
 
 ## Data-flow diagram — trust boundaries & what the LLM provider sees
 
@@ -142,20 +192,163 @@ flowchart TB
 
 ## ER diagram
 
-_TODO (Phase 2-4, as the schema solidifies): documents, chunks, candidates, competencies, rubrics, evidence, scores, runs, run_steps, approvals, bias_audit_log, trace_events._
+Generated from the real migrations (`src/infra/db/migrations/`), not from a remembered table list — includes tables that landed after this diagram was originally scoped (`users`, Phase 6; `report_assets`, Phase 5; `trace_events`, Phase 7; `scores.evidence_snippets`, Phase 6).
+
+```mermaid
+erDiagram
+    CANDIDATES ||--o{ DOCUMENTS : "owns (nullable — non-CV docs have none)"
+    CANDIDATES ||--o{ CHUNKS : "owns (nullable, denormalized for retrieval filtering)"
+    DOCUMENTS ||--o{ CHUNKS : "chunked into"
+    RUNS ||--o{ RUN_STEPS : "history"
+    RUNS ||--o{ APPROVALS : "decided by"
+    RUNS ||--o{ SCORES : "produces"
+    RUNS ||--o| SHORTLISTS : "drafts (one per run)"
+    RUNS ||--o{ BIAS_AUDIT_LOG : "redaction trail"
+    RUNS ||--o{ REPORT_ASSETS : "generates"
+    RUNS ||--o{ TRACE_EVENTS : "traces (nullable — a run-less /ask call still traces)"
+    APPROVALS ||--o| SHORTLISTS : "authorizes finalization of"
+    APPROVALS ||--o{ REPORT_ASSETS : "authorizes generation of"
+
+    CANDIDATES {
+        text id PK
+        text handle UK "opaque CAND-N, never a name"
+        text full_name
+        text created_by
+    }
+    DOCUMENTS {
+        text id PK
+        text type "job_description|competency_framework|rubric|cv|policy|process_guide"
+        text status "pending|processing|indexed|needs_ocr|failed"
+        text candidate_id FK "nullable"
+        text content_hash "drives idempotent re-ingestion"
+        boolean ocr_required
+    }
+    CHUNKS {
+        text id PK
+        text document_id FK
+        text candidate_id FK "nullable, denormalized"
+        text document_type "denormalized from documents.type"
+        vector embedding "768-dim, HNSW index"
+        tsvector content_tsv "generated column, GIN index"
+        decimal ocr_confidence "nullable"
+        text chunker_version
+    }
+    COMPETENCIES {
+        text id PK
+        text name
+        jsonb behavioral_anchors "levels 1-5"
+    }
+    RUBRICS {
+        text id PK
+        text role_id "not a FK — plain text join key"
+        jsonb competency_weights "[{competencyId, weight}] — not a junction table, see migration comment"
+    }
+    RUNS {
+        text id PK
+        text workflow_type
+        text state "11-value CHECK, mirrors Run.js's FSM"
+        text created_by "ownership scoping (FR-8), ADR-0002"
+    }
+    RUN_STEPS {
+        text id PK
+        text run_id FK
+        text state
+        text note "nullable — a DEGRADED_DRAFT reason or FAILED error"
+    }
+    APPROVALS {
+        text id PK
+        text run_id FK
+        text decision "approved|rejected|edited_and_approved"
+        jsonb edit_diff "nullable"
+    }
+    SCORES {
+        text id PK
+        text run_id FK
+        text candidate_handle "opaque CAND-N — NOT a candidates.id join, by design (ADR-0006)"
+        text competency_id "not a FK — plain text join key"
+        decimal value
+        jsonb evidence_chunk_ids
+        jsonb evidence_snippets "nullable — [{sourceChunkId, text}], Phase 6"
+    }
+    SHORTLISTS {
+        text id PK
+        text run_id FK "unique — one per run"
+        jsonb entries "[{candidateHandle, rank, summary, interviewProbes}]"
+        boolean degraded
+        text approval_id FK "nullable until finalized"
+        timestamp finalized_at "nullable"
+    }
+    BIAS_AUDIT_LOG {
+        text id PK
+        text run_id FK
+        text category "one of the closed PROTECTED_ATTRIBUTE_CATEGORIES list"
+        text action "redact|drop"
+        integer span_start "nullable for drop"
+        integer span_end "nullable for drop"
+    }
+    REPORT_ASSETS {
+        text id PK
+        text run_id FK
+        text approval_id FK "not nullable — cannot exist without one"
+        text format "docx|pdf"
+        binary content
+    }
+    USERS {
+        text id PK
+        text email UK
+        text password_hash
+        text role "recruiter|hiring_manager"
+    }
+    TRACE_EVENTS {
+        text id PK
+        text correlation_id "= run_id for a screening run; fresh id for a run-less /ask"
+        text run_id FK "nullable"
+        text span "e.g. llm.rubric_scorer, tool.get_candidate_chunks"
+        integer tokens_in "nullable"
+        integer tokens_out "nullable"
+        decimal cost_usd "nullable — genuinely 0 for both configured providers"
+    }
+```
+
+**Deliberate non-normalization, twice, for the same reason:** `rubrics.competency_weights` and `shortlists.entries` are both `jsonb` rather than junction tables — an expedient choice documented in their own migrations, correct at this project's scale (a handful of rubrics/shortlist entries, never queried by weight or entry independently of their parent row). `Rubric.js`'s own invariant (weights sum to 1) guards the data's integrity, not a DB constraint — a real, disclosed tradeoff, not an oversight.
+
+**Two deliberately-missing foreign keys, both by design, not by accident:** `scores.candidate_handle` is plain text, never a join to `candidates.id` — the Rubric Scorer only ever produces an opaque handle, and a real FK here would make it trivially easy to accidentally join scores back to a candidate's name elsewhere in the codebase, undermining the whole point of ADR-0006's opaque-handle design. `rubrics.role_id` and `scores.competency_id` are also plain text, not FKs to a `roles`/`competencies` table by id — `competencies.id` *is* a real primary key, but nothing in the schema forces a `scores.competency_id` to reference one; this is validated at the application layer (`RubricScorerOutputSchema`'s per-call `.refine()`) instead, which is a real, disclosed weaker guarantee than a DB constraint would be.
 
 ## Layer-dependency diagram
 
-_TODO (Phase 1): domain ← application ← adapters ← infra, with the rule "arrows only point inward" made explicit and checked by an ESLint import-boundary rule._
+```mermaid
+flowchart LR
+    subgraph domain["src/domain\n(entities, domain errors, pure services)"]
+        D["zero external deps\n(stdlib + zod only)"]
+    end
+    subgraph application["src/application\n(use cases, agents, orchestrator FSM, ports)"]
+        A["imports domain + contracts\n+ its own port interfaces"]
+    end
+    subgraph adapters["src/adapters\n(llm, vectorstore, relational, http, ocr, docgen, web)"]
+        AD["implements ports\nfree to import any SDK"]
+    end
+    subgraph infra["src/infra\n(config, db migrations — the composition root)"]
+        I["awilix container:\nwires adapters into application"]
+    end
+
+    infra --> adapters
+    infra --> application
+    adapters -->|implements| application
+    application --> domain
+```
+
+Arrows point inward, toward `domain` — the direction a dependency is *allowed* to run, not the direction data flows at request time (a request flows outward-to-inward: `infra` builds the server, `adapters/http` receives it, calls into `application`, which calls `domain`). `infra` is the only layer permitted to import `adapters` and wire it into `application` (the composition root, per `CLAUDE.md`'s non-negotiable rule).
+
+**This is enforced, not just documented.** `eslint.config.js` carries two `no-restricted-imports` rules, checked on every commit (`lint-staged`/Husky) and every CI run: files under `src/domain/**` may not import from `**/adapters/**`, `**/infra/**`, or a concrete SDK (`fastify`, `knex`, `pg`, `ollama`, `@google/*`) directly; files under `src/application/**` may not import from `**/adapters/**` at all — only the port interfaces `src/application/ports` defines itself. A PR that violates either rule fails `npm run lint` before it reaches review, not after.
 
 ## Architecture Decision Records
 
 | ADR | Title | Status |
 |---|---|---|
-| [ADR-0001](adr/0001-chunking-and-retrieval-strategy.md) | Chunking and retrieval strategy | Proposed |
+| [ADR-0001](adr/0001-chunking-and-retrieval-strategy.md) | Chunking and retrieval strategy | Accepted |
 | [ADR-0002](adr/0002-orchestration-pattern.md) | Orchestration pattern | Accepted |
 | [ADR-0003](adr/0003-vector-store-choice.md) | Vector store choice | Accepted |
 | [ADR-0004](adr/0004-document-in-out-twist.md) | T6 twist: OCR and document generation approach | Accepted |
 | [ADR-0005](adr/0005-provider-abstraction-and-structured-output.md) | Provider abstraction and structured-output strategy | Accepted |
-| [ADR-0006](adr/0006-bias-safety-design.md) | Bias-safety design (D6's named risk) | Proposed |
+| [ADR-0006](adr/0006-bias-safety-design.md) | Bias-safety design (D6's named risk) | Accepted |
 | [ADR-0007](adr/0007-streaming-strategy.md) | Streaming strategy — SSE, prose vs. discrete progress events | Accepted |
