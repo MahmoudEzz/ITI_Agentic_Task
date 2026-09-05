@@ -18,13 +18,17 @@ export class KnexScoreRepository extends ScoreRepositoryPort {
     this.#knex = knex;
   }
 
-  async createMany(runId, scores) {
+  // candidateHandle is a separate argument, not a per-score field — a
+  // single RubricScorerOutputSchema.scores array is always for the one
+  // candidate that call scored, and the schema deliberately doesn't repeat
+  // the handle on every entry (see contracts/agents.js).
+  async createMany(runId, candidateHandle, scores) {
     if (scores.length === 0) return;
     await this.#knex("scores").insert(
       scores.map((score) => ({
         id: crypto.randomUUID(),
         run_id: runId,
-        candidate_handle: score.candidateHandle,
+        candidate_handle: candidateHandle,
         competency_id: score.competencyId,
         value: score.value,
         rationale: score.rationale,

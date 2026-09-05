@@ -29,6 +29,7 @@ import { createEvidenceExtractorAgent, EVIDENCE_EXTRACTOR_ALLOWED_TOOLS } from "
 import { createRubricScorerAgent } from "../../application/agents/rubricScorer.js";
 import { createShortlistDrafterAgent } from "../../application/agents/shortlistDrafter.js";
 import { createExtractRedactScoreWorkflow } from "../../application/workflows/extractRedactScore.js";
+import { createRunScreeningWorkflowUseCase } from "../../application/workflows/runScreeningWorkflow.js";
 
 const here = path.dirname(fileURLToPath(import.meta.url));
 const repoRoot = path.join(here, "..", "..", "..");
@@ -118,6 +119,18 @@ export function buildContainer(overrides = {}) {
     }).singleton(),
     extractRedactScore: asFunction(({ evidenceExtractor, rubricScorer, rubricRepository, competencyRepository }) =>
       createExtractRedactScoreWorkflow({ evidenceExtractor, rubricScorer, rubricRepository, competencyRepository }),
+    ).singleton(),
+    runScreeningWorkflow: asFunction(
+      ({ runRepository, scoreRepository, shortlistRepository, biasAuditLogRepository, extractRedactScore, shortlistDrafter, rubricRepository }) =>
+        createRunScreeningWorkflowUseCase({
+          runRepository,
+          scoreRepository,
+          shortlistRepository,
+          biasAuditLogRepository,
+          extractRedactScore,
+          shortlistDrafter,
+          rubricRepository,
+        }),
     ).singleton(),
   });
 
