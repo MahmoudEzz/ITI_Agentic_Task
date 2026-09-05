@@ -29,4 +29,25 @@ export class GeminiProvider extends LLMProviderPort {
       tokensOut: response.usageMetadata?.candidatesTokenCount ?? null,
     };
   }
+
+  async *stream({ system, prompt } = {}) {
+    const chunks = await this.#client.models.generateContentStream({
+      model: this.#model,
+      contents: prompt,
+      config: system ? { systemInstruction: system } : {},
+    });
+
+    let tokensIn = null;
+    let tokensOut = null;
+    for await (const chunk of chunks) {
+      if (chunk.text) yield { type: "delta", text: chunk.text };
+      // usageMetadata appears on multiple/later chunks as a running total —
+      // keep whatever was most recently seen, non-destructively.
+      if (chunk.usageMetadata) {
+        tokensIn = chunk.usageMetadata.promptTokenCount ?? tokensIn;
+        tokensOut = chunk.usageMetadata.candidatesTokenCount ?? tokensOut;
+      }
+    }
+    yield { type: "done", tokensIn, tokensOut };
+  }
 }

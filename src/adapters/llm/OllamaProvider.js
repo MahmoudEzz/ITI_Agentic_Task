@@ -27,4 +27,24 @@ export class OllamaProvider extends LLMProviderPort {
     // this call (FR-9's token accounting) — not estimated client-side.
     return { text: response.message.content, tokensIn: response.prompt_eval_count ?? null, tokensOut: response.eval_count ?? null };
   }
+
+  async *stream({ system, prompt } = {}) {
+    const messages = [];
+    if (system) messages.push({ role: "system", content: system });
+    messages.push({ role: "user", content: prompt });
+
+    const parts = await this.#client.chat({ model: this.#model, messages, stream: true });
+
+    let tokensIn = null;
+    let tokensOut = null;
+    for await (const part of parts) {
+      if (part.message?.content) yield { type: "delta", text: part.message.content };
+      // Only the final chunk (done: true) carries the real counts.
+      if (part.done) {
+        tokensIn = part.prompt_eval_count ?? null;
+        tokensOut = part.eval_count ?? null;
+      }
+    }
+    yield { type: "done", tokensIn, tokensOut };
+  }
 }

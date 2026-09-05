@@ -27,3 +27,16 @@ test("complete() honors a system prompt", { skip }, async () => {
   });
   assert.ok(result.text.trim().length > 0);
 });
+
+test("stream() yields real incremental deltas ending in a done event", { skip }, async () => {
+  const deltas = [];
+  let doneEvent;
+  for await (const event of provider.stream({ prompt: "Count from one to five." })) {
+    if (event.type === "delta") deltas.push(event.text);
+    else doneEvent = event;
+  }
+
+  assert.ok(deltas.length > 0, "expected at least one real streamed delta");
+  assert.ok(deltas.join("").trim().length > 0);
+  assert.ok(doneEvent, "expected exactly one done event");
+});
