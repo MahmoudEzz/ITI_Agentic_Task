@@ -103,3 +103,16 @@ export const ShortlistDrafterOutputSchema = z
       .min(1),
   })
   .strict();
+
+// JSON Schema for each agent's *output* — generated once here, from the
+// same Zod contract above, via zod's own native `z.toJSONSchema()` (Phase 4
+// amendment to ADR-0005: no external `zod-to-json-schema` package needed,
+// zod 4 ships this natively). Passed to LLMProviderPort.complete({ schema })
+// for schema-constrained decoding; runStructuredCompletion.js (application)
+// receives both this plain JSON-schema object and the Zod schema instance
+// above, so it never needs to `import zod` itself — it validates by calling
+// `.safeParse()` on an already-constructed schema object, the same pattern
+// answerQuestion.js already uses for AnswerSchema.
+export const EvidenceExtractorOutputJsonSchema = z.toJSONSchema(EvidenceExtractorOutputSchema);
+export const RubricScorerOutputJsonSchema = z.toJSONSchema(RubricScorerOutputSchema);
+export const ShortlistDrafterOutputJsonSchema = z.toJSONSchema(ShortlistDrafterOutputSchema);

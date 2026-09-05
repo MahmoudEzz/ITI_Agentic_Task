@@ -15,7 +15,10 @@ const ChunkResultSchema = z
     chunkId: z.string().min(1),
     documentId: z.string().min(1),
     content: z.string().min(1),
-    score: z.number(),
+    // null for a direct fetch with no ranking concept (get_candidate_chunks
+    // — there is no query to rank against), as opposed to search_corpus's
+    // real fused RRF score.
+    score: z.number().nullable(),
     section: z.string().nullable().optional(),
     page: z.number().int().nullable().optional(),
     ocrConfidence: z.number().min(0).max(100).nullable().optional(),
