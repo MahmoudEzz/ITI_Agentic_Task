@@ -162,6 +162,17 @@ test("GET /healthz needs no auth and carries real helmet security headers", asyn
   assert.ok(res.headers["x-dns-prefetch-control"]);
 });
 
+test("GET /readyz needs no auth, reports real Postgres connectivity, and never fails the whole probe on Ollama alone", async () => {
+  const res = await app.inject({ method: "GET", url: "/readyz" });
+  const body = res.json();
+  // Postgres is genuinely reachable in this test environment — a real
+  // check, not a stub — so this must be 200/ready, not merely well-formed.
+  assert.equal(res.statusCode, 200);
+  assert.equal(body.status, "ready");
+  assert.equal(body.checks.postgres, true);
+  assert.equal(typeof body.checks.ollama, "boolean");
+});
+
 test("rate limiting returns 429 after the configured burst, on a fresh app instance with a low limit", async () => {
   const config = container.resolve("config");
   const limitedApp = await buildServer({ container, config: { ...config, rateLimit: { max: 3, windowMs: 60_000 } } });
