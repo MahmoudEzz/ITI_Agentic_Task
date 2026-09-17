@@ -50,7 +50,7 @@
     "js-tiktoken": "^1.0.21",
     "jsonwebtoken": "^9.0.3",
     "knex": "^3.3.0",
-    "mammoth": "^1.12.2",
+    "mammoth": "^1.12.3",
     "ollama": "^0.6.3",
     "pdf-lib": "^1.17.1",
     "pdfjs-dist": "^6.3.289",
