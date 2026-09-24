@@ -1,4 +1,4 @@
-FROM node:22-slim
+FROM node:25-slim
 
 # Native deps for Puppeteer (PDF generation) only — OCR rasterization is pure
 # JS (pdfjs-dist + @napi-rs/canvas, see ADR-0004's amendment), no poppler/pdftoppm needed.
